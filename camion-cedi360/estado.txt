@@ -1080,6 +1080,19 @@ BITÁCORA
                   (OrbitControls) y fuera del lienzo hace scroll normal. La
                   pista del lienzo pasa a "rueda para acercar". Se mantiene la
                   navegacion por riel, flechas, teclado y boton Continuar.
+2026-11-25 14:00  Logos de aliados: se reemplazan los tres recortes de 400 px
+                  (con fondo blanco pegado y dientes de sierra) por los
+                  originales en alta resolucion que envio el cliente, con alfa
+                  y recortados al contenido: aliado-tdmek.webp (758 x 220),
+                  aliado-dapango.webp (796 x 220) y aliado-tenken.webp
+                  (673 x 220). El de Tenken llega en blanco puro (255,255,255),
+                  pensado para fondo oscuro, y sobre la tarjeta blanca del deck
+                  desaparecia: se convierte a tinta plana #00274B conservando
+                  el canal alfa, que es lo que dibuja las letras.
+                  En tema-industrial.css la tarjeta crece a 104 px de alto y
+                  20/22 de relleno, y el logo pasa de 32 a 40 px de alto con
+                  opacidad 1. La version impresa sigue en 20 px (propuesta.css).
+                  Pendiente: el PDF de la raiz conserva los logos viejos.
 
 SIGUIENTE PASO RECOMENDADO
 --------------------------

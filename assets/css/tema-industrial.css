@@ -353,7 +353,8 @@ tbody tr:last-child td{border-bottom:0}
 .evi span{color:var(--ink-4)}
 .evi img,.cap-media img{filter:saturate(.92) contrast(1.02)}
 
-.ally{background:#fff;border:1px solid var(--line);border-radius:2px}
+.ally{background:#fff;border:1px solid var(--line);border-radius:2px;min-height:104px;padding:20px 22px}
+.ally img{height:40px;opacity:1}
 .annex-card{background:var(--paper-2);border:1px dashed var(--line-2);border-radius:2px}
 .annex-card .ph{background:var(--ink);color:var(--paper-2);border-radius:2px}
 .annex-card h4{color:var(--ink)}
