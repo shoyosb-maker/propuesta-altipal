@@ -6,12 +6,12 @@ la propuesta y un recorrido 3D por el CEDI (centro de distribución), con las
 subestación, sala técnica, centro de seguridad electrónica y sala de juntas—
 en el sitio donde aplica cada eje.
 
-El capítulo 05 (Capacidades) enlaza cuatro desarrollos propios publicados como
-prueba de la línea de software: MotoBot (chatbot agéntico), Metro Cuadrado
-(bodega y movimientos), SentinelOps (seguimiento y SLA) e Invernadero de café
-(gemelo digital con telemetría). La API de MotoBot se activa solo en la prueba
-de la reunión técnica o al implementar el agente; el resto del tiempo el demo
-responde con guiones.
+El capítulo 13 (Experiencia) enlaza cuatro desarrollos propios publicados como
+prueba de la línea de software: MotoBot (chatbot agéntico), SentinelOps
+(seguimiento y SLA), Invernadero de café (gemelo digital con telemetría) y
+Metro Cuadrado (panel operativo). Cada tarjeta abre su demo en una pestaña
+nueva. La API de MotoBot se activa solo en la prueba de la reunión técnica o al
+implementar el agente; el resto del tiempo el demo responde con guiones.
 
 ## Qué hay aquí
 

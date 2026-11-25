@@ -353,6 +353,21 @@ tbody tr:last-child td{border-bottom:0}
 .evi span{color:var(--ink-4)}
 .evi img,.cap-media img{filter:saturate(.92) contrast(1.02)}
 
+/* tarjetas de desarrollo propio: toda la tarjeta es el enlace al demo */
+.evi{display:block;text-decoration:none;color:inherit;transition:border-color .25s,transform .25s var(--ease)}
+.evi img{display:block}
+.evi:hover,.evi:focus-visible{border-color:var(--yellow);transform:translateY(-2px)}
+.evi .evi-link{
+  display:block;margin-top:10px;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-4);transition:color .2s;
+}
+.evi:hover .evi-link,.evi:focus-visible .evi-link{color:var(--ink)}
+.evi .evi-nota{
+  margin:9px 0 0;padding-top:8px;border-top:1px dashed var(--line);
+  font-size:.68rem;line-height:1.5;color:var(--ink-4);
+}
+.evi .evi-nota b{color:var(--ink-3);font-weight:600}
+
 .ally{background:#fff;border:1px solid var(--line);border-radius:2px;min-height:104px;padding:20px 22px}
 .ally img{height:40px;opacity:1}
 .annex-card{background:var(--paper-2);border:1px dashed var(--line-2);border-radius:2px}
