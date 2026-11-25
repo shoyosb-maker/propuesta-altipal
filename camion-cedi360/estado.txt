@@ -2,7 +2,7 @@
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 18:45
+Actualizado: 2026-11-25 19:05
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1173,6 +1173,30 @@ BITÁCORA
                   parada del comite reencuadrada con el anexo corrido. Total:
                   25 paradas.
 
+2026-11-25 18:50  Escalera y barandales del anexo: la escalera exterior eran 13
+                  peldaños sueltos con dos paneles ciegos de 6,6 x 1,1 m por
+                  "baranda". Se rehace con zancas inclinadas, peldaños, pasamanos
+                  con posts y balaustres a los dos lados, y el rellano con su
+                  baranda. La terraza del piso 2 tambien pasa de panel ciego a
+                  baranda de tubo. Helpers nuevos: baranda() y baranda_rampa()
+                  en programa.py.
+2026-11-25 19:05  Panel de operacion en el visor: modulo blender/simulacion.py
+                  (coleccion T93_SIM, 31 objetos) con lo que el panel mueve:
+                  SIM_Puerta_Muelle_0..2 (portones seccionales con el pivote en
+                  el dintel, se recogen escalando en Z), SIM_Puerta_Frio (hoja
+                  corredera del frio, que sale de FRIO_Camara), SIM_Caja_00..11
+                  y SIM_Palet_0..2 (carga del anden), SIM_AMR_0..1,
+                  SIM_Banda_Caja_00..06 y SIM_Baliza_0..2.
+                  El visor trae panel.js con cuatro grupos: iluminacion (por
+                  material: M_Alm_Luz, M_Pas_Luz, M_Adm_Luz, M_Luz_Torre, mas
+                  ambiente nocturno), puertas y accesos (portones, cortinas
+                  Muelle_Tira_*, puerta del frio), sistemas (AMR y banda) y
+                  simulacro (llega la furgoneta FUR_Unidad_0 al muelle 01,
+                  descargar y retirar paquetes, alarma con balizas y traza de
+                  CCTV, corte de energia con UPS y planta, restablecer).
+                  Los materiales M_Sim_* van en la PALETA del visor y las piezas
+                  que el simulacro esconde se apagan al crear el panel.
+
 SIGUIENTE PASO RECOMENDADO
 --------------------------
 1. Probar el recorrido en la reunión y ajustar los encuadres de secciones.js.
@@ -1259,4 +1283,16 @@ RIESGOS Y NOTAS
 - El limite del modo juego (LIMITE en visor/src/main.js) va en coordenadas del
   visor: x, altura y -y_blender. Si se amplia el sitio hay que revisarlo o el
   recorrido a pie se queda corto en el borde.
+- El panel de operacion resuelve las luces por NOMBRE DE MATERIAL, no por
+  objeto: la nave y el anden comparten M_Alm_Luz, asi que se encienden y se
+  apagan juntos. Para separarlos habria que crear materiales distintos en
+  almacen.py y muelle.py.
+- Las piezas de simulacion viajan en el glb siempre; el panel las apaga al
+  arrancar (visible = false). Si se agrega una pieza nueva a simulacion.py hay
+  que sumarla a la lista del panel o queda visible desde el inicio.
+- Los portones se recogen escalando en Z desde el pivote del dintel: si se
+  cambia la altura del vano hay que mover tambien el objeto en simulacion.py,
+  o el porton queda enterrado en el anden.
+- build_all.py ejecuta simulacion.py; pliegos.py la excluye con T93_SIM.
+  web_export.py la exporta con el resto (no tiene capa de fase).
 =========================================================================

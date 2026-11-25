@@ -84,6 +84,25 @@ interior, 11 m, y banda norte, 12 m) y en la fachada este sobre el andén
 (7,5 m); los tres se arman en `camion-cedi360/blender/marca_altipal.py` con la
 textura `assets/marca/fundaserinco-blanco.png`.
 
+## Panel de operación (simulacro)
+
+El recorrido 3D trae un panel —botón **Panel de operación** en la barra del
+lienzo— que mueve el modelo en vivo para mostrar cómo se opera el CEDI:
+
+| Grupo | Qué hace |
+| --- | --- |
+| Iluminación | Enciende y apaga nave y andén, jardín y pasillo, anexo y patio; el ambiente nocturno baja la luz de escena |
+| Puertas y accesos | Abre y cierra los tres portones seccionales, las cortinas de tiras y la puerta corredera del frío |
+| Sistemas | Pone en marcha la banda troncal y los dos AMR del corredor central |
+| Simulacro | Llega la furgoneta al muelle 01, descarga y retira paquetes, alarma de intrusión, corte de energía y restablecer el turno |
+
+Las piezas que el panel mueve salen de `camion-cedi360/blender/simulacion.py`
+(colección `T93_SIM`), con el pivote resuelto: los portones cuelgan del dintel
+(se recogen escalando en Z), la hoja del frío corre sobre su vano y la carga,
+los AMR y las cajas de la banda viajan ocultos hasta que el simulacro los
+suelta. La lógica vive en `camion-cedi360/visor/src/panel.js` y se engancha al
+bucle del visor desde `main.js`.
+
 ## Volver a construir
 
 El modelo se arma por partes en Blender y se exporta a glTF; el visor se

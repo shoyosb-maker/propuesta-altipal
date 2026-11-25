@@ -4,9 +4,9 @@ import os
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 for nombre in ("build_scene.py", "entorno.py", "almacen.py", "muelle.py",
-               "programa.py", "detalles.py", "annotations.py", "hologram.py",
-               "marca_altipal.py", "importar_cabina.py", "importar_furgon.py",
-               "importar_muelle.py", "ubicar_camion.py"):
+               "programa.py", "simulacion.py", "detalles.py", "annotations.py",
+               "hologram.py", "marca_altipal.py", "importar_cabina.py",
+               "importar_furgon.py", "importar_muelle.py", "ubicar_camion.py"):
     ruta = os.path.join(BASE, nombre)
     with open(ruta, "r", encoding="utf-8-sig") as fh:
         codigo = fh.read()

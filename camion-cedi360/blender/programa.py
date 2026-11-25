@@ -391,14 +391,13 @@ def build_frio(col):
             geo.caja((x, yw, z0 + FRIO_ALTO / 2), (0.05, 0.03, FRIO_ALTO),
                      zocalo)
         x += 1.20
-    # marco del vano y hoja corredera, que abre hacia el pasillo
+    # marco del vano; la hoja corredera la pone simulacion.py para que el
+    # panel del visor pueda abrirla y cerrarla
     geo.caja((x1 - 0.06, yd, z0 + 2.44), (0.20, 2 * vano + 0.30, 0.18),
              zocalo)
     for lado in (-1, 1):
         geo.caja((x1 - 0.06, yd + lado * (vano - 0.07), z0 + 1.22),
                  (0.20, 0.18, 2.44), zocalo)
-    geo.caja((x1 + 0.16, yd + vano + 1.05, z0 + 1.22), (0.10, 2.10, 2.34),
-             puerta)
     geo.caja((x1 + 0.16, yd + vano + 1.05, z0 + 2.46), (0.16, 2.22, 0.10),
              zocalo)
     for k in range(7):
@@ -784,6 +783,45 @@ def _ventanal(geo, eje, cte, a, b, z0, alto, vidrio, acero,
             alto - antepecho, acero)
 
 
+def baranda(geo, eje, cte, a, b, z, mat, alto=1.05, paso=1.60, hueco=0.34):
+    """Baranda de tubo: pasamanos, posts y balaustres."""
+    largo = b - a
+    if largo < 0.30:
+        return
+
+    def blq(p, dl, dz, dh):
+        if eje == "x":
+            geo.caja((p, cte, dz), (dl, 0.09, dh), mat)
+        else:
+            geo.caja((cte, p, dz), (0.09, dl, dh), mat)
+
+    n = max(1, int(round(largo / paso)))
+    for k in range(n + 1):
+        blq(a + largo * k / n, 0.07, z + alto / 2.0, alto)
+    m = max(1, int(round(largo / hueco)))
+    for k in range(m + 1):
+        blq(a + largo * k / m, 0.025, z + (alto - 0.10) / 2.0, alto - 0.10)
+    blq((a + b) / 2.0, largo, z + alto, 0.09)
+
+
+def baranda_rampa(geo, x, ya, za, largo_y, sube, mat, alto=1.05):
+    """Baranda inclinada sobre la zanca de la escalera."""
+    ang = math.atan2(sube, largo_y)
+    largo = math.hypot(largo_y, sube)
+    geo.caja((x, ya + largo_y / 2.0, za + sube / 2.0 + alto),
+             (0.09, largo, 0.09), mat, rot=(ang, 0.0, 0.0))
+    n = max(1, int(round(largo / 1.30)))
+    for k in range(n + 1):
+        t = k / float(n)
+        geo.caja((x, ya + largo_y * t, za + sube * t + alto / 2.0),
+                 (0.07, 0.07, alto), mat)
+    m = max(1, int(round(largo / 0.34)))
+    for k in range(m + 1):
+        t = k / float(m)
+        geo.caja((x, ya + largo_y * t, za + sube * t + (alto - 0.10) / 2.0),
+                 (0.025, 0.025, alto - 0.10), mat)
+
+
 def build_plataforma(col):
     """Plataforma comun de los pabellones exentos, a la cota de la nave."""
     px0, px1, py0, py1 = PLATAFORMA
@@ -1132,10 +1170,9 @@ def build_anexo(col):
     geo.caja(((x0 + x1) / 2, (y0 + y1) / 2, z1 + 0.11),
              (x1 - x0 + 0.50, y1 - y0 + 0.50, 0.22), losa)
     # baranda de la terraza que queda sobre la cubierta de la planta baja
-    for (cx, cy, sx, sy) in (((x0 + x1) / 2, y0 + 0.10, x1 - x0 + 0.5, 0.10),
-                             (x0 - 0.20, y0 + 1.15, 0.10, 2.30),
-                             (x1 + 0.20, y0 + 1.15, 0.10, 2.30)):
-        geo.caja((cx, cy, z1 + 0.70), (sx, sy, 1.20), acero)
+    baranda(geo, "x", y0 + 0.10, x0 - 0.25, x1 + 0.25, z1 + 0.22, acero)
+    baranda(geo, "y", x0 - 0.20, y0 + 0.10, y0 + 2.30, z1 + 0.22, acero)
+    baranda(geo, "y", x1 + 0.20, y0 + 0.10, y0 + 2.30, z1 + 0.22, acero)
 
     # volumen cerrado, retranqueado 2,2 m al sur para dejar la terraza
     px0, px1 = x0 + 0.45, x1 - 0.45
@@ -1157,14 +1194,24 @@ def build_anexo(col):
     pasos = 13
     dy = 5.20 / pasos
     dz = (z1 + 0.22 - SLAB) / pasos
+    ang = math.atan2(z1 + 0.22 - SLAB, 5.20)
     for k in range(pasos):
         geo.caja((px1 + 0.95, y0 + 0.60 + (k + 0.5) * dy,
-                  SLAB + (k + 1) * dz - 0.08), (1.60, dy + 0.05, 0.16), acero)
+                  SLAB + (k + 1) * dz - 0.09), (1.56, dy + 0.06, 0.18), acero)
+    # zancas inclinadas bajo los peldaños
+    for xr in (px1 + 0.24, px1 + 1.66):
+        geo.caja((xr, y0 + 0.60 + 2.60, (SLAB + z1 + 0.22) / 2.0 - 0.22),
+                 (0.10, 6.85, 0.34), acero, rot=(ang, 0.0, 0.0))
+    # rellano y puerta de acceso al piso 2
     geo.caja((px1 + 0.95, y0 + 6.35, z1 + 0.11), (1.60, 1.50, 0.22), acero)
-    for xr in (px1 + 0.32, px1 + 1.58):
-        geo.caja((xr, y0 + 3.90, (SLAB + z1) / 2 + 0.55),
-                 (0.06, 6.60, 1.10), acero)
     geo.caja((px1 - 0.03, y0 + 6.35, z1 + 1.05), (0.06, 1.00, 2.10), vidrio)
+    # pasamanos de la escalera y baranda del rellano
+    for xr in (px1 + 0.18, px1 + 1.72):
+        baranda_rampa(geo, xr, y0 + 0.60, SLAB, 5.20, z1 + 0.22 - SLAB,
+                      acero)
+    baranda(geo, "y", px1 + 1.80, y0 + 5.60, y0 + 7.10, z1 + 0.22, acero)
+    baranda(geo, "x", y0 + 6.35 + 0.78, px1 + 0.20, px1 + 1.80, z1 + 0.22,
+            acero)
 
     # equipos de cubierta
     for dx in (-2.10, 1.90):

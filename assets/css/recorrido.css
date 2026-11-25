@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    CEDI 360 · Recorrido del despiece
    Visor a pantalla completa de las cinco láminas del camión,
    con panel de contenido y puntos activos. Hereda los tokens de
@@ -429,3 +429,62 @@ body.jugando .rec-menu{display:none}
   .rec-idx{min-height:44px}
   .rec-idx b{font-size:.9rem}
 }
+/* ---------- panel de operación (simulacro) ---------- */
+.visor-tools button.activo{background:var(--yellow);border-color:var(--yellow);color:#0B1116}
+
+.sim-panel{
+  position:absolute;top:50px;right:12px;z-index:9;
+  width:280px;max-height:calc(100% - 116px);
+  display:flex;flex-direction:column;
+  background:rgba(9,14,20,.94);
+  border:1px solid rgba(242,194,26,.35);
+  border-radius:12px;
+  box-shadow:0 18px 44px rgba(0,0,0,.55);
+  overflow:hidden;
+  font-family:var(--font);
+  color:var(--paper);
+}
+.sim-panel[hidden]{display:none}
+.sim-cab{
+  display:flex;flex-direction:column;gap:2px;
+  padding:12px 14px 10px;border-bottom:1px solid rgba(255,255,255,.09);
+  position:relative;
+}
+.sim-cab b{font-size:.72rem;letter-spacing:.10em;text-transform:uppercase;color:var(--yellow)}
+.sim-cab span{font-size:.56rem;letter-spacing:.05em;color:rgba(242,245,248,.62)}
+.sim-x{
+  position:absolute;top:6px;right:8px;width:26px;height:26px;
+  border:0;background:none;color:rgba(242,245,248,.6);
+  font-size:1.1rem;line-height:1;cursor:pointer;
+}
+.sim-x:hover{color:var(--yellow)}
+.sim-cuerpo{padding:6px 10px 10px;overflow-y:auto}
+.sim-cuerpo h4{
+  margin:9px 2px 5px;font-size:.5rem;letter-spacing:.14em;
+  text-transform:uppercase;color:rgba(242,245,248,.48);font-weight:600;
+}
+.sim-cuerpo h4:first-child{margin-top:2px}
+.sim-lista{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.sim-btn{
+  border:1px solid rgba(255,255,255,.16);border-radius:8px;
+  background:rgba(255,255,255,.04);color:rgba(242,245,248,.86);
+  font-family:var(--font);font-size:.5rem;letter-spacing:.04em;
+  line-height:1.2;text-align:left;padding:6px 7px;cursor:pointer;
+  transition:border-color .18s var(--ease),background .18s var(--ease),color .18s var(--ease);
+  min-height:31px;
+}
+.sim-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+.sim-btn.activo{background:rgba(242,194,26,.9);border-color:var(--yellow);color:#0B1116;font-weight:600}
+.sim-aviso{
+  margin:0;padding:9px 14px 11px;border-top:1px solid rgba(255,255,255,.09);
+  font-size:.53rem;letter-spacing:.03em;line-height:1.4;
+  color:rgba(242,245,248,.78);
+}
+.sim-aviso.ok{color:#9FC55A}
+.sim-aviso.alerta{color:#F2C21A;font-weight:600}
+
+@media (max-width: 760px){
+  .sim-panel{left:8px;right:8px;width:auto;top:auto;bottom:calc(100% - 100vh + 96px);max-height:52vh}
+  .sim-lista{grid-template-columns:1fr 1fr}
+}
+@media print{.sim-panel{display:none}}

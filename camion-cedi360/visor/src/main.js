@@ -9,6 +9,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { SECCIONES } from './secciones.js';
+import { crearPanel } from './panel.js';
 import MODELO_B64 from '../modelo.js';
 
 const LIENZO = document.getElementById('visorCanvas');
@@ -26,6 +27,8 @@ let holo = null;
 let cinta = null;
 let muro = null;
 let pantalla = null;
+let panel = null;
+let lucesEscena = null;
 let camDestino = null, tgtDestino = null;
 const FOV_BASE = 38;
 // campo horizontal objetivo de las tomas de interior (radianes)
@@ -95,13 +98,15 @@ function iniciar() {
   const pmrem = new THREE.PMREMGenerator(render);
   escena.environment = pmrem.fromScene(new RoomEnvironment(), 0.06).texture;
 
-  escena.add(new THREE.HemisphereLight(0xbfd4ea, 0x0a1018, 0.75));
+  const hemi = new THREE.HemisphereLight(0xbfd4ea, 0x0a1018, 0.75);
+  escena.add(hemi);
   const dir = new THREE.DirectionalLight(0xfff0c8, 1.45);
   dir.position.set(26, 38, 18);
   escena.add(dir);
   const contra = new THREE.DirectionalLight(0x6fa8ff, 0.7);
   contra.position.set(-30, 16, -26);
   escena.add(contra);
+  lucesEscena = { hemi, dir, contra };
 
   const grid = new THREE.GridHelper(220, 110, 0x3d3520, 0x1e2530);
   grid.position.y = 0.002;
@@ -217,6 +222,17 @@ function cargarModelo() {
       M_Jar_Follaje: { color: 0x2E7A48, emissive: 0x3E8F58, fuerza: 0.65, opacidad: 1 },
       M_Jar_Seto: { color: 0x33704A, emissive: 0x43855C, fuerza: 0.60, opacidad: 1 },
       M_Jar_Madera: { color: 0x6B4A2E, emissive: 0x4A3420, fuerza: 0.35, opacidad: 1 },
+
+      // simulacion: portones, carga, AMR y balizas del panel de operacion
+      M_Sim_Puerta: { color: 0xB8C4CC, emissive: 0x8FA2AE, fuerza: 0.32, opacidad: 1 },
+      M_Sim_PuertaFrio: { color: 0x1E4C63, emissive: 0x0072B2, fuerza: 0.38, opacidad: 1 },
+      M_Sim_Caja: { color: 0x4A3E2A, emissive: 0x4E3F26, fuerza: 0.10, opacidad: 1 },
+      M_Sim_CajaClara: { color: 0xBFCBD4, emissive: 0xA8B8C4, fuerza: 0.22, opacidad: 1 },
+      M_Sim_Palet: { color: 0x3E3222, emissive: 0x4A3A24, fuerza: 0.10, opacidad: 1 },
+      M_Sim_AMR: { color: 0x11171E, emissive: 0x1B2530, fuerza: 0.22, opacidad: 1 },
+      M_Sim_Led: { color: 0x14424A, emissive: 0x5CDACE, fuerza: 2.4, opacidad: 1 },
+      M_Sim_Alarma: { color: 0x3A0F0C, emissive: 0xD2463C, fuerza: 1.8, opacidad: 1 },
+      M_Sim_Acero: { color: 0x5A646E, emissive: 0x8C97A3, fuerza: 0.18, opacidad: 1 },
       // sala tecnica de redes
       M_Red_Rack: { color: 0x11171E, emissive: 0x1B2530, fuerza: 0.20, opacidad: 1 },
       M_Red_Patch: { color: 0xC9A227, emissive: 0xA8871E, fuerza: 0.35, opacidad: 1 },
@@ -381,6 +397,7 @@ function cargarModelo() {
     escena.add(modelo);
     muro = crearMuroVideo();
     pantalla = crearPantallaAdmin();
+    panel = crearPanel({ escena, modelo, luces: lucesEscena });
 
     mixer = new THREE.AnimationMixer(modelo);
     clips = gltf.animations || [];
@@ -1345,6 +1362,7 @@ function bucle() {
   animarHolo(Math.max(0, Math.min(1, avance - 2)), performance.now() / 1000);
   animarCinta(Math.max(0, Math.min(1, avance - 1.5)), real);
   animarMuroVideo(Math.min(1, avance), real);
+  if (panel) panel.tick(real);
 
   if (!modoJuego) controles.update();
   render.render(escena, camara);
