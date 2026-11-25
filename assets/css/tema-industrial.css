@@ -610,6 +610,25 @@ button.chip:hover{border-color:var(--ink-3)}
 }
 
 /* ---------- 14b. MÓVIL Y TABLET ---------- */
+/* Dots de capítulo: solo puntos. Sin píldora, sin borde y sin halo; el
+   capítulo actual es el único que se oscurece, y su nombre va escrito en
+   vertical junto a la columna. */
+.deck-dots{
+  background:none;border:0;border-radius:0;padding:0;gap:9px;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+}
+.deck-dots a{width:7px;height:7px;border-radius:50%;background:rgba(14,22,27,.24);box-shadow:none;
+  filter:drop-shadow(0 0 2px rgba(255,255,255,.95));transition:background .2s}
+.deck-dots a:hover{background:rgba(14,22,27,.55)}
+.deck-dots a.on{background:var(--ink);box-shadow:none}
+.deck-dots::before{
+  content:attr(data-actual);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:var(--mono);font-size:.6rem;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:14px;white-space:nowrap;
+}
+.deck-dots[data-actual=""]::before{display:none}
+
 /* Etiquetas por debajo de 10 px no se leen en un teléfono: aquí suben de
    tamaño y de contraste, y las acciones pasan a 44 px de alto. */
 @media (max-width:760px){
@@ -678,22 +697,19 @@ button.chip:hover{border-color:var(--ink-3)}
   }
 
   /* puntos de capítulo a la izquierda, sutiles */
-  .deck-dots{
-    display:flex;left:0;width:16px;gap:0;padding:9px 0;
-    background:rgba(250,248,242,.55);border:1px solid rgba(216,213,203,.7);
-    border-left:0;border-radius:0 8px 8px 0;opacity:.6;
-  }
+  .deck-dots{display:flex;left:2px;gap:0}
+  .deck-dots::before{font-size:.64rem;letter-spacing:.1em;margin-bottom:12px}
   .deck-dots a{
-    width:16px;height:16px;border-radius:50%;background:transparent;
-    display:grid;place-items:center;touch-action:manipulation;
+    width:15px;height:15px;border-radius:50%;background:transparent;
+    display:grid;place-items:center;touch-action:manipulation;filter:none;
   }
   .deck-dots a::before{
-    content:"";width:5px;height:5px;border-radius:50%;background:var(--line-2);
-    transition:background .2s,transform .2s;
+    content:"";width:6px;height:6px;border-radius:50%;background:rgba(14,22,27,.26);
+    filter:drop-shadow(0 0 2px rgba(255,255,255,.95));transition:background .2s;
   }
   .deck-dots a:hover,.deck-dots a.on{background:transparent;box-shadow:none}
-  .deck-dots a:hover::before{background:var(--ink-3)}
-  .deck-dots a.on::before{background:var(--ink);transform:scale(1.7)}
+  .deck-dots a:hover::before{background:rgba(14,22,27,.55)}
+  .deck-dots a.on::before{background:var(--ink)}
   .deck-dots a::after{display:none}
 
   /* tablas: se deslizan y la primera columna queda fija como referencia */

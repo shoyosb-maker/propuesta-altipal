@@ -64,6 +64,8 @@
       d.classList.toggle('on', i === cur);
       if (i === cur) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
     });
+    // el nombre del capítulo actual se muestra junto a los puntos
+    if (dotsBox) dotsBox.setAttribute('data-actual', chapters[cur].getAttribute('data-nav') || '');
     if (counter) counter.textContent = (chapters[cur].getAttribute('data-num') || (cur + 1)) + ' / ' + chapters.length;
     if (prevBtn) prevBtn.disabled = cur === 0;
     if (nextBtn) nextBtn.disabled = cur === chapters.length - 1;
