@@ -323,5 +323,32 @@ body.jugando .rec-hud{display:none}
   text-transform:uppercase; color:#5C6873; z-index:4; pointer-events:none;
 }
 @media (max-width:900px){
-  .credito-modelo{position:static;padding:8px 16px;text-align:right}
+  .credito-modelo{position:static;padding:8px 16px 0;text-align:right}
 }
+
+/* ---------- móvil y tablet: legibilidad y lienzo ---------- */
+@media (max-width:900px){
+  /* el lienzo necesita altura en vertical para que el encuadre respire */
+  .rec-stage{aspect-ratio:auto;height:clamp(280px,54vh,560px)}
+  .visor-canvas{position:absolute;inset:0;width:100%;height:100%}
+
+  .rec-hud{padding:18px 18px 16px}
+  .rec-hud .rn{font-size:.6rem;letter-spacing:.16em}
+  .rec-hud h1{font-size:1.3rem;line-height:1.15}
+  .rec-hud p{font-size:.92rem;line-height:1.65;margin-bottom:14px}
+  .rec-hud ul{gap:8px;margin-bottom:14px}
+  .rec-hud li{font-size:.88rem;line-height:1.55;padding-left:15px}
+  .rec-hud .rm{font-size:.62rem;letter-spacing:.06em;line-height:1.5;padding-top:12px}
+  .rec-continuar{min-height:48px;font-size:.66rem;letter-spacing:.08em;line-height:1.35;padding:12px 14px}
+
+  .visor-tools{z-index:7;padding:6px 8px;gap:6px;flex-wrap:wrap;justify-content:center}
+  .visor-tools button{min-height:40px;padding:9px 11px;font-size:.58rem;letter-spacing:.06em}
+
+  .rec-rail{padding:6px 8px;gap:4px;bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+  .rec-step{min-height:40px;padding:9px 11px;font-size:.6rem}
+  .rec-step b{font-size:.86rem}
+
+  .credito-modelo{font-size:.58rem;letter-spacing:.04em;line-height:1.55;text-align:left}
+  body.recorrido-page{padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
+}
+

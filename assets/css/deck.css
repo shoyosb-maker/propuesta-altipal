@@ -60,7 +60,7 @@ body.deck-page,body.eje-page{padding-bottom:0}
 .cover-block h1{font-size:clamp(2.2rem,4.6vw,4rem);line-height:1.03;letter-spacing:-.038em;margin:16px 0 14px;color:#fff}
 .cover-block .sub{color:var(--sky);font-size:clamp(.96rem,1.25vw,1.1rem);max-width:54ch;line-height:1.68}
 .cover-block .cover-inner{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));
   gap:clamp(24px,4vw,48px);align-items:center;
 }
 .cover-block + .cover-block{border-top:1px solid rgba(127,176,255,.12);padding-top:clamp(28px,5vh,44px)}

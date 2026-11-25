@@ -455,6 +455,12 @@ VISOR 3D (three.js)
   El bundle es IIFE a propósito: los módulos ES y el fetch de archivos
   locales están bloqueados cuando la propuesta se abre con file://.
 
+  Encuadre por proporción: cada sección define su vista (obj, dist, giro,
+  altura). Si el lienzo es más estrecho que 1.6:1 la cámara se aleja hasta
+  1.9x para que el vertical del móvil no recorte la sección, y al girar el
+  equipo reajustar() rehace el encuadre actual. La compensación horizontal
+  del panel lateral sólo aplica sobre 1000 px de ancho.
+
   glTF no entiende drivers, así que web_export.py hornea los keyframes
   aplicando las mismas fórmulas del despiece (techo, paredes, puertas,
   carga y cabina) sobre 121 frames. Los drivers de Blender no se

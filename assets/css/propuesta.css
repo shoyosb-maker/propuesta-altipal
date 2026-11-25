@@ -476,7 +476,7 @@ footer.site{
 .cover{min-height:calc(100vh - var(--bar-h));display:flex;align-items:center;
   padding:calc(var(--bar-h) + clamp(26px,6vh,56px)) clamp(20px,5vw,64px) clamp(40px,7vh,70px)}
 .cover-inner{max-width:var(--maxw);margin:0 auto;width:100%;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(340px,100%),1fr));
   gap:clamp(26px,4vw,52px);align-items:center}
 .cover h1{font-size:clamp(2.4rem,4.9vw,4.3rem);line-height:1.02;letter-spacing:-.038em;margin:18px 0 16px}
 .cover .sub{color:var(--sky);font-size:clamp(.98rem,1.3vw,1.14rem);max-width:52ch;line-height:1.68}

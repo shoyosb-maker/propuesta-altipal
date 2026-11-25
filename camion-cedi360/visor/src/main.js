@@ -788,9 +788,15 @@ function ir(indice, directo) {
   if (directo) tiempoActual = tiempoObjetivo;
 
   const v = sec.vista;
+  // en vertical el campo horizontal se estrecha: la cámara se aleja para que
+  // el encuadre de la sección no quede recortado por los lados
+  const proporcion = camara.aspect || 1.6;
+  const distancia = proporcion < 1.6
+    ? v.dist * Math.min(1.9, Math.pow(1.6 / proporcion, 0.7))
+    : v.dist;
   // las tomas de interiores necesitan acercarse más de lo que permite el orbital de exteriores
-  controles.minDistance = Math.max(1.2, Math.min(8, v.dist * 0.6));
-  camDestino = posicionCamara(v.obj, v.dist, v.giro, v.altura);
+  controles.minDistance = Math.max(1.2, Math.min(8, distancia * 0.6));
+  camDestino = posicionCamara(v.obj, distancia, v.giro, v.altura);
   tgtDestino = new THREE.Vector3(v.obj[0], v.obj[1], v.obj[2]);
   // en pantallas anchas el panel tapa la izquierda: se corre la composición
   const ancho = LIENZO.clientWidth || window.innerWidth;
@@ -1221,9 +1227,12 @@ function enlazarJuego() {
 function reajustar() {
   const ancho = LIENZO.clientWidth || window.innerWidth;
   const alto = LIENZO.clientHeight || window.innerHeight;
+  const proporcionAnterior = camara.aspect;
   camara.aspect = ancho / alto;
   camara.updateProjectionMatrix();
   render.setSize(ancho, alto, false);
+  // al girar el móvil cambia la proporción: se rehace el encuadre actual
+  if (!modoJuego && Math.abs(camara.aspect - proporcionAnterior) > 0.2) ir(seccionActual);
 }
 
 function bucle() {
