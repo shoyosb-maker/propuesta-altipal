@@ -368,6 +368,49 @@ tbody tr:last-child td{border-bottom:0}
 }
 .evi .evi-nota b{color:var(--ink-3);font-weight:600}
 
+/* vista previa flotante: al pasar el cursor se abre la página que enlaza la card */
+.evi{position:relative;overflow:visible}
+.evi:hover,.evi:focus-visible{z-index:30}
+.evi-pop{
+  position:absolute;top:-8px;left:calc(100% + 16px);width:330px;
+  background:#fff;border:1px solid var(--line-2);border-radius:3px;
+  box-shadow:0 28px 60px -32px rgba(0,39,75,.55);
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .22s ease,transform .22s ease,visibility .22s ease;
+  pointer-events:none;z-index:40;
+}
+.evi:nth-child(even) .evi-pop{left:auto;right:calc(100% + 16px)}
+.evi:hover .evi-pop,.evi:focus-visible .evi-pop{opacity:1;visibility:visible;transform:none}
+.evi-pop-bar{
+  display:flex;align-items:center;gap:5px;padding:7px 10px;
+  background:var(--paper-3);border-bottom:1px solid var(--line);
+}
+.evi-pop-bar i{width:6px;height:6px;border-radius:50%;background:#C4CFD8}
+.evi-pop-bar em{
+  margin-left:6px;font-family:var(--mono);font-size:.52rem;letter-spacing:.06em;font-style:normal;
+  color:var(--ink-4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.evi-pop-shot{height:190px;overflow:hidden;background:var(--paper-3)}
+.evi-pop-shot img{display:block;width:100%;height:auto}
+/* la captura del chatbot es una página completa: al abrir la vista previa se recorre */
+.evi-pop-shot.is-largo img{transition:transform .5s ease}
+.evi:hover .evi-pop-shot.is-largo img,
+.evi:focus-visible .evi-pop-shot.is-largo img{
+  transform:translateY(calc(-100% + 190px));
+  transition:transform 7s linear;
+}
+.evi-pop-foot{
+  display:flex;align-items:center;gap:6px;padding:7px 10px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);
+}
+.evi-pop-live{width:5px;height:5px;border-radius:50%;background:#3FA57A}
+@media (max-width:900px),(hover:none),(pointer:coarse){
+  .evi-pop{display:none}
+}
+@media print{
+  .evi-pop{display:none}
+}
+
 .ally{background:#fff;border:1px solid var(--line);border-radius:2px;min-height:104px;padding:20px 22px}
 .ally img{height:40px;opacity:1}
 .annex-card{background:var(--paper-2);border:1px dashed var(--line-2);border-radius:2px}
