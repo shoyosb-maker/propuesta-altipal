@@ -346,8 +346,22 @@ def build_estructura(col):
         if y < HY1:
             geo.caja((cx, y, SLAB + 0.004), (ancho, 0.05, 0.006), piso)
 
-    # muros de fondo: oeste y sur, a toda altura
-    geo.caja((HX0 - MURO / 2, cy, (Z_CUMBRE) / 2), (MURO, largo + MURO, Z_CUMBRE), muro)
+    # muro oeste: ciego salvo la puerta de personal al jardin (y -17,5 a -14,5)
+    PUERTA_O_Y0, PUERTA_O_Y1 = -17.50, -14.50
+    PUERTA_O_ALTO = 2.70
+    geo.caja((HX0 - MURO / 2, (HY0 - MURO / 2 + PUERTA_O_Y0) / 2,
+              Z_CUMBRE / 2),
+             (MURO, PUERTA_O_Y0 - (HY0 - MURO / 2), Z_CUMBRE), muro)
+    geo.caja((HX0 - MURO / 2, (PUERTA_O_Y1 + HY1 + MURO / 2) / 2,
+              Z_CUMBRE / 2),
+             (MURO, (HY1 + MURO / 2) - PUERTA_O_Y1, Z_CUMBRE), muro)
+    geo.caja((HX0 - MURO / 2, (PUERTA_O_Y0 + PUERTA_O_Y1) / 2, SLAB / 2),
+             (MURO, PUERTA_O_Y1 - PUERTA_O_Y0, SLAB), muro)
+    geo.caja((HX0 - MURO / 2, (PUERTA_O_Y0 + PUERTA_O_Y1) / 2,
+              (SLAB + PUERTA_O_ALTO + Z_CUMBRE) / 2),
+             (MURO, PUERTA_O_Y1 - PUERTA_O_Y0,
+              Z_CUMBRE - SLAB - PUERTA_O_ALTO), muro)
+    # muro sur: ciego a toda altura
     geo.caja((cx, HY0 - MURO / 2, Z_CUMBRE / 2), (ancho + 2 * MURO, MURO, Z_CUMBRE), muro)
 
     # fachada este: banda de carga con tres vanos de muelle
@@ -369,8 +383,20 @@ def build_estructura(col):
         geo.caja((HX1 - 0.55, y, SLAB - 0.10), (1.30, 3.20, 0.12), acero)
         geo.caja((HX1 - 0.12, y, PUERTA_ALTO + 0.16), (0.34, PUERTA_ANCHO + 0.3, 0.20), piso)
 
-    # fachada norte: solo banda baja (el resto abierto: corte isometrico)
-    geo.caja((cx, HY1 + MURO / 2, Z_BANDA / 2), (ancho, MURO, Z_BANDA), banda)
+    # fachada norte: solo banda baja (el resto abierto: corte isometrico),
+    # con el vano de paso al jardin del anexo en x -38,3 a -35,3
+    PUERTA_N_X0, PUERTA_N_X1 = -38.30, -35.30
+    PUERTA_N_ALTO = 2.70
+    geo.caja(((HX0 - MURO + PUERTA_N_X0) / 2, HY1 + MURO / 2, Z_BANDA / 2),
+             (PUERTA_N_X0 - (HX0 - MURO), MURO, Z_BANDA), banda)
+    geo.caja(((PUERTA_N_X1 + HX1 + MURO) / 2, HY1 + MURO / 2, Z_BANDA / 2),
+             ((HX1 + MURO) - PUERTA_N_X1, MURO, Z_BANDA), banda)
+    geo.caja(((PUERTA_N_X0 + PUERTA_N_X1) / 2, HY1 + MURO / 2, SLAB / 2),
+             (PUERTA_N_X1 - PUERTA_N_X0, MURO, SLAB), banda)
+    geo.caja(((PUERTA_N_X0 + PUERTA_N_X1) / 2, HY1 + MURO / 2,
+              (SLAB + PUERTA_N_ALTO + Z_BANDA) / 2),
+             (PUERTA_N_X1 - PUERTA_N_X0, MURO,
+              Z_BANDA - SLAB - PUERTA_N_ALTO), banda)
 
     # franja de marca sobre la banda de fachada
     geo.caja((HX1 + MURO + 0.05, cy, Z_BANDA - 0.28), (0.10, largo, 0.30),
@@ -430,7 +456,7 @@ def build_estructura(col):
     texto("CEDI_Rotulo_Recibo", "RECIBO", ((HX0 + HX1) / 2, HY0 + 0.20, SLAB + 3.0), 1.9,
           col, bpy.data.materials["M_Alm_Texto"],
           rot=(math.radians(90), 0.0, math.radians(180)))
-    texto("CEDI_Rotulo_Despacho", "DESPACHO", ((HX0 + HX1) / 2, HY1 - 0.20, SLAB + 1.9), 1.7,
+    texto("CEDI_Rotulo_Despacho", "DESPACHO", (-24.00, HY1 - 0.20, SLAB + 1.9), 1.7,
           col, bpy.data.materials["M_Alm_Texto"])
 
     # los rotulos son de una cara: la fachada sur, que es la que mira la

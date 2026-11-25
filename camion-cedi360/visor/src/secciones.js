@@ -148,6 +148,19 @@ export const SECCIONES = [
     vista: { obj: [-18.0, 2.6, -4.0], dist: 28, giro: 1.30, altura: 0.18, der: 0.14 }
   },
   {
+    n: '', id: 'paso', corto: 'Paso', titulo: 'Del almacén al comité, sin salir al patio',
+    lead: 'La banda norte de la nave tiene un paso directo al anexo administrativo: un vano enmarcado con marquesina, un camino de grava entre setos y el jardín que separa el almacén de la sala de juntas. El comité se alcanza a pie, sin cruzar el patio de maniobras.',
+    bullets: [
+      'Vano de 3 m en la banda norte, alineado con la puerta del anexo',
+      'Camino de grava de 3 m entre setos, con árboles, bancas y luminarias',
+      'El anexo se separa 4 m de la nave: el jardín hace de transición',
+      'A pie se encadena nave, jardín oeste, pasillo técnico y cuarto frío'
+    ],
+    metrica: 'Paso peatonal · jardín · anexo',
+    fase: 1,
+    vista: { obj: [-36.8, 2.3, -16.4], dist: 4.27, giro: 1.571, altura: 0.177, der: 0.04, interior: true }
+  },
+  {
     n: '', id: 'admin', corto: 'Comité', titulo: 'Aquí se decide: el comité del programa',
     lead: 'La propuesta no se sostiene en un contrato sino en una rutina: un comité mensual con acta, un tablero de compromisos y un solo responsable del conjunto. Esta es la mesa donde se revisa sede por sede.',
     bullets: [
@@ -158,7 +171,7 @@ export const SECCIONES = [
     ],
     metrica: 'Comité mensual · acta y tablero de compromisos',
     fase: 1,
-    vista: { obj: [-30.0, 1.9, -22.5], dist: 7.89, giro: 2.529, altura: 0.127, der: 0.06, interior: true }
+    vista: { obj: [-30.0, 1.9, -26.6], dist: 7.89, giro: 2.529, altura: 0.127, der: 0.06, interior: true }
   },
   {
     n: '03', id: 'reto', corto: 'El reto', titulo: 'Cinco eslabones, una sola promesa',

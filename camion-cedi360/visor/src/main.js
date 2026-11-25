@@ -1018,7 +1018,7 @@ function enlazarControles() {
 const VEL_CAMINAR = 9.0;
 const VEL_VERTICAL = 6.5;
 const RADIO_JOY = 56;
-const LIMITE = { x0: -66, x1: 34, y0: 0.7, y1: 62, z0: -26, z1: 40 };
+const LIMITE = { x0: -98, x1: 34, y0: 0.7, y1: 62, z0: -31, z1: 40 };
 const TECLAS_JUEGO = {
   KeyW: 1, KeyA: 1, KeyS: 1, KeyD: 1, KeyQ: 1, KeyE: 1, KeyC: 1, KeyR: 1,
   ArrowUp: 1, ArrowDown: 1, ArrowLeft: 1, ArrowRight: 1,

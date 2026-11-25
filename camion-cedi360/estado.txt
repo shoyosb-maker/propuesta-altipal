@@ -2,7 +2,7 @@
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 18:00
+Actualizado: 2026-11-25 18:45
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1146,6 +1146,33 @@ BITÁCORA
                   que no este ahi cae en el gris oscuro por defecto. Se
                   agregaron M_Pas_Losa, M_Pas_Luz y los seis M_Jar_*.
 
+2026-11-25 18:15  Vanos reales y recorrido a pie: el muro oeste de la nave deja
+                  de ser una caja ciega con una puerta pintada. Se abre el vano
+                  de personal (y -17,5 a -14,5, 3,0 x 2,7 m) y el paso al anexo
+                  en la banda norte (x -38,3 a -35,3), los dos con dintel y
+                  antepecho, asi que en "Recorrer a pie" se atraviesan de
+                  verdad. El LIMITE del modo juego pasa de x -66 a -98 y de
+                  z -26 a -31 para que el jardin, el pasillo tecnico, los dos
+                  pabellones y el anexo queden dentro del recorrido.
+                  La hoja de la puerta oeste queda abierta contra el jardin.
+2026-11-25 18:25  El anexo se separa 4,1 m de la nave (y 21,00 a 29,00) para
+                  dejar un jardin de paso de 32 x 5 m entre la banda norte y la
+                  sala de juntas: plataforma a cota SLAB, camino de grava de
+                  3 m alineado con la puerta del anexo, setos, cuatro arboles,
+                  dos bancas, materas, luminarias, marco de dos hojas abiertas
+                  y marquesina sobre el vano. La sala de redes del piso 2 sube
+                  con el anexo (y 24,30 a 28,00). El rotulo DESPACHO de la
+                  banda se corre a x -24 para no quedar sobre el vano.
+2026-11-25 18:35  Logo de FUNDASERINCO en grande: 11 m en el muro oeste
+                  interior (z SLAB+2,75, debajo del rotulo ALTIPAL), 12 m en la
+                  cara interior de la banda norte y 7,5 m en la fachada este
+                  sobre el anden (antes 4,6). Salen de marca_altipal.py con
+                  fundaserinco-blanco.png y el material M_LogoFundaserinco, que
+                  el visor ya recorta por alfa.
+2026-11-25 18:45  Recorrido 3D: parada 12 "Paso" (del almacen al comite) y la
+                  parada del comite reencuadrada con el anexo corrido. Total:
+                  25 paradas.
+
 SIGUIENTE PASO RECOMENDADO
 --------------------------
 1. Probar el recorrido en la reunión y ajustar los encuadres de secciones.js.
@@ -1225,4 +1252,11 @@ RIESGOS Y NOTAS
   las vistas "frio" y "energia" de secciones.js.
 - La plataforma oeste sube 1,25 m sobre el terreno y remata con un borde de
   0,48 m; la escalera de seis pasos al norte la conecta con el patio.
+- El muro oeste de la nave y la banda norte ahora son varios tramos con vano
+  (almacen.py, PUERTA_O_* y PUERTA_N_*). Si se mueve una puerta hay que mover
+  el tramo y el marco que la viste en programa.py (build_jardin y
+  build_jardin_norte), o queda un hueco sin marco.
+- El limite del modo juego (LIMITE en visor/src/main.js) va en coordenadas del
+  visor: x, altura y -y_blender. Si se amplia el sitio hay que revisarlo o el
+  recorrido a pie se queda corto en el borde.
 =========================================================================

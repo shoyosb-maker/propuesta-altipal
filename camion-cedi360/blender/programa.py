@@ -44,16 +44,18 @@ HY0, HY1 = -30.0, 16.0
 #   redes    entrepiso junto al cuarto de control (piso de arriba)
 FRIO = (-96.00, -78.00, -30.00, -16.00)     # 18 x 14 m
 FRIO_ALTO = 6.40                            # de SLAB hacia arriba
-ADMIN = (-38.00, -26.00, 16.90, 24.90)      # 12 x 8 m, anexo exterior
+ADMIN = (-38.00, -26.00, 21.00, 29.00)      # 12 x 8 m, anexo exterior
 ADMIN_ALTO = 4.10
 ENE = (-96.00, -78.00, -12.00, 0.00)        # 18 x 12 m
-RED = (-36.20, -31.20, 20.20, 23.90)        # sala tecnica en el piso 2 del anexo
+RED = (-36.20, -31.20, 24.30, 28.00)        # sala tecnica en el piso 2 del anexo
 RED_Z0 = SLAB + 4.30
 PASILLO = (-78.00, -74.00, -30.00, 0.00)    # corredor acristalado de 4 x 30 m
 JARDIN = (-74.00, -62.30, -30.00, 0.00)     # patio ajardinado de 12 x 30 m
 PLATAFORMA = (-97.00, -62.30, -31.50, 1.50)  # plataforma comun a cota SLAB
 ACCESO_Y = -16.00                            # puerta de personal de la nave
 MURO_OESTE = HX0 - 0.30                      # cara exterior del muro oeste
+ACCESO_N_X = -36.80                          # eje de la puerta norte, con el anexo
+JARDIN_NORTE = (-52.00, -20.00)              # franja verde entre nave y anexo
 
 # ------------------------------------------------------------- paleta sRGB
 AZUL = 0x00274B
@@ -907,16 +909,16 @@ def build_jardin(col):
                      (-63.60, -10.00)):
         geo.caja((lx, ly, z0 + 1.90), (0.12, 0.12, 3.80), acero)
         geo.caja((lx, ly, z0 + 3.86), (0.44, 0.44, 0.14), luz)
-    # puerta de personal de la nave con marquesina
+    # puerta de personal de la nave con marquesina: hoja de vidrio abierta
+    # contra el jardin, para que el vano quede libre al recorrer a pie
     geo.caja((MURO_OESTE - 0.06, ACCESO_Y, z0 + 1.32), (0.12, 3.20, 2.64),
              acero)
-    geo.caja((MURO_OESTE - 0.13, ACCESO_Y, z0 + 1.26), (0.08, 2.90, 2.40),
-             vidrio)
-    for lado in (-1, 1):
-        geo.caja((MURO_OESTE - 0.17, ACCESO_Y + lado * 0.74, z0 + 1.24),
-                 (0.06, 0.06, 2.30), acero)
-        geo.caja((MURO_OESTE - 0.21, ACCESO_Y + lado * 0.62, z0 + 1.06),
-                 (0.08, 0.12, 0.60), acero)
+    geo.caja((MURO_OESTE - 0.16, ACCESO_Y, z0 + 2.62), (0.10, 3.10, 0.10),
+             acero)
+    geo.caja((MURO_OESTE - 0.75, ACCESO_Y + 1.48, z0 + 1.30),
+             (1.44, 0.08, 2.52), vidrio)
+    geo.caja((MURO_OESTE - 0.75, ACCESO_Y + 1.48, z0 + 2.60),
+             (1.50, 0.12, 0.08), acero)
     geo.caja((MURO_OESTE - 1.45, ACCESO_Y, z0 + 3.10), (2.90, 4.20, 0.14),
              losa)
     for lado in (-1, 1):
@@ -939,6 +941,83 @@ def build_jardin(col):
           (MURO_OESTE - 0.10, -6.00, SLAB + 5.40), 0.95, col,
           mat("M_Alm_Texto"),
           rot=(math.radians(90), 0.0, math.radians(-90)))
+
+def build_jardin_norte(col):
+    """Patio verde que une la nave con el anexo administrativo."""
+    x0, x1 = JARDIN_NORTE
+    y0, y1 = HY1, ADMIN[2]                 # 16,00 a 21,00
+    z0 = SLAB
+    cx, cy = (x0 + x1) / 2.0, (y0 + y1) / 2.0
+    pasto = mat("M_Jar_Pasto")
+    grava = mat("M_Jar_Grava")
+    tronco = mat("M_Jar_Tronco")
+    follaje = mat("M_Jar_Follaje")
+    seto = mat("M_Jar_Seto")
+    madera = mat("M_Jar_Madera")
+    acero = mat("M_Alm_Acero")
+    vidrio = mat("M_Adm_Vidrio")
+    losa = mat("M_Alm_Losa")
+    remate = mat("M_Pas_Losa")
+    luz = mat("M_Pas_Luz")
+
+    geo = Geo("JAR_Norte")
+    # plataforma, cesped, camino al anexo y remates laterales
+    geo.caja((cx, cy, SLAB / 2.0), (x1 - x0, y1 - y0, SLAB), losa)
+    geo.caja((cx, cy, z0 + 0.03), (x1 - x0 - 0.24, y1 - y0 - 0.24, 0.06),
+             pasto)
+    geo.caja((ACCESO_N_X, (y0 + y1) / 2.0, z0 + 0.07),
+             (3.00, y1 - y0 - 0.20, 0.06), grava)
+    for xx in (x0 + 0.14, x1 - 0.14):
+        geo.caja((xx, cy, z0 + 0.20), (0.28, y1 - y0, 0.40), remate)
+    # setos que enmarcan el camino
+    for lado in (-1, 1):
+        geo.caja((ACCESO_N_X + lado * 1.90, cy, z0 + 0.28),
+                 (0.40, y1 - y0 - 0.70, 0.56), seto)
+    # arboles
+    for (tx, ty) in ((-47.00, 18.40), (-42.00, 17.50), (-30.00, 18.60),
+                     (-24.00, 17.60)):
+        geo.cilindro((tx, ty, z0 + 1.20), 0.18, 2.40, tronco, seg=8)
+        for (dz, radio) in ((2.60, 1.20), (3.02, 1.05), (3.44, 0.88),
+                            (3.86, 0.70), (4.28, 0.46)):
+            geo.cilindro((tx, ty, z0 + dz), radio, 0.44, follaje, seg=14)
+    # bancas y materas
+    for (bx, by) in ((-41.60, 20.20), (-31.60, 20.20)):
+        geo.caja((bx, by, z0 + 0.44), (1.80, 0.50, 0.10), madera)
+        geo.caja((bx, by + 0.22, z0 + 0.76), (1.80, 0.10, 0.54), madera)
+        for dx in (-0.68, 0.68):
+            geo.caja((bx + dx, by, z0 + 0.22), (0.12, 0.44, 0.40), acero)
+    for (px, py) in ((x0 + 1.40, y0 + 1.40), (x1 - 1.40, y0 + 1.40)):
+        geo.caja((px, py, z0 + 0.30), (1.40, 1.40, 0.60), acero)
+        geo.caja((px, py, z0 + 0.70), (1.20, 1.20, 0.30), seto)
+    # luminarias
+    for (lx, ly) in ((ACCESO_N_X - 2.30, 19.40), (ACCESO_N_X + 2.30, 19.40)):
+        geo.caja((lx, ly, z0 + 1.90), (0.12, 0.12, 3.80), acero)
+        geo.caja((lx, ly, z0 + 3.86), (0.44, 0.44, 0.14), luz)
+
+    # vano de paso en la banda de la nave: marco, hojas abiertas y marquesina
+    for lado in (-1, 1):
+        geo.caja((ACCESO_N_X + lado * 1.56, y0 + 0.06, z0 + 1.35),
+                 (0.14, 0.24, 2.70), acero)
+        geo.caja((ACCESO_N_X + lado * 2.24, y0 + 0.80, z0 + 1.30),
+                 (0.08, 1.46, 2.52), vidrio)
+        geo.caja((ACCESO_N_X + lado * 2.24, y0 + 0.80, z0 + 2.58),
+                 (0.12, 1.50, 0.08), acero)
+        geo.caja((ACCESO_N_X + lado * 2.24, y0 + 0.14, z0 + 1.30),
+                 (0.10, 0.10, 2.52), acero)
+    geo.caja((ACCESO_N_X, y0 + 0.06, z0 + 2.76), (3.30, 0.24, 0.16), acero)
+    geo.caja((ACCESO_N_X, y0 + 1.35, z0 + 3.06), (4.60, 2.60, 0.14), losa)
+    for lado in (-1, 1):
+        geo.caja((ACCESO_N_X + lado * 2.10, y0 + 2.45, z0 + 1.53),
+                 (0.14, 0.14, 3.06), acero)
+    geo.objeto(col, "JAR_Norte")
+
+    texto("JAR_NorteRotulo", "PASO AL ANEXO · SALA DE JUNTAS",
+          (ACCESO_N_X, y0 + 0.40, z0 + 3.24), 0.24, col,
+          mat("M_Alm_Texto"),
+          rot=(math.radians(90), 0.0, math.radians(180)))
+    texto("JAR_NortePiso", "ANEXO · SALA DE JUNTAS",
+          (ACCESO_N_X, y0 + 3.30, z0 + 0.11), 0.22, col,
+          mat("M_Alm_Texto"), rot=(0.0, 0.0, 0.0))
 
 # ------------------------------------------------------------------ redes
 def build_redes(col):
@@ -1098,19 +1177,21 @@ def build_camaras():
     # los pabellones exentos se miran por dentro y desde el jardin
     camara("Cam_Frio", (-94.60, -26.20, SLAB + 2.00), (-79.00, -25.00,
           SLAB + 2.40), 20.0)
-    camara("Cam_Admin", (-37.40, 17.40, SLAB + 2.60), (-30.00, 22.00,
+    camara("Cam_Admin", (-37.40, 21.50, SLAB + 2.60), (-30.00, 26.10,
           SLAB + 1.20), 22.0)
     camara("Cam_Energia", (-82.00, -2.00, SLAB + 2.50), (-91.00, -10.00,
           SLAB + 1.00), 26.0)
-    camara("Cam_Redes", (-31.90, 20.85, 7.25), (-35.10, 23.30, 6.60), 24.0)
+    camara("Cam_Redes", (-31.90, 24.95, 7.25), (-35.10, 27.40, 6.60), 24.0)
     camara("Cam_Pasillo_Tec", (-76.00, -28.40, SLAB + 1.75), (-76.00, -1.00,
           SLAB + 1.55), 26.0)
     camara("Cam_Jardin", (-72.00, -34.00, SLAB + 6.80), (-62.50, -14.00,
           SLAB + 1.40), 28.0)
     camara("Cam_Oeste", (-118.00, -50.00, 26.00), (-80.00, -12.00, 4.20),
            35.0)
-    camara("Cam_Anexo_Ext", (-20.00, 34.00, 9.00), (-32.00, 22.00, 3.40),
+    camara("Cam_Anexo_Ext", (-18.00, 36.00, 10.00), (-32.00, 26.00, 3.60),
            28.0)
+    camara("Cam_Jardin_Norte", (-24.00, 27.00, 7.50), (-38.00, 18.00, 2.60),
+           26.0)
 
 
 def build():
@@ -1128,6 +1209,7 @@ def build():
     build_energia(cols["T89_ENERGIA"])
     build_pasillos(cols["T90_ANEXO"])
     build_jardin(cols["T90_ANEXO"])
+    build_jardin_norte(cols["T90_ANEXO"])
     build_anexo(cols["T90_ANEXO"])
     build_redes(cols["T92_REDES"])
     build_camaras()

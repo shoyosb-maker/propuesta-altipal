@@ -293,16 +293,29 @@ def logos(col, col_entorno=None):
         bpy.data.objects.remove(viejo, do_unlink=True)
     ruta_fun = os.path.join(MARCAS, "fundaserinco-blanco.png")
     if os.path.isfile(ruta_fun):
-        placa("BRD_Logo_Fundaserinco", ruta_fun, 4.6,
+        placa("BRD_Logo_Fundaserinco", ruta_fun, 7.5,
               (-12.00, 10.4, 2.52), col_entorno or col,
               rot=(math.radians(90), 0.0, math.radians(90)),
+              mat_nombre="M_LogoFundaserinco")
+
+        # en grande sobre las paredes del almacen: muro oeste interior, de
+        # cara al area de almacenamiento, y banda norte, de cara a la nave
+        nave_hx0, nave_hy1, nave_slab = -62.00, 16.00, 1.25
+        placa("BRD_Logo_Oeste", ruta_fun, 11.00,
+              (nave_hx0 + 0.24, -7.00, nave_slab + 2.75), col,
+              rot=(math.radians(90), 0.0, math.radians(90)),
+              mat_nombre="M_LogoFundaserinco")
+        placa("BRD_Logo_Norte", ruta_fun, 12.00,
+              (-45.00, nave_hy1 - 0.18, nave_slab + 1.78), col,
+              rot=(math.radians(90), 0.0, 0.0),
               mat_nombre="M_LogoFundaserinco")
 
 
 def build():
     col = coleccion()
     entorno = bpy.data.collections.get("T80_ENTORNO")
-    for nombre in ("BRD_Franja_Nave", "BRD_Logo_Fundaserinco"):
+    for nombre in ("BRD_Franja_Nave", "BRD_Logo_Fundaserinco",
+                   "BRD_Logo_Oeste", "BRD_Logo_Norte"):
         viejo = bpy.data.objects.get(nombre)
         if viejo:
             bpy.data.objects.remove(viejo, do_unlink=True)

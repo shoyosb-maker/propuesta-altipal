@@ -18,7 +18,7 @@ implementar el agente; el resto del tiempo el demo responde con guiones.
 | Ruta | Contenido |
 | --- | --- |
 | `index.html` | la propuesta en HTML (se abre con doble clic) |
-| `recorrido3d.html` | recorrido 3D de 24 paradas por la planta |
+| `recorrido3d.html` | recorrido 3D de 25 paradas por la planta |
 | `recorrido.html` | visor de láminas del despiece del tractocamión |
 | `assets/js/visor3d.js` | visor three.js con el modelo dentro (bundle IIFE) |
 | `camion-cedi360/blender/` | fuentes del modelo: escena, almacén, muelle, áreas de programa, láminas |
@@ -41,7 +41,7 @@ parada. La rueda del mouse no cambia de parada: sobre el lienzo acerca o aleja
 el modelo y fuera de él hace scroll normal.
 El botón de la esquina —abajo a la izquierda en escritorio, una barra bajo el
 lienzo en el celular— abre el panel de la parada actual hacia arriba: trae el
-texto y el índice `01`–`24`, y tocar un número salta a esa parte del recorrido.
+texto y el índice `01`–`25`, y tocar un número salta a esa parte del recorrido.
 El panel arranca cerrado para dejar el modelo despejado y se cierra con la ×,
 con `Esc` o tocando el modelo.
 El botón **Recorrer a pie** activa el modo juego: `W` adelante, `S` atrás,
@@ -68,6 +68,21 @@ El jardín lleva caminos de grava, árboles, bancas, materas y luminarias, y es
 el que conecta la puerta de personal con el pasillo que sirve a los dos
 pabellones. Las áreas se definen en `camion-cedi360/blender/programa.py`
 (`FRIO`, `ENE`, `PASILLO`, `JARDIN`, `PLATAFORMA`).
+
+El recorrido a pie encadena los cuatro espacios sin salir al patio de
+maniobras, y todos los vanos son huecos reales en el muro:
+
+| Paso | Dónde | Medidas |
+| --- | --- | --- |
+| Puerta de personal de la nave | muro oeste, y −17,5 a −14,5 | 3,0 × 2,7 m |
+| Paso al anexo | banda norte, x −38,3 a −35,3 | 3,0 × 2,7 m |
+| Jardín del anexo | franja entre la nave y el anexo | 32 × 5 m |
+| Puerta del anexo | muro sur del anexo, alineada con el paso | 1,0 × 2,1 m |
+
+El logo de FUNDASERINCO va en grande sobre dos paredes del almacén (muro oeste
+interior, 11 m, y banda norte, 12 m) y en la fachada este sobre el andén
+(7,5 m); los tres se arman en `camion-cedi360/blender/marca_altipal.py` con la
+textura `assets/marca/fundaserinco-blanco.png`.
 
 ## Volver a construir
 
