@@ -1,0 +1,17 @@
+{
+  "servers": {
+    "blender-cedi360": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "--quiet",
+        "--no-project",
+        "--with",
+        "mcp",
+        "python",
+        "C:\\Users\\User1\\Desktop\\estrategia comercial FUNDASERINCO – ALTIPAL 2026\\camion-cedi360\\mcp\\server.py"
+      ]
+    }
+  }
+}

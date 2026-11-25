@@ -1,0 +1,245 @@
+Guía Técnica de Modelado en Blender: Despiece Isométrico CEDI 360
+
+Esta guía contiene la formulación completa para implementar el camión logístico y contenedor modular en Blender:
+
+
+
+
+
+Árbol de Geometry Nodes para generación automática de líneas de cotas, guiones y proyecciones paramétricas.
+
+
+
+Dimensionamiento Normalizado 1:1 en metros para chasis, cabina, contenedor ISO 40ft High Cube y componentes de telemetría.
+
+
+
+PARTE 1: Sistema Paramétrico de Cotas y Proyecciones con Geometry Nodes
+
+En Blender, este árbol de nodos se aplica sobre curvas Bézier o aristas de malla para generar de forma procedural los trazos punteados de despiece, flechas en los extremos y marcas de medición con textos flotantes.
+
+1.1 Configuración de Nodos para Líneas Punteadas (Dashed Projection Lines)
+
+Para que las líneas de proyección entre capas (desde el chasis hasta el techo flotante) mantengan un patrón punteado consistente sin importar la longitud de la separación:
+
+[Group Input (Curve)] 
+        │
+        ▼
+[Curve to Mesh] ──(Profile Curve: Circle r=0.003m) 
+  o alternativamente:
+[Resample Curve] ──(Mode: Length, Length: 0.08m)
+        │
+        ▼
+[Trim Curve] ──(Start: 0.0, End: 0.5) 
+  * Esto crea tramos cortados equivalentes a guiones punteados.
+        │
+        ▼
+[Curve to Mesh] ──(Profile: Line / Circle r=0.004m)
+        │
+        ▼
+[Set Material] ──(Material: "M_CAD_LeaderLine_Cyan" / Color #7FB0FF con Emission 2.5)
+        │
+        ▼
+[Group Output]
+
+1.2 Nodos para Flechas y Topes de Cota (Leader Dimension Endpoints)
+
+Para colocar marcadores técnicos en los extremos de las cotas:
+
+
+
+
+
+Agrega el nodo Endpoint Selection conectado a un nodo Instance on Points.
+
+
+
+Conecta una malla de cono o cruz en el zócalo Instance (escala 0.025m).
+
+
+
+Conecta el vector tangente de la curva (Curve Tangent) al nodo Align Euler to Vector (eje Z o X según la orientación de la flecha) y conéctalo a la rotación de las instancias.
+
+1.3 Texto de Cota Automático en Billboard (HUD Text)
+
+Para que el rótulo con la medida (ej. "L: 12.192 m") siempre mire hacia la cámara isométrica:
+
+
+
+
+
+Usa el nodo String to Curves.
+
+
+
+Convierte la longitud calculada con Curve Length mediante Value to String (Decimals: 2 o 3).
+
+
+
+Agrega un modificador / constraint de objeto Track To o Copy Rotation hacia la cámara (Cam_Isometric_Master), asegurando que las anotaciones nunca se distorsionen en perspectiva.
+
+
+
+PARTE 2: Dimensiones Reales Normalizadas (Escala 1:1 en Metros)
+
+Para garantizar proporciones mecánicas exactas en Blender, modela en base a estándares industriales reales:
+
+2.1 Contenedor Estándar ISO 40ft High Cube (1AA / 1AAA)
+
+
+
+
+
+Componente
+
+Medida Exterior
+
+Medida Interior
+
+Notas Técnicas Blender
+
+
+
+Longitud (Eje Y)
+
+12.192 m (40' 0")
+
+12.032 m
+
+Chapa perimetral con ondas de 45 mm profundidad
+
+
+
+Ancho (Eje X)
+
+2.438 m (8' 0")
+
+2.352 m
+
+2.16 m libre entre esquineros abiertos
+
+
+
+Altura (Eje Z)
+
+2.896 m (9' 6")
+
+2.698 m
+
+Formato High Cube (30 cm más alto que estándar)
+
+
+
+Paso de Corrugado
+
+0.280 m (período)
+
+—
+
+Modificador Array en X/Y con perfil trapezoidal
+
+
+
+Espesor de Chapa
+
+0.002 m (2.0 mm)
+
+—
+
+Modificador Solidify hacia el interior
+
+
+
+Castillos Esquina
+
+0.178 × 0.162 × 0.118 m
+
+—
+
+Cubos ISO con chaflán Bevel de 12 mm
+
+2.2 Semirremolque / Chasis Portacontenedores de 3 Ejes (Skeleton Trailer)
+
+
+
+
+
+Longitud del bastidor de viga principal: 12.35 m.
+
+
+
+Ancho del chasis: 2.48 m (ancho de trocha entre caras exteriores de llantas: 2.50 m).
+
+
+
+Altura del chasis al suelo: 1.30 m en posición de enganche estándar.
+
+
+
+Viga I-Beam Central: Alma de 0.45 m de altura, alas de 0.15 m de ancho, espesor de 12 mm.
+
+
+
+Configuración de Ejes: 3 ejes traseros tipo tandem espaciados a 1.31 m entre centros.
+
+
+
+Neumáticos estándar: 385/65 R22.5 (Diámetro exterior: ~1.07 m, Ancho de banda: ~0.38 m).
+
+
+
+Racks de Respaldo UPS / Baterías (Fase 1): Racks de montaje lateral de 1.20 × 0.60 × 0.50 m suspendidos entre las patas de apoyo y el primer eje.
+
+2.3 Carga Interior: Palets Estándar y Estiba BPM / Cadena de Frío
+
+
+
+
+
+Estiba Estándar (Pallet Americano / GMA): 1.20 m (largo) × 1.00 m (ancho) × 0.145 m (alto).
+
+
+
+Capacidad en 40ft: 20 estibas en suelo (2 filas longitudinales de 10 estibas).
+
+
+
+Altura de la carga por estiba: 1.60 m a 1.90 m (incluyendo estiba base).
+
+
+
+Sensores Térmicos IoT (Cápsulas de Monitoreo): Caja rectangular de 0.08 × 0.05 × 0.025 m montada en el frontal de cada estiba con un diodo emisivo (Emission neón cian/ámbar).
+
+2.4 Cabina Tractor (Tractomula 6×4 Europea / Americana sin morro)
+
+
+
+
+
+Longitud total cabina: 2.30 m (cabina corta/media con litera plana).
+
+
+
+Ancho de cabina: 2.50 m (sin espejos) / 2.95 m (con retrovisores/cámaras digitales).
+
+
+
+Altura total cabina: 3.65 m (con deflector de aire aerodinámico de techo alineado a la altura del contenedor High Cube).
+
+
+
+Quinta rueda (Fifth wheel): Diámetro de 0.90 m, ubicada a 0.30 m por delante del centro del tándem tractor.
+
+
+
+PARTE 3: Parámetros de Animación del Despiece por Controladores (Drivers)
+
+Para automatizar el despliegue de las capas con una sola curva de animación:
+
+# Asignación de desplazamientos relativos al Empty "MASTER_DESPIECE" (valor Z de 0.0 a 1.0)
+Techo_Fase3.location.z = Z_base + (MASTER_Z * 2.80)     # Elevación 2.80 m
+Carga_Fase1.location.z = Z_base + (MASTER_Z * 0.50)     # Flotación 0.50 m
+Pared_Izq.location.x   = X_base - (MASTER_Z * 1.60)     # Desplazamiento lateral 1.60 m
+Pared_Der.location.x   = X_base + (MASTER_Z * 1.60)     # Desplazamiento lateral 1.60 m
+Puerta_Izq.rotation.z  = Rot_base + (MASTER_Z * 135)    # Apertura 135 grados
+Puerta_Der.rotation.z  = Rot_base - (MASTER_Z * 135)    # Apertura 135 grados

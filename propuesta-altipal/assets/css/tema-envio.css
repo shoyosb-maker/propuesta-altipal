@@ -1,0 +1,208 @@
+﻿/* =========================================================
+   TEMA · compañía de envíos y transporte
+   Capa decorativa sobre deck.css: guías, manifiestos,
+   etiquetas, ruta y sellos. No cambia estructura ni textos.
+   ========================================================= */
+
+:root{
+  --kraft:#E7D7B4;
+  --kraft-2:#F4EBD6;
+  --kraft-3:#CBB68C;
+  --kraft-ink:#3B2E14;
+  --stamp:#C07A2A;
+  --stamp-2:#E3B778;
+  --route:#5CDACE;
+  --route-soft:rgba(92,218,206,.28);
+  --tape:rgba(251,199,16,.85);
+}
+
+/* ---------- ruta vertical dentro de cada capítulo ---------- */
+.chapter-inner{position:relative}
+@media (min-width:1100px){
+  .chapter-inner{padding-left:24px}
+  .chapter-inner::before{
+    content:"";position:absolute;left:3px;top:14px;bottom:10px;
+    border-left:2px dashed rgba(92,218,206,.22);
+  }
+  .chapter-inner::after{
+    content:"";position:absolute;left:-2px;top:8px;width:12px;height:12px;border-radius:50%;
+    background:#04223C;border:2px solid var(--route);box-shadow:0 0 0 4px rgba(92,218,206,.1);
+  }
+  .chapter-cover-wrap .chapter-inner::before,
+  .chapter-cover-wrap .chapter-inner::after{display:none}
+}
+
+/* ---------- sellos del capítulo ---------- */
+.cap-tag{
+  border-style:dashed;border-color:rgba(231,215,180,.45);
+  color:var(--kraft);background:rgba(231,215,180,.06);
+  letter-spacing:.24em;
+}
+.chapter-meta span{
+  border-style:dashed;border-color:rgba(231,215,180,.3);
+  color:#DCE7F2;background:rgba(231,215,180,.04);
+}
+
+/* ---------- contador como tramo del manifiesto ---------- */
+.deck-count{
+  display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  padding:5px 4px;color:var(--kraft);
+}
+.deck-count::before{
+  content:"TRAMO";font-family:var(--mono);font-size:.44rem;letter-spacing:.22em;
+  color:var(--kraft-3);opacity:.9;
+}
+
+/* ---------- portada: tira de seguimiento ---------- */
+.tracking{
+  display:flex;width:max-content;max-width:100%;align-items:center;gap:10px;margin:14px 0 0;
+  padding:7px 12px;border:1px dashed rgba(231,215,180,.4);border-radius:4px;
+  background:rgba(231,215,180,.05);
+  font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--kraft);
+}
+.tracking .tk-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--route);
+  box-shadow:0 0 0 3px rgba(92,218,206,.16);
+}
+.tracking .tk-code{color:#fff}
+.tracking .tk-sep{color:var(--kraft-3)}
+.tracking .tk-state{color:var(--stamp-2);border-bottom:1px dotted rgba(227,183,120,.6)}
+.tracking::after{
+  content:"";width:52px;height:12px;margin-left:4px;opacity:.55;
+  background:repeating-linear-gradient(90deg,var(--kraft) 0 1px,transparent 1px 3px,var(--kraft) 3px 4px,transparent 4px 7px);
+}
+
+/* ---------- cards de eje como guías de envío ---------- */
+.eje-card{
+  position:relative;
+  border-left:3px solid rgba(231,215,180,.5);
+  background:
+    linear-gradient(180deg,rgba(231,215,180,.06),transparent 42%),
+    linear-gradient(160deg,rgba(7,40,68,.92),rgba(3,24,43,.96));
+}
+.eje-card:hover{border-left-color:var(--tape)}
+.eje-ltr{
+  display:inline-flex;align-items:center;gap:8px;color:var(--kraft);
+}
+.eje-ltr::before{
+  content:"";width:20px;height:8px;opacity:.7;
+  background:repeating-linear-gradient(90deg,var(--kraft) 0 1px,transparent 1px 3px,var(--kraft) 3px 4px,transparent 4px 6px);
+}
+.eje-kind{
+  border:1px dashed rgba(192,122,42,.75);border-radius:3px;
+  color:var(--stamp-2);background:rgba(192,122,42,.1);
+  letter-spacing:.2em;transform:rotate(-2.5deg);
+}
+.eje-card h3{color:#fff}
+.eje-go{color:var(--kraft)}
+.eje-card::after{
+  content:"";position:absolute;right:18px;bottom:16px;width:58px;height:14px;opacity:.45;
+  background:repeating-linear-gradient(90deg,var(--kraft) 0 1px,transparent 1px 2px,var(--kraft) 2px 4px,transparent 4px 6px);
+}
+
+/* ---------- ruta de fases como línea de despacho ---------- */
+.ruta{position:relative;gap:10px}
+.ruta-item{
+  position:relative;padding:30px 13px 12px;border-radius:6px;
+  border:1px solid rgba(231,215,180,.22);
+  background:linear-gradient(180deg,rgba(231,215,180,.07),rgba(4,28,50,.55));
+}
+.ruta-item::before{
+  content:"";position:absolute;left:13px;top:20px;width:9px;height:9px;border-radius:50%;
+  background:#04223C;border:2px solid var(--route);
+}
+.ruta-item .rn{
+  position:absolute;right:12px;top:13px;color:var(--kraft-3);letter-spacing:.2em;
+}
+.ruta-item b{color:#fff}
+.ruta-item em{color:var(--route)}
+
+/* ---------- armador como orden de servicio ---------- */
+.armador-resumen{
+  border:1px solid rgba(231,215,180,.35);border-radius:4px;
+  background:
+    linear-gradient(180deg,rgba(231,215,180,.09),transparent 30%),
+    rgba(6,34,62,.8);
+}
+.armador-resumen .kicker{color:var(--kraft)}
+.armador-resumen .kicker::before{background:var(--kraft-3)}
+.armador-big{color:var(--tape)}
+.armador-resumen::after{
+  content:"";display:block;margin-top:14px;height:16px;opacity:.4;
+  background:repeating-linear-gradient(90deg,var(--kraft) 0 1px,transparent 1px 2px,var(--kraft) 2px 4px,transparent 4px 7px);
+}
+
+/* ---------- matriz como manifiesto ---------- */
+.matriz-wrap{border-color:rgba(231,215,180,.3);border-radius:4px}
+.matriz-table thead th{
+  background:rgba(231,215,180,.09);color:var(--kraft);
+  border-bottom:1px solid rgba(231,215,180,.3);
+}
+.matriz-table thead th:first-child::after{content:" · manifiesto";opacity:.55}
+.matriz-table tbody th{border-left:2px solid rgba(231,215,180,.35)}
+.matriz-table tbody tr:nth-child(even){background:rgba(231,215,180,.03)}
+
+/* ---------- etiqueta de envío en el hero del eje ---------- */
+.eje-hero-art{
+  border:0;background:transparent;display:block;padding:0;min-height:0;
+}
+.ship-label{
+  position:relative;display:grid;gap:9px;padding:20px 20px 18px;width:100%;
+  border-radius:6px;color:var(--kraft-ink);
+  background:linear-gradient(168deg,var(--kraft-2),var(--kraft) 70%,var(--kraft-3));
+  box-shadow:0 30px 60px -34px rgba(0,0,0,.75);
+  transform:rotate(-.6deg);
+}
+.ship-label::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:7px;
+  background:repeating-linear-gradient(90deg,rgba(59,46,20,.28) 0 8px,transparent 8px 16px);
+  border-radius:6px 6px 0 0;
+}
+.ship-label .sh-kicker{
+  font-family:var(--mono);font-size:.5rem;letter-spacing:.24em;text-transform:uppercase;
+  color:#6B5729;
+}
+.ship-label .sh-title{
+  font-family:var(--display);font-size:1.02rem;line-height:1.2;color:var(--kraft-ink);margin:0;
+}
+.ship-label .sh-rows{display:grid;gap:5px;margin:2px 0 4px}
+.ship-label .sh-rows span{
+  display:flex;justify-content:space-between;gap:10px;
+  font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;
+  color:#5B4A20;border-bottom:1px dotted rgba(91,74,32,.35);padding-bottom:4px;
+}
+.ship-label .sh-rows b{color:#33280F}
+.ship-label .sh-bars{
+  height:34px;border-radius:2px;
+  background:repeating-linear-gradient(90deg,#33280F 0 2px,transparent 2px 5px,#33280F 5px 6px,transparent 6px 9px);
+  opacity:.85;
+}
+.ship-label .sh-code{
+  font-family:var(--mono);font-size:.58rem;letter-spacing:.26em;color:#33280F;text-align:center;
+}
+
+/* ---------- barra de documento en clave de guía ---------- */
+.doc-nav-tag{
+  border:1px dashed rgba(231,215,180,.35);border-radius:3px;
+  padding:3px 9px;color:var(--kraft-3);
+}
+
+/* ---------- impresión ---------- */
+@media print{
+  .chapter-inner{padding-left:0}
+  .chapter-inner::before,.chapter-inner::after{display:none}
+  .tracking{display:none}
+  .eje-card::after,.armador-resumen::after,.tracking::after{display:none}
+  .eje-card{border-left-color:#C9B78F;background:#fff}
+  .eje-ltr,.eje-go{color:#8A6D00}
+  .eje-kind{border-color:#C9A25F;color:#8A4B12;background:#FBF1E0}
+  .ruta-item{background:#fff;border-color:#D5DFEA}
+  .ruta-item b{color:#00274B}
+  .ruta-item em{color:#41586E}
+  .matriz-table thead th{background:#F2F6FA;color:#41586E}
+  .armador-resumen{background:#fff;border-color:#D5DFEA}
+  .armador-big{color:#8A4B12}
+  .ship-label{box-shadow:none;transform:none}
+  .eje-hero-art{display:none!important}
+}

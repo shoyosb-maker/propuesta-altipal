@@ -1,0 +1,12 @@
+{
+  "name": "cedi360-visor",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Visor 3D del despiece CEDI 360",
+  "dependencies": {
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

@@ -1,0 +1,1067 @@
+=========================================================================
+ CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
+ Estado del proyecto
+=========================================================================
+Actualizado: 2026-11-25 05:20
+Responsable técnico: sesión Copilot + Blender 5.3.0
+Carpeta: camion-cedi360
+
+OBJETIVO
+-------
+Construir en Blender un camión tractomula con contenedor ISO 40 ft HC que se
+desarma por capas y por fases (Fase 0 a Fase 4), en estilo blueprint técnico
+(fondo #0f141c, líneas ámbar #FBC710 y azul conectividad #7FB0FF), para usarlo
+como pieza central de la propuesta CEDI 360:
+
+  - Estado 0: camión cerrado, con el lema en el contenedor.
+  - Fase 0: rayos X / wireframe con puntos críticos del IMI.
+  - Fase 1: chasis, fibra, UPS y cámaras (estabilización).
+  - Fase 2: despiece del contenedor, estiba, tableros (modernización).
+  - Fase 3: capa holográfica de datos sobre el techo (inteligencia).
+  - Fase 4: la flota conectada, con SLA y mesa de servicio.
+
+El modelo se amplió con el centro de acopio de gran formato que sostiene la
+promesa: nave de 44 x 46 m con estantería selectiva y el catálogo de ALTIPAL
+repartido por familia de producto, centro de seguridad electrónica con CCTV y
+control de acceso, y ocho puntos de automatización (ver más abajo).
+
+ARQUITECTURA DEL PROYECTO
+-------------------------
+  camion-cedi360/
+    estado.txt                  este archivo (fuente única de verdad)
+    blender/
+      bridge_addon.py           puente TCP dentro de Blender (puerto 9876)
+      build_scene.py            construye la escena base por dimensiones reales
+      entorno.py                patio, muelle, caseta, torres y cerramiento
+      almacen.py                centro de acopio: nave, racks, CCTV, automatización
+      annotations.py            cotas, rotulos, marco y guias de proyeccion
+      hologram.py               capa de datos de la Fase 3
+      build_all.py              reconstruye escena + cotas + holograma
+      client.py                 cliente de consola del puente (sin MCP)
+      launch.ps1                abre Blender 5.3 con el puente y el .blend
+      cedi360.blend             archivo de trabajo (se genera)
+    mcp/
+      server.py                 servidor MCP (stdio) que habla con el puente
+    render/                     renders y capturas de supervisión
+    assets/modelos/             modelos externos (glb/fbx) si se descargan
+
+DECISIONES
+----------
+1. Se modela por medidas reales del documento "el pront.txt":
+   contenedor 12.192 x 2.438 x 2.896 m; chasis 12.35 m; altura de piso 1.30 m;
+   ejes a 1.31 m; llanta Ø 1.07 m; cabina 2.30 x 2.50 x 3.65 m.
+2. El despiece se controla con un Empty MASTER_DESPIECE y sus propiedades
+   p0..p4 (0/1). Cada capa tiene drivers hacia esas propiedades, de modo que
+   se puede saltar de fase sin rehacer animación.
+3. Estilo: superficies oscuras + líneas de contorno (Freestyle) + materiales
+   emisivos ámbar/cian. Las cotas y rótulos se agregan como objetos de texto
+   que miran a la cámara.
+4. La supervisión se hace por dos vías:
+   a) MCP "blender-cedi360": herramientas para consultar la escena, ejecutar
+      Python, renderizar y abrir Blender.
+   b) scripts de puente llamados directamente si el MCP aún no está cargado.
+
+FASES DE CONSTRUCCIÓN
+---------------------
+[COMPLETA] Fase A · Infraestructura
+  - [x] Verificar Blender 5.3.0 y uv/mcp.
+  - [x] Puente TCP dentro de Blender (127.0.0.1:9876).
+  - [x] Servidor MCP con 9 herramientas de supervisión.
+  - [x] Estado del proyecto en TXT.
+  - [x] Prueba de humo: ping + render + llamada MCP real.
+
+[COMPLETA] Fase B · Bloqueo volumétrico (blockout)
+  - [x] Chasis portacontenedores (vigas, travesaños, quinta rueda, patas, 3 ejes).
+  - [x] Ruedas, rines y guardafangos a escala real.
+  - [x] Contenedor 40 ft HC con corrugado, esquineros, puertas y precintos.
+  - [x] Cabina tractora simplificada con parabrisas, faros y deflector.
+  - [x] 20 estibas con carga y sensores térmicos.
+  - [x] Racks de UPS laterales (Fase 1) y telemetría de techo.
+  - [x] Render isométrico de control (render/fase0.png).
+
+[COMPLETA] Fase C · Despiece y fases
+  - [x] Empties de grupo (GRP_) y colecciones por sistema.
+  - [x] Drivers p0..p4 sobre techo, paredes, puertas, carga y cabina.
+  - [x] Comando de puente "phase" y función aplicar fase 0-4.
+  - [x] Renders de las 5 fases en render/.
+
+[COMPLETA] Fase D · Lenguaje blueprint
+  - [x] Freestyle con contornos ámbar y retícula técnica de 1 m.
+  - [x] Materiales oscuros con acentos emisivos (ámbar/cian).
+  - [x] Cotas con líneas de extensión y flechas: 12.192 m, 2.438 m,
+        2.896 m de alto, 1.30 m de piso y 1.310 m de tándem.
+  - [x] Rótulos de piezas con línea guía y anclaje por coordenadas de pantalla
+        (CCTV, fibra, UPS, chasis, cabina, sensores térmicos, estibas).
+  - [x] Líneas de proyección punteadas entre capas (aparecen en Fase 2).
+  - [x] Capa holográfica de la Fase 3: panel de analítica de video (barras),
+        panel de telemetría BPM (valores y tendencia), cadena de sensores,
+        flujos punteados desde el techo y rótulos de WMS/TMS.
+  - [x] Marco de plano, marcas de esquina y bloque de título.
+  - [x] Rótulo de fase exclusivo por escena (drivers con exclusión).
+
+[COMPLETA] Fase E · Entregables e integración web
+  - [x] Lema de ALTIPAL y marca CEDI 360 sobre el contenedor.
+  - [x] Espejos, luces y franja de seguridad en cabina y chasis.
+  - [x] Láminas a 2048 x 1152 px en WebP (~240 KB cada una).
+  - [x] Página recorrido.html: visor a pantalla completa con las cinco fases,
+        panel de contenido, puntos activos, riel, teclado, rueda, gestos y
+        modo pantalla completa.
+  - [x] Enlaces desde el topbar del índice y desde el capítulo de fases.
+  - [x] Export glb y visor 3D real con three.js (recorrido3d.html).
+
+MODELO EXTERNO (SKETCHFAB)
+--------------------------
+La busqueda es publica; la descarga exige token. El token del proyecto vive
+en camion-cedi360/.sketchfab_token (fuera de propuesta-altipal) y lo usa
+blender/sketchfab.py. Ruta de los modelos: assets/modelos/. El chasis y el
+contenedor del camion del despiece se mantienen procedurales para controlar
+el despiece.
+
+  man-tgx-cabina.glb     cabina del tractor (importar_cabina.py)
+  sprinter-furgon.glb    furgoneta de reparto (importar_furgon.py)
+  delivery-truck.glb     camion de la plataforma (importar_muelle.py)
+  forklift.glb           montacargas de la plataforma (importar_muelle.py)
+
+  «MAN TGX 2010 V8» de DevPoly3D y «Mercedes-Benz Sprinter» de Savelliy 07,
+  ambos CC-BY: el crédito va en recorrido3d.html.
+
+CÓMO SE SUPERVISA
+-----------------
+1. Blender ya queda abierto con el puente:
+     powershell -ExecutionPolicy Bypass -File blender\launch.ps1
+   (o desde el chat: herramienta MCP blender_launch)
+2. En el chat, usar las herramientas MCP (servidor "blender-cedi360",
+   definido en .vscode/mcp.json):
+     blender_status      estado de la escena y del puente
+     blender_exec        ejecutar Python dentro de Blender
+     blender_phase       aplicar fase 0-4 del despiece
+     blender_render      render de cámara a PNG
+     blender_viewport    captura rápida del viewport (lo que se ve en Blender)
+     blender_save        guardar el .blend
+     blender_import      importar glb/fbx (Sketchfab)
+     estado_leer / estado_bitacora
+3. Sin MCP también se puede operar por consola:
+     python blender\client.py scene
+     python blender\client.py phase 2
+     python blender\client.py render --out render\prueba.png
+4. Los renders quedan en render/ y se revisan en el chat.
+
+ESTADO ACTUAL DE LA ESCENA (1.178 objetos + anotaciones)
+------------------------------------------------------
+  T01_CHASIS       29 objetos: vigas, travesaños, 3 ejes, ruedas, UPS
+  T02_CONTENEDOR   43 objetos: piso, techo, paredes corrugadas, puertas
+  T03_CARGA        42 objetos: 20 estibas con caja y sensores
+  T04_TELEMETRIA    9 objetos: nodos de borde, antena, panel solar, cámaras
+  T05_CABINA       14 objetos: cabina, deflector, vidrio, faros, ruedas
+  T06_DETALLES     18 objetos: lema, marca, espejos y franja
+  T80_ENTORNO     128 objetos: patio, plataforma, vanos, caseta, torres, cerca
+  T81_CEDI          8 objetos: losa, muros, banda de carga, cerchas, rotulos
+  T82_RACKS       105 objetos: 12 estanterias, pallets, producto, cenefas
+  T83_SEGURIDAD    18 objetos: cuarto de control, muro de video (12 pantallas
+                   sueltas), CCTV
+  T84_AUTOMATIZACION 19 objetos: banda, sorter, AMR, RFID, puntos A1-A8
+  T85_MUELLE       28 objetos: demarcacion, senalizacion y equipo de piso
+  T86_VEHICULOS     8 objetos: camion, logos, dos montacargas y camioneta
+  T90_ANOTACIONES 181 objetos: suelo, retícula, marco, cotas y rótulos
+  T07_HOLOGRAMA   103 objetos: paneles de datos, flujos y cadena de sensores
+  T99_RIG          17 objetos: MASTER_DESPIECE, camaras y objetivos
+
+  MASTER_DESPIECE controla p0..p7; el comando "phase n" enciende p0..pn.
+  Techo: p1*1.15 + p3*1.45 (se abre en Fase 1 y sube del todo en Fase 3).
+  Paredes: p2*±2.05 · Puertas: p2*±135° · Carga: p1*0.85 · Cabina: p4*1.20.
+  Capas: p5 = seguridad electronica (Fase 1), p6 = automatizacion (Fase 2)
+  y p7 = tecnologia de muelle (Fase 2); apagadas bajan 60 m bajo la losa.
+  El holograma y los rótulos de fase se ocultan moviéndose fuera de cuadro.
+
+RECONSTRUIR TODO
+----------------
+    python blender\client.py exec --file blender\build_all.py
+  (ejecuta build_scene.py, entorno.py, almacen.py, muelle.py, detalles.py,
+   annotations.py, hologram.py, marca_altipal.py, importar_cabina.py,
+   importar_furgon.py, importar_muelle.py y ubicar_camion.py)
+
+  Ojo con el orden: web_export.py termina reabriendo el .blend, así que
+  después de exponer hay que volver a reconstruir si se quiere la escena
+  viva. Si se reconstruye, guardar antes de exportar.
+
+CENTRO DE ACOPIO (blender/almacen.py)
+-------------------------------------
+  Sustituye la nave blockout de entorno.py por el centro de acopio que
+  sostiene la propuesta. entorno.py conserva el patio, la calzada, el
+  muelle, la caseta, las torres y el cerramiento; la nave ya no la dibuja
+  él (build_nave solo deja zócalo, franjas, rótulo y caseta).
+
+  Geometria (todo en metros, losa a 1,25 m como el anden del muelle):
+      nave            44,0 x 46,0 m · alero 12,0 · cumbre 13,2
+      muro este       x = -12,42 sobre el anden, con tres vanos de muelle
+                      en y = -16, -8 y 0 (coinciden con entorno.py)
+      pasillos        seis, de 4,66 m, entre doce estanterias
+      estanteria      selectiva: 10 modulos de 3,00 m, 4 niveles a 2,41 m,
+                      perfil 1,10 m, altura 9,60 m -> 960 posiciones
+      cuarto de control 7,4 x 8,2 m en entrepiso (piso a 5,60 m), 4,00 m de
+                      altura libre, puerta de acceso y escalera al descanso sur
+      automatizacion  banda troncal, sorter de once salidas, cinco AMR,
+                      envolvedora y porticos RFID en cada muelle
+
+  Catalogo: una familia por estanteria, tomada de altipal.co (bebidas,
+  cervezas y licores, alimentos secos, lacteos, snacks, aseo, cuidado
+  personal, salud, tabaco, lubricantes Shell, iluminacion, empaques). Cada
+  familia lleva color propio en la cenefa del pasillo, en la banderola de
+  cabecera y en la etiqueta de la caja. La densidad de carga baja con la
+  altura (repisas bajas llenas, altas en reserva), como en un CEDI real.
+
+  Colecciones: T81_CEDI (estructura), T82_RACKS (estanterias y producto),
+  T83_SEGURIDAD, T84_AUTOMATIZACION. Las dos ultimas cuelgan de los empties
+  GRP_CCTV y GRP_AUTOMATIZACION, con driver -60*(1-p5) y -60*(1-p6).
+
+  Camaras de control: Cam_CEDI (planta isometrica), Cam_Pasillo (pasillo a
+  ojo), Cam_Control (cuarto de seguridad), Cam_Despacho (flujo del sorter),
+  Cam_Fachada (muelle y rótulos).
+
+  Los drivers nuevos solo quedan validos si MASTER_DESPIECE ya tiene p5, p6
+  y p7 en la copia evaluada: capa() reintenta tras update_tag() y, si no,
+  avisa. El puente en ejecucion tambien necesita reiniciarse para que
+  "phase n" encienda las capas (bridge_addon.py _set_phase).
+
+PLATAFORMA DE DESCARGUE (blender/muelle.py + entorno.py build_muelle)
+--------------------------------------------------------------------
+  Pone a operar el anden de 7 x 30 m que ya existia. entorno.py solo deja
+  la estructura: anden a 1,25 m, borde de atraque, tres vanos con marco
+  sobre la cara exterior del muro (x = -12,12), cortina de tiras, topes y
+  rampa. muelle.py pone lo demas en T85_MUELLE.
+
+  Correccion de origen: los marcos de puerta estaban a 6 m del muro,
+  flotando en mitad de la plataforma, y una columna de la cubierta caia
+  justo en la boca del muelle 02. La cubierta (2,6 m de vuelo) se elimino:
+  tapaba el anden en todas las vistas aereas del recorrido. La plataforma
+  queda abierta, con dos postes de borde para LPR y luminaria.
+
+  Siempre visibles (T85_MUELLE):
+      demarcacion     carril peatonal verde de 1,00 m contra el muro con
+                      bordes blancos, linea amarilla a 0,5 m del borde,
+                      zona de cargue de 4,45 x 5,10 m por vano y numeros
+                      01/02/03 pintados; cebra y "10 km/h" en el patio
+      senalizacion    rotulo MUELLE 01/02/03 sobre cada vano, por las dos caras
+      equipo          dos montacargas, una transpaleta, siete estibas de
+                      rompe-carga, calzas del camion y tres conos
+      vehiculos       camion de reparto atracado en el muelle 01 (ALTIPAL) y
+                      camioneta en espera al norte (FUNDASERINCO). El tracto
+                      camion del despiece va centrado en la plataforma
+                      (y -15,65..-0,35: centro -8, la mitad del anden), asi que
+                      el camion de reparto se corre a y -18,35..-16,05 para no
+                      cruzarse
+
+  Capa GRP_MUELLE (p7, Fase 2), driver -60*(1-p7):
+      niveladora de borde en el muelle 01, luz de muelle rojo/verde por vano,
+      LPR de placas en los dos postes, camara por muelle sobre el muro, LED
+      de anden, intercomunicador IP, gabinete de red y sensores de presencia.
+      Puntos rotulados M1 LPR, M2 CCTV MUELLE, M3 INTERCOMUNICADOR,
+      M4 NIVELADORA y M5 LED DE ANDEN.
+
+  Camara de control: Cam_Muelle (perspectiva 34 mm desde el patio).
+  Lamina: render/almacen_muelle.png.
+
+SKETCHFAB (token + descargas)
+-----------------------------
+  El token vive en camion-cedi360/.sketchfab_token (una linea). No entra en
+  propuesta-altipal: lo que se entrega al cliente no lleva la credencial.
+  Para volver a bajar modelos:
+
+      python blender\\sketchfab.py buscar "forklift" 8
+      python blender\\sketchfab.py bajar <uid> [nombre.glb]
+
+  deja los glb en camion-cedi360/assets/modelos/. La busqueda es publica; la
+  descarga necesita el token (sin el, la API responde 401).
+
+VEHICULOS DE LA PLATAFORMA (blender/importar_muelle.py)
+-------------------------------------------------------
+  T86_VEHICULOS sustituye los modelos procedurales que traia muelle.py:
+      camion de reparto   "Delivery Truck" de jasmin.daniel (CC-BY, 4.096 caras)
+                          atracado en el muelle 01, con el logo de ALTIPAL en
+                          las dos caras de la caja (placa con alfa)
+      montacargas         "Forklift low poly" de 380660711785 (CC-BY, 4.426
+                          caras), dos unidades sobre la plataforma
+      camioneta           copia de la Sprinter de FUNDASERINCO de la fila de
+                          despacho, con malla y materiales compartidos (no
+                          cuesta geometria en el glb) y su logo ya puesto
+
+  Los glb traen un solo material texturado, a veces con la textura dentro de
+  un grupo de nodos: un_material() busca la imagen de color, arma un
+  Principled limpio con esa textura en color y en emision (si no, el vehiculo
+  se ve como una silueta negra) y descarta normal/ORM que el visor no lee.
+  El montacargas va con material plano de acero (un_material_plano) y fuera
+  del entintado: 4.400 caras con Freestyle encima son un garabato.
+  En el visor, M_Mue_Truck usa la textura tambien como emissiveMap.
+
+  Los modelos se normalizan por ancho (2,30 m el camion, 1,20 el montacargas),
+  se giran con el morro a +x, se apoyan en el patio y se centran en su sitio.
+  Ojo con la cota: el montacargas va sobre el anden (z = 1,25, parametro z de
+  colocar()); con la cota del patio quedaba enterrado 1,22 m y solo asomaba el
+  mastil. La fila de despacho (importar_furgon.py) queda ahora junto a la torre
+  de luz de (20, 8): SITIOS = ((18,4, 5,60), (18,4, 11,20)).
+
+TRACTO CAMION EN LA SALIDA (blender/ubicar_camion.py)
+-----------------------------------------------------
+  Corre el camion del despiece como un solo bloque: cuelga los diez empties
+  GRP_* de un empty raiz GRP_CAMION (no toca la location de los grupos porque
+  GRP_FRONTAL y GRP_CABINA tienen driver sobre y). Valores absolutos: repetir
+  build_all no acumula corrimientos.
+
+      DX = +8,00 m (este)   el camion sale de los muelles y queda en linea con
+                            el eje de la calzada de salida (x 8, de y 16 a 50),
+                            como si arrancara derecho hacia la carretera
+      DY = -2,90 m (sur)    centro en y -8, la mitad del anden (-23..7)
+
+  Queda en x 6,43..9,57 y y -15,65..-0,35, con el morro a +y (el mismo sentido
+  de la salida). Los muelles 02 y 03 quedan libres.
+  El camion de reparto del muelle 01 se corrio 1,20 m al sur (centro -17,2)
+  para dejar 0,40 m de holgura.
+
+  Lo que va en espacio de mundo se tiene que correr con el mismo DX:
+      annotations.py   CONT_CY -9,20 y AXLE_Y (-12,45; -13,76) para el sur;
+                       CAMION_X 8,00 mueve la camara del plano (build_scene.py)
+                       y cuelga cotas, guias y suelo de GRP_ANOTACIONES en x 8,
+                       asi la lamina del despiece sale igual que siempre
+      main.js          HOLO_CENTRO_X 8,0 para el holograma de three.js (el de
+                       Blender cuelga de la camara y se mueve solo)
+      secciones.js     parada 03 reencuadrada: el camion y la plataforma ya no
+                       comparten el mismo eje de camara
+
+CINTA EN MOVIMIENTO (visor/src/main.js)
+---------------------------------------
+  La banda del punto A3 se mueve cuando la capa p7 esta encendida: crearCinta()
+  arma la banda troncal (nueve cajas verdes sobre el riel de recibo, x -16,6,
+  de z 25 a -8,4) y el sorter (seis bandejas de las once salidas, y 2,44, de
+  x -46,4 a -21,2) dentro de un grupo que solo se ve si avance - 1,5 > 0,05,
+  la misma condicion de la capa. animarCinta(dt) mueve cada pieza con su
+  propio t (pieza.t += dt * paso) y la reinicia al llegar al final, asi el
+  ciclo no tiene saltos. Velocidades: 0,055 el troncal y 0,07 el sorter (unos
+  1,8 m/s sobre 33,4 m y 25,2 m de recorrido).
+  Ojo: cada pieza es { tipo, obj, t, largo }; sin t el calculo da NaN y las
+  cajas se van a la nada. Verificado en el navegador: las nueve cajas y las
+  seis bandejas avanzan de forma continua.
+
+MURO DE VIDEO EN VIVO (visor/src/main.js)
+-----------------------------------------
+  El muro 4 x 3 del cuarto de monitoreo muestra la senal de doce camaras
+  virtuales puestas en su sitio del modelo: tres muelles, dos pasillos, el
+  corredor, la banda troncal, el sorter, el control de acceso, la propia sala
+  y dos vistas de patio. Se rinde una camara por cuadro a una textura de
+  384 x 216 (WebGLRenderTarget): el muro se refresca como un CCTV de verdad y
+  cuesta un solo render extra por cuadro.
+
+  En Blender cada pantalla salio como objeto suelto (CEDI_VideoWall_i_j, los
+  marcos se quedan en la malla del equipo) y uv_frente() le pone capa UV 0-1
+  en el plano YZ. Sin capa UV el glTF no escribe TEXCOORD_0 y la textura cae
+  en un solo punto: la pantalla se ve de un color plano.
+
+  La cortinilla con el nombre del sitio, la hora y el punto de grabacion va
+  como hija de cada camara, en la capa 1: queda "quemada" en la senal y la
+  camara principal (capa 0) no la ve nunca, asi que no aparece suelta en la
+  escena. pintarSenal() la repinta justo antes de rendir esa camara.
+
+  Tres trampas resueltas:
+    - la pantalla que se esta rindiendo se oculta un instante; si no, su
+      propia textura queda activa en el framebuffer y WebGL corta el dibujo
+      (Feedback loop formed between Framebuffer and active Texture)
+    - la geometria va horneada, asi que el centro del muro para la prueba de
+      frustum sale de Box3().setFromObject(), no de obj.position (que es 0,0,0)
+    - el holograma de la propuesta se oculta durante el render de la senal
+
+  Solo trabaja con la capa p5 encendida (p5 > 0,9) y si el muro esta en
+  cuadro (se revisa cada 0,4 s). Costo medido en este equipo: 22,6 -> 21,2
+  cuadros por segundo con el muro en pantalla.
+
+  OJO CON LAS UV DE UNA PANTALLA:
+  el exportador glTF invierte la v respecto de Blender. Con v = (z-z0)/alto
+  la imagen sale cabeza abajo, tanto en el muro de video como en la TV de la
+  sala de juntas. Hay que guardar 1 - (z-z0)/alto. Ademas la TV se mira
+  desde -x, donde la derecha de pantalla es -y: esa cara necesita u = 1 - u
+  (uv_frente(..., voltear=True) en programa.py). El muro se mira desde +x y
+  por eso lleva u sin voltear. Las texturas de render target (muro) y las
+  CanvasTexture (TV) no se comportan igual en vertical, pero el 1 - v sirve
+  para las dos porque el visor usa el mismo mapeo.
+
+AREAS DE PROGRAMA (blender/programa.py)
+---------------------------------------
+  Cuatro recintos nuevos dentro de la nave, sin capa propia: se ven en todas
+  las fases. programa.py es autocontenido (material, Geo, texto, coleccion,
+  vaciar, uv_frente) y corre despues de muelle.py en build_all.py.
+
+    T87_FRIO    camara de frio 11 x 8,2 m, 6 m de alto, panel sanitario,
+                zocalo, puerta corredera con cortina de lamina, tres modulos
+                de estanteria con lacteos y refrigerados, dos evaporadores,
+                condensadora exterior con linea de refrigerante, tres sondas
+                de temperatura, humedad, contacto de puerta, detector de
+                fuga, registrador, baliza y rotulos.   (9 objetos)
+    T88_ADMIN   recepcion + sala de juntas bajo la mezanina del cuarto de
+                control (techo 4,10 m): mesa de 3,6 x 1,5, ocho sillas,
+                credenza, tablero de corcho y TV de pared. ADM_Pantalla va
+                como malla aparte porque lleva su propia textura dinamica.
+                (6 objetos)
+    T89_ENERGIA subestacion de 500 kVA con cerramiento, transformador,
+                tablero general de 630 A con circuitos, UPS, banco de
+                condensadores, bandeja y avisos de alta tension. (4 objetos)
+    T92_REDES   sala tecnica con dos gabinetes (patch panels, switch con
+                LED, UPS), bandeja de fibra y dos AP colgados en la nave.
+                (4 objetos)
+
+  Un objeto Geo se cierra con objeto(); llamarlo dos veces sobre el mismo
+  Geo repite toda la geometria acumulada en el segundo objeto (pasaba con
+  RED_Sala/RED_Racks: dos recintos coplados y la pared de vidrio peleando
+  por el z-buffer). Cada recinto necesita su propio Geo.
+
+  La TV de la sala de juntas pinta una lamina por fase (FASES_COMITE):
+  portada, hallazgos, avance por eje, compromisos y cierre. Se repinta en
+  ir() cuando cambia la parada.
+
+ENTINTADO (T91_SIN_LINEAS)
+--------------------------
+  Freestyle solo admite un filtro de coleccion por lineset, asi que las
+  piezas que no deben entintarse se enlazan a T91_SIN_LINEAS (siguen en su
+  coleccion real). Alli van las anotaciones, la malla CEDI_Producto (miles
+  de cajas) y los sensores IoT. Sin ese filtro, un centro de acopio de
+  44 x 46 m se convierte en una masa de lineas amarillas.
+  pliegos.py excluye T81..T85 ademas de T80_ENTORNO: las laminas del camion
+  hablan del camion.
+
+INTEGRACIÓN WEB
+---------------
+  propuesta-altipal/recorrido.html              visor del despiece
+  propuesta-altipal/assets/css/recorrido.css
+  propuesta-altipal/assets/js/recorrido.js
+  propuesta-altipal/assets/img/camion/fase0..4.webp
+
+VISOR 3D (three.js)
+-------------------
+  propuesta-altipal/recorrido3d.html            recorrido completo de la propuesta
+  propuesta-altipal/assets/js/visor3d.js        bundle IIFE (5,3 MB, glb dentro)
+  camion-cedi360/visor/src/main.js              fuente del visor
+  camion-cedi360/visor/src/secciones.js         contenido y encuadre de las 23 paradas
+  camion-cedi360/visor/build-modelo.js          glb -> modelo.js (base64)
+  camion-cedi360/visor/modelo.js                generado, no editar
+  camion-cedi360/export/cedi360.glb             13,72 MB · 884 objetos
+
+  Cadena de montaje tras tocar la escena:
+      python blender\client.py exec --file blender\web_export.py
+      cd visor
+      node build-modelo.js
+      npx esbuild src/main.js --bundle --format=iife --target=es2019 ^
+          --minify --outfile=../../propuesta-altipal/assets/js/visor3d.js
+
+  El bundle es IIFE a propósito: los módulos ES y el fetch de archivos
+  locales están bloqueados cuando la propuesta se abre con file://.
+
+  glTF no entiende drivers, así que web_export.py hornea los keyframes
+  aplicando las mismas fórmulas del despiece (techo, paredes, puertas,
+  carga y cabina) sobre 121 frames. Los drivers de Blender no se
+  re-evalúan de forma fiable desde script: no se leen, se replican.
+  Si cambian las fórmulas en build_scene.py hay que cambiarlas también
+  en web_export.py.
+
+  El clip repite en bucle, así que el tiempo se limita a duración-0,02:
+  pedir la duración exacta devolvía el despiece al frame 0.
+
+  Recorrido: veintitrés paradas. Las catorce documentales del deck (inicio,
+  contexto, reto, concepto, capacidades, ejes, armador, matriz, fases,
+  alineación, entrega, comercial, experiencia, próximos) más nueve de la
+  operación del CEDI, cada una en el sitio de la bodega donde aplica su
+  contenido: recibo (plataforma de descargue, Fase 2), acopio (planta
+  completa), estanterías (pasillo a ojo), frío (cámara de lácteos y
+  refrigerados, Fase 1), energía (subestación y tablero general), redes
+  (sala técnica de comunicaciones), seguridad (cuarto de monitoreo, Fase 1),
+  automatización (flujo del sorter, Fase 2) y comité (sala de juntas). Cada
+  parada fija la fase del despiece (0-4) y un encuadre propio; la cámara
+  viaja interpolando posición y objetivo.
+  Navegación por riel, flechas, teclado, rueda y el botón "Continuar" del
+  panel. El hash lleva el id de la sección (#fases) y sessionStorage retoma
+  donde se quedó. La numeración del HUD sale del orden del arreglo.
+
+  En pantallas anchas el encuadre se corre a la derecha un 15 % del
+  ancho visible: el panel tapa la franja izquierda. Ojo: hasta ahora
+  (v.der || 0,15) convertía der: 0 en 0,15 y arrastraba las tomas de
+  interior; ahora el valor por omisión solo aplica si der no viene.
+
+  Dos trampas de encuadre de interiores:
+    - OrbitControls arrancaba con minDistance = 8, y con objetivos a menos
+      de 8 m el orbital empujaba la cámara al otro lado de la pared: las
+      paradas frío, redes, seguridad y comité entraban a cuarto ajeno.
+      ir() ahora fija minDistance = max(1,2, min(8, dist * 0,6)) por parada.
+    - el recinto de energía tiene cerramiento de 2,2 m, así que su parada
+      es una toma elevada (altura 0,66 rad) que mira hacia adentro; a nivel
+      del piso solo se ve la malla.
+
+  Capa de datos: se dibuja en three.js (velo, retícula, guías punteadas
+  y cuatro rótulos) y aparece solo desde la fase 3. El holograma de
+  Blender queda fuera del glb porque está en espacio de cámara.
+
+  Paleta del centro de acopio: main.js trae la tabla M_Alm_* con emisión
+  contenida (las superficies son grandes y con la emisión del camión se
+  quemaban). Las etiquetas y cenefas M_Alm_Fam_* / M_Alm_Lab_* se pintan
+  por familia; el velo de cobertura de CCTV va con blending aditivo y sin
+  escritura de profundidad. La plataforma de descargue añade M_Mue_*
+  (carrocería, chasis, llanta, panel, rojo, verde de luz, naranja) y dos
+  pinturas de piso con prefijo M_Alm_Piso para que no se entinten.
+
+  Aristas: solo se entintan M_Alm_Rack, M_Alm_Estructura y M_Alm_Muro, y a
+  0,20 de opacidad (el camión va a 0,42). Las cajas de producto no llevan
+  aristas: son miles y saturaban la lectura.
+
+MODO JUEGO (recorrido a pie)
+----------------------------
+  Botón "Recorrer a pie" en .visor-tools. Enciende una cámara libre, como en
+  un juego en primera persona; se sale con el mismo botón, con Esc o tocando
+  una parada del riel (ir() sale del modo antes de viajar).
+
+    teclado   W/S o ↑/↓ avanzan y retroceden, A/D o ←/→ se desplazan de
+              lado (A izquierda, D derecha), Espacio o E suben, y Shift, Q,
+              C o Ctrl bajan. Velocidad 9 m/s y 6,5 m/s en vertical.
+    ratón     arrastrar sobre el lienzo gira la mirada (yaw/pitch)
+    celular   el joystick aparece donde se apoya el pulgar izquierdo (el
+              45 % izquierdo del lienzo); arrastrando a la derecha se mira.
+              Empujar el joystick al tope (>90 %) hace correr. Los botones
+              ▲▼ de la esquina suben y bajan.
+
+  Con el modo encendido se apaga OrbitControls y se apunta la cámara con
+  lookAt, así que no hay que pelear con el damping; el objetivo del orbit se
+  mantiene 14 m delante para que al salir no salte. El movimiento usa el dt
+  real del reloj (tope 0,05 s) para que la velocidad no dependa del refresco
+  de la pantalla. Los límites (LIMITE en main.js) encierran el sitio:
+  x -66..34, z -26..40, altura 0,7..62 m.
+
+  La derecha de la cámara es forward × up, no up × forward: con yaw 0
+  (mirando a +z) la derecha es -x. Invertirlo mandaba la D a la izquierda.
+
+  El panel de texto se oculta (body.jugando .rec-hud) y en móvil el escenario
+  pasa a pantalla completa (position:fixed 100dvh) con el riel y el crédito
+  fuera. Los controles táctiles se muestran con body.jugando.tactil, con
+  (pointer:coarse) y por debajo de 900 px de ancho, porque la detección de
+  touch falla en algunos equipos.
+
+  .visor-juego (joystick y pad) va DENTRO de .rec-stage: colgado de .rec, en
+  móvil quedaba fuera de cuadro cuando el escenario se hace fijo.
+
+ROTULOS (una cara por letrero)
+------------------------------
+  Cada letrero del centro de acopio existe dos veces: una por cada lado que
+  lo mira (cenefa de pasillo ±x, banderola y puntos A1-A8 ±y). Si el material
+  pinta las dos caras, la copia de atrás se ve en espejo encima de la de
+  adelante y no se lee nada («A2 · SORTER» salía como «ARTSORTER»).
+
+  Por eso M_Alm_Texto, M_Alm_TextoAzul y los M_Alm_Fam_* llevan
+  use_backface_culling = True (material(...) con una_cara=True), que el
+  exportador traduce a doubleSided = false, y main.js fuerza FrontSide para
+  los prefijos M_Alm_Texto y M_Alm_Fam_. Las etiquetas de caja (M_Alm_Lab_*)
+  siguen a dos caras: son quad planos, no texto.
+
+  Consecuencia: un letrero solo se ve desde su lado. Los dos de la fachada
+  sur (los que miran a la cámara isométrica) llevan copia exterior
+  CEDI_Rotulo_Sur_Ext y CEDI_Rotulo_Recibo_Ext, porque los interiores ya no
+  se transparentan.
+
+  La cenefa de cada rack lleva la familia repetida dos veces (a 1/4 y 3/4 del
+  largo): una sola etiqueta centrada en una banda de 30 m no se lee si el
+  operario no pasa justo por el medio.
+
+CUARTO DE CONTROL (acceso, escalera y altura)
+---------------------------------------------
+  Plantilla: x -20,9..-13,5 · y 7,2..15,4 · piso 5,60 (SLAB + 4,35). La
+  altura libre pasa de 3,20 a 4,00 m: con 3,20 la fila de arriba del muro de
+  video (piso + 1,55 + 2 x 0,86 + 0,40 de marco) sobresalía del techo. Ahora
+  las tres filas caben con 0,65 m de holgura (piso + 1,15 + 2 x 0,86).
+
+  Acceso: hueco de 1,00 m en el muro sur (x -20,40..-19,40, alto 2,10) con
+  marco, hoja abierta hacia adentro, visor, manija, lampara ambar y rotulo
+  "ACCESO · SALA DE MONITOREO". El muro sur se arma en dos paños y un
+  dintel para dejar el hueco.
+
+  Escalera: 16 peldaños de 0,272 m de alza y 0,325 de huella (40°), de
+  x -13,95 (pie) a -19,15 (descanso), 1,20 m de ancho, con zancas, pasamanos
+  y narices ambar. Antes arrancaba en x -11,9..-8,8, es decir FUERA de la
+  nave (el muro este está en -12,42) y colgada en el aire. Ahora sube por el
+  corredor, pasa por encima de la banda troncal (x -16,6) y llega a un
+  descanso de 1,75 x 1,35 m al sur del cuarto, con baranda en los bordes sur
+  y oeste; el borde este queda libre porque es la llegada de la escalera.
+
+  El punto A7 (videoanalítica) salió del interior del cuarto: estaba a 1,05 m
+  del piso y su rotulo se cruzaba con el muro de video. Ahora arranca sobre
+  la cubierta del cuarto.
+
+IDENTIDAD DE MARCA (blender/marca_altipal.py)
+---------------------------------------------
+  La paleta sale de altipal.co (colores computados en el sitio):
+
+      azul        #00274B   fondo de marca, carroceria y cabina
+      azul medio  #0072B2   botones y acentos de la web
+      azul nave   #07466E   paredes y puertas del contenedor
+      verde       #9FC55A   franjas de marca
+      turquesa    #5CDACE   acentos de datos
+      amarillo    #FBC710   senalizacion, faros y rotulos
+      gris        #69727D   texto secundario
+
+  Los hex van en sRGB y se convierten a lineal antes de entrar en el
+  shader, que es lo que espera Blender.
+
+  Reparto: chasis, cabina y techo en azul; paredes y puertas en azul
+  nave; cajas de mercancia en verde atenuado; la flota de reparto en
+  blanco con cabina azul; el patio en asfalto; bordillos, eje de la
+  calzada y senalizacion en amarillo de marca.
+
+  Logos como textura, en assets/marca/:
+      altipal-blanco.png      lateral del contenedor y puerta de cabina
+      fundaserinco-blanco.png letrero de la nave (simbolo + nombre)
+  Los PNG originales de ALTIPAL venian en blanco (version para fondo
+  oscuro); el de FUNDASERINCO se compone con el simbolo del proyecto.
+
+  En el glb los materiales de logo salen como OPAQUE porque el
+  exportador no reconoce el Mix Shader con Transparent. El visor los
+  recorta con alphaTest 0.4 y no les pone aristas.
+
+  El contenedor se queda solo con el logo y el lema: se eliminan
+  DET_Marca ("CEDI 360") y DET_Firma. El logo mide 3,10 m y va centrado
+  en el lateral.
+
+  pliegos.py renderiza las cinco laminas del visor 2D sin Freestyle y
+  con T80_ENTORNO excluido: las lineas de contorno tapaban el color.
+
+CABINA 3D (blender/importar_cabina.py)
+--------------------------------------
+  El blockout de la cabina se sustituyo por un modelo real:
+
+      "MAN TGX 2010 V8 - High-Detail Semi-Truck" por DevPoly3D
+      https://sketchfab.com/3d-models/man-tgx-2010-v8-high-detail-semi-truck-34ce748d9a4b4de7b035cfe5cb97f5d1
+      Licencia CC-BY: uso comercial permitido citando al autor.
+
+  El credito aparece en la esquina del recorrido 3D y en este archivo.
+  La descarga desde Sketchfab exige token de API (v3/models/<uid>/download
+  devuelve 401 sin el). El glb queda en assets/modelos/.
+
+  El modelo llega como tractocamion con trailer y en su propia escala.
+  El script, idempotente, hace toda la cadena:
+      importa -> quita jerarquia -> aplica transformaciones
+      -> recorta el trailer con un plano en Y=-1,2
+      -> escala a 2,52 m de ancho, gira el morro a +y y lo apoya en el suelo
+      -> une la cabina en un solo objeto y la decima (20.724 -> 9.336 caras)
+      -> pinta con la paleta de ALTIPAL y elimina las texturas PBR
+      -> replica la rueda del modelo en las seis posiciones del chasis
+
+  Las texturas PBR eran el 70 % del peso: el glb paso de 6,3 MB a 1,7 MB.
+  Las seis ruedas comparten malla, asi que el glb guarda una sola.
+  build-modelo.js comprime el glb con gzip y el visor lo descomprime con
+  DecompressionStream; el bundle quedo en 1,4 MB.
+
+  Datos del encaje: cabina 2,52 x 2,47 x 3,16 m; rueda de 1,15 m de
+  diametro y 0,60 m de ancho, centrada en x = +-1,08 m y apoyada en
+  z = 0,575 m. La rueda se extrae del propio modelo por islas
+  (extraer_rueda), no se toma el grupo de ruedas del trailer.
+
+  La rueda del modelo trae el rin hueco y por ahi se veia la viga del
+  chasis (x 0,88..1,02). Se le une un disco opaco calculado en
+  proporcion al diametro (0,42 del radio, 55 % del ancho) antes de
+  replicarla, y asi las seis ruedas lo heredan. El diametro, el ancho y
+  la posicion estan en DIAMETRO_RUEDA, ANCHO_RUEDA, X_RUEDA y Z_RUEDA.
+
+ENTORNO OPERATIVO (blender/entorno.py)
+--------------------------------------
+  Colección T80_ENTORNO, 144 objetos, sí se exporta al glb. Modela lo
+  que sostiene la escena: losa de patio con juntas cada 5 m, calzada de
+  salida con eje punteado y bordillos, muelle de tres puertas con
+  abrigos, topes, marquesina, columnas y rampa, nave del CEDI con
+  lucarnas y rótulos, caseta de vigilancia con pluma, cuatro torres de
+  luz y cerramiento perimetral. La fila de despacho ya no se construye
+  aquí: la pone importar_furgon.py.
+
+  Coordenadas: el camión va de y -13 a 1 y mira hacia +y; la salida a
+  ruta también. El módulo es autocontenido (no usa los ayudantes de
+  build_scene.py) para poder ejecutarlo solo con el puente.
+
+  Cam_Entorno (T99_RIG, ortho 74) sirve para renders de control de la
+  escena ampliada; el objetivo de la cámara isométrica se restaura a
+  (0, -5.6, 3.0) después de usarla.
+
+  Las láminas del visor salen de render/web/ (2048 x 1152) convertidas a
+  WebP. Para regenerarlas: phase + render con esas dimensiones y convertir.
+  El visor navega con clic, ← →, rueda, gestos y botón de pantalla completa.
+
+FURGONETAS DE REPARTO (blender/importar_furgon.py)
+--------------------------------------------------
+  Sustituyen las dos unidades blockout de la fila de despacho con la
+  "Mercedes-Benz Sprinter" de Sketchfab (CC-BY, Savelliy 07), descargada
+  en assets/modelos/sprinter-furgon.glb (8,5 MB).
+
+  El módulo es idempotente: limpia FUR_FLOTA y los restos Flota_*, importa,
+  aplica transformaciones, pinta solo sus materiales, une con remove_doubles,
+  decima al 32 % (96.005 -> 30.714 caras), escala a 2,02 m de ancho y la
+  apoya con el morro en MORRO_Y. La colección FUR_FLOTA cuelga de
+  T80_ENTORNO y lleva dos copias que comparten malla más cuatro placas de
+  logo (ALTIPAL azul en una unidad, FUNDASERINCO en la otra, en ambos
+  costados).
+
+  El logo va en el panel ciego de carga, no en la puerta del piloto: se
+  situa a 0,40 del largo desde la cola, a 0,55 de la altura y mide 1,55 m
+  de ancho. El ancho del costado se mide en esa franja con lateral() y la
+  placa se pega 2 cm por fuera.
+
+  Los materiales se renombran a M_Fur_carroceria / _vidrio / _llanta /
+  _moldura / _rin para que el visor los pinte con la tabla furgoneta de
+  main.js y no les añada aristas.
+
+ENCUADRE
+--------
+Cámara ortográfica Cam_Isometrica con ortho_scale 32 y objetivo en
+(0, -5.6, 3.0). El plano de rótulos vive a 8 unidades de la cámara y el
+holograma a 9.5, delante del modelo: así no los tapa el suelo.
+
+RENDERS DE CONTROL
+------------------
+  render/fase0.png  camión cerrado con el lema en el contenedor
+  render/fase1.png  techo separado y carga asomando (estabilización)
+  render/fase2.png  paredes y puertas abiertas (modernización)
+  render/fase3.png  techo elevado y capa holográfica (inteligencia)
+  render/fase4.png  cabina separada (flota conectada)
+  render/web/       las mismas cinco en 2048 x 1152
+  render/almacen_acopio.png           planta del centro de acopio (color)
+  render/almacen_acopio_plano.png     la misma con Freestyle (plano técnico)
+  render/almacen_seguridad.png        cuarto de control y control de acceso
+                                      (en Blender las pantallas siguen siendo
+                                      planos emisivos: la senal en vivo solo
+                                      existe en el visor 3D)
+  render/almacen_automatizacion.png   banda, sorter y puntos A1-A8
+
+BITÁCORA
+--------
+2026-11-24 00:30  Se crea el proyecto, el puente, el servidor MCP y este estado.
+                  Se confirma Blender 5.3.0 y mcp 2.x sobre uv.
+2026-11-24 00:45  Escena base construida (168 objetos) con medidas reales.
+                  Renders de las fases 0 a 4 y captura del viewport.
+                  Estilo: superficies oscuras + contorno ámbar (Freestyle) y
+                  retícula técnica de 1 m.
+2026-11-24 00:50  Verificado el flujo completo MCP -> puente -> Blender
+                  (blender_status devuelve la escena viva).
+2026-11-24 01:20  Se descarta el modelo de Sketchfab: se trabaja con el camión
+                  procedural ya construido.
+2026-11-24 01:40  annotations.py: marco de plano, bloque de título, cinco
+                  cotas, guías punteadas y siete rótulos con línea guía.
+                  Los rótulos se colocan por coordenadas de pantalla para que
+                  no dependan de la proyección isométrica.
+2026-11-24 01:55  hologram.py: dos paneles de datos, flujos desde el techo,
+                  cadena de sensores y rótulos. Visible solo en Fase 3.
+2026-11-24 02:05  Encuadre reajustado (ortho 32, objetivo a 3.0) y techo con
+                  elevación progresiva: 1.15 m en Fase 1 y 2.60 m en Fase 3.
+                  build_all.py reconstruye escena + cotas + holograma.
+2026-11-24 02:10  Renders finales de las cinco fases y .blend guardado.
+2026-11-24 02:45  detalles.py: lema, marca, espejos y franja de seguridad.
+                  El texto se separa 16 cm de la pared para que Freestyle no
+                  lo corte con las líneas del corrugado.
+2026-11-24 03:00  Láminas a 2048 px y visor recorrido.html integrado en la
+                  propuesta, con navegación por fases y puntos activos.
+2026-11-24 03:40  web_export.py: export glb con la animación horneada y
+                  visor three.js (OrbitControls, aristas de plano técnico,
+                  encaje automático). Se descarta leer los grupos evaluados:
+                  los drivers no se refrescan desde script y los keyframes
+                  salían en cero. El horneado aplica las fórmulas del
+                  despiece directamente.
+2026-11-24 03:55  Se elimina el cubo por defecto que arrastraba el .blend y
+                  se excluye la colección "Collection" del export.
+2026-11-24 04:10  Capa de datos en three.js para la fase 3 (velo, retícula,
+                  guías punteadas y cuatro rótulos flotantes). El encaje
+                  ahora mide el despiece abierto completo.
+2026-11-24 04:20  Topbar y capítulo de fases apuntan a recorrido3d.html;
+                  recorrido.html enlaza de vuelta al modelo 3D.
+2026-11-24 08:05  entorno.py: patio, calzada de salida, muelle de tres
+                  puertas, nave del CEDI, caseta, torres de luz, fila de
+                  despacho y cerramiento (144 objetos, T80_ENTORNO).
+                  El export sube a 319 objetos y 0,79 MB.
+2026-11-24 08:25  Recorrido completo: secciones.js con las catorce paradas
+                  del deck y su encuadre; la cámara viaja entre paradas y
+                  el despiece adopta la fase de cada capítulo. Riel con
+                  etiquetas cortas, botón Continuar, hash por sección y
+                  corrimiento de composición para no quedar bajo el panel.
+2026-11-24 11:00  marca_altipal.py: paleta real de ALTIPAL tomada de su
+                  web y aplicada a camión y entorno. Logos de ALTIPAL
+                  (lateral y cabina) y de FUNDASERINCO (letrero de la nave)
+                  como textura. El exportador glTF marca los logos como
+                  OPAQUE: el visor los recorta con alphaTest.
+2026-11-24 11:20  El contenedor se queda solo con el logo y el lema: fuera
+                  "CEDI 360" y la firma de FUNDASERINCO. El logo pasa a
+                  3,10 m y va centrado en el lateral.
+2026-11-24 11:25  pliegos.py: láminas del visor 2D sin Freestyle y sin
+                  entorno, para que el color de marca no se apague.
+2026-11-24 12:05  Cabina real: importar_cabina.py trae el MAN TGX de
+                  Sketchfab (CC-BY, DevPoly3D), lo recorta, lo escala,
+                  lo pinta y replica su rueda en las seis posiciones del
+                  chasis. Se eliminan las texturas PBR: el glb pasa de
+                  6,3 MB a 1,7 MB. El glb viaja con gzip y el visor lo
+                  descomprime en el navegador.
+2026-11-24 12:20  Ruedas traseras corregidas: pasan de 0,38 a 0,48 m de
+                  ancho y se centran en x = +-1,12. El rin venia hueco y
+                  dejaba ver la viga del chasis, asi que la rueda patron
+                  lleva un disco opaco de 0,27 m de radio.
+2026-11-24 12:45  Ruedas definitivas: la rueda patron anterior no era una
+                  rueda sino la fila de neumaticos del trailer vista de
+                  canto (por eso salia como una barra). extraer_rueda()
+                  recorta ahora una sola rueda real del tractor por sus
+                  islas y descarta los restos del trailer. Queda de 1,15 m
+                  de diametro y 0,60 m de ancho, centrada en x = +-1,08
+                  con el apoyo en z = 0,575. El disco tapador se calcula en
+                  proporcion al diametro, no con radio fijo.
+2026-11-24 14:20  Fila de despacho con furgonetas reales: importar_furgon.py
+                  trae la "Mercedes-Benz Sprinter" de Sketchfab (CC-BY,
+                  Savelliy 07), la pinta de blanco de paqueteria, la decima y
+                  la pone dos veces en x = 16 con el morro hacia +y. En la
+                  puerta del conductor lleva el logo de ALTIPAL en azul en una
+                  unidad y el de FUNDASERINCO en la otra, en los dos costados.
+                  entorno.py ya no construye la flota blockout.
+                  Materiales renombrados a M_Fur_* y pintados desde el visor
+                  con la tabla furgoneta de main.js.
+2026-11-24 15:15  Los logos salen de la puerta del piloto y pasan al panel
+                  ciego de carga: centrados a 0,40 del largo desde la cola
+                  y a 0,55 de la altura, con 1,55 m de ancho (antes 0,80 en
+                  la puerta). Se ven completos desde la camara del recorrido.
+2026-11-24 15:40  Las puertas traseras del contenedor abren hacia afuera:
+                  GRP_PUERTA_IZQ rz = p2 * -2.36 y GRP_PUERTA_DER rz =
+                  p2 * 2.36 (antes al reves, se metian dentro del contenedor
+                  y cruzaban la carga). Corregido en build_scene.py y en la
+                  copia de web_export.py.
+                  De paso se restauraron los drivers de MASTER_DESPIECE en
+                  cedi360.blend: se habian perdido y el .blend guardaba la
+                  animacion horneada. Ojo: no guardar el .blend justo despues
+                  de web_export.py, porque deja las acciones horneadas.
+2026-11-24 20:50  Centro de acopio: almacen.py sustituye la nave blockout por
+                  una nave de 44 x 46 m con doce estanterias selectivas
+                  (960 posiciones), el catalogo de ALTIPAL repartido en doce
+                  familias, cuarto de seguridad electronica con muro de video
+                  y 24 camaras, y ocho puntos de automatizacion con banda
+                  troncal, sorter, AMR y porticos RFID. Colecciones T81_CEDI,
+                  T82_RACKS, T83_SEGURIDAD y T84_AUTOMATIZACION; la escena
+                  pasa de 319 a 1.090 objetos.
+2026-11-24 21:05  Capas p5 (seguridad, Fase 1) y p6 (automatizacion, Fase 2)
+                  sobre GRP_CCTV y GRP_AUTOMATIZACION. Los drivers solo
+                  quedaban validos si la propiedad existia en la copia
+                  evaluada de MASTER_DESPIECE: capa() reintenta tras
+                  update_tag(). bridge_addon._set_phase y web_export. props()
+                  ya encienden p5/p6 (el puente abierto hay que reiniciarlo).
+2026-11-24 21:20  Freestyle: se agrega la coleccion filtro T91_SIN_LINEAS
+                  (anotaciones, malla de producto y sensores). pliegos.py
+                  excluye T81..T84 para que las laminas del camion no muestren
+                  el centro de acopio.
+2026-11-24 21:35  Visor: paleta M_Alm_* con emision contenida, etiquetas de
+                  familia por color, aristas solo en rack/estructura/muro y
+                  cuatro paradas nuevas (acopio, estanterias, seguridad,
+                  automatizacion). El recorrido pasa de 14 a 18 paradas y la
+                  numeracion sale del orden del arreglo.
+                  glb 10,46 MB (771 objetos) -> modelo.js 3,7 MB ->
+                  bundle 4,2 MB. Es el precio de la nave: si molesta, bajar
+                  la densidad de carga en almacen.py (PESOS) o DECIMAR las
+                  furgonetas.
+2026-11-24 22:15  Modo juego: cámara libre en primera persona. Teclado
+                  (WASD/flechas, Shift corre, Espacio/C altura) y joystick
+                  táctil que aparece donde se apoya el pulgar izquierdo, con
+                  botones ▲▼ y mirada arrastrando a la derecha. Se entra con
+                  "Recorrer a pie", se sale con el mismo botón, con Esc o
+                  tocando una parada del riel. En móvil el escenario pasa a
+                  pantalla completa y se ocultan panel, riel y crédito.
+2026-11-24 22:20  Encoding: recorrido.css y tema-industrial.css se quedaron
+                  sin BOM al reescribirlos y Chrome los leía como Latin-1: el
+                  "→" del botón Continuar y los acentos del tema salían como
+                  "â†’". Los cinco CSS del proyecto usan UTF-8 con BOM, que es
+                  lo que Chrome respeta en file://. Si se reescribe un CSS,
+                  devolverle el BOM.
+2026-11-24 22:45  Correccion de los controles del modo juego: el vector
+                  "derecha" estaba calculado como up x forward en vez de
+                  forward x up, asi que A y D iban al reves (con yaw 0 la
+                  derecha de la camara es -x). La vertical tambien cambio al
+                  criterio pedido: E/R suben y Espacio, Shift, Q, C o Ctrl
+                  bajan. Se quita el sprint con Shift (ahora baja) y la
+                  velocidad queda en 9 m/s; el joystick escala con el empuje.
+                  Verificado con capturas: W/S, A/D, Espacio, Shift y E.
+2026-11-24 22:52  La barra espaciadora pasa a subir (el usuario la quiere
+                  asi); Shift, Q, C y Ctrl siguen bajando. Verificado con
+                  capturas: Espacio sube desde el muelle y Shift vuelve a
+                  bajar.
+2026-11-25 04:35  Letreros ilegibles: cada rotulo tiene una copia por cara y
+                  el material pintaba las dos, asi que la de atras se veia en
+                  espejo encima ("A2 · SORTER" se leia "ARTSORTER"). Se
+                  activa backface culling en M_Alm_Texto, M_Alm_TextoAzul y
+                  M_Alm_Fam_* y el visor fuerza FrontSide; el glb queda con
+                  doubleSided=false en esos materiales. Verificado con
+                  capturas del pasillo y del cuarto de control.
+                  De paso: la fachada sur recibe copia exterior de sus dos
+                  rotulos (ya no se ven desde afuera al estar a una cara) y la
+                  cenefa de cada rack repite la familia a 1/4 y 3/4 del largo.
+                  La escena sube a 1.116 objetos y el glb a 11,1 MB.
+2026-11-25 05:15  Cuarto de control: la altura libre sube de 3,20 a 4,00 m
+                  porque la fila de arriba del muro de video salia por el
+                  techo; las pantallas se reajustan y quedan con 0,65 m de
+                  holgura. Se abre una puerta de 1,00 m en el muro sur con
+                  marco, hoja, visor, lampara y rotulo de acceso, y la
+                  escalera se rehace: antes arrancaba fuera de la nave (x
+                  -11,9..-8,8, el muro este esta en -12,42) y colgada; ahora
+                  son 16 peldaños que suben por el corredor hasta un descanso
+                  con baranda al sur del cuarto. El borde este del descanso
+                  va sin baranda porque es la llegada de la escalera.
+                  El punto A7 sale del interior del cuarto y pasa a la
+                  cubierta. Cam_Control y la parada 05 se reencuadran para
+                  que se vean escalera y puerta.
+2026-11-25 06:40  Plataforma de descargue (blender/muelle.py). Se corrige el
+                  origen: los marcos de las tres puertas estaban 6 m adentro
+                  del anden (x -5,9/-6,3) y una columna de la cubierta caia
+                  en la boca del muelle 02. Ahora el marco, el dintel y una
+                  cortina de nueve tiras van sobre la cara exterior del muro
+                  (x = -12,12), las columnas caen entre vanos y la cubierta
+                  se elimina: una losa de 2,6 m tapaba el anden en todas las
+                  vistas aereas (se probo pergola y losa estrecha; el
+                  recorrido gana con la plataforma abierta).
+                  Nuevo T85_MUELLE (33 objetos): demarcacion (carril peatonal,
+                  linea de borde, zona de cargue por vano, numeros 01/02/03,
+                  cebra y 10 km/h), rotulos MUELLE 01/02/03 por las dos caras,
+                  dos montacargas, transpaleta, siete estibas, calzas y conos,
+                  camion de 7 m atracado en el muelle 01 y camioneta en espera
+                  al norte. Los muelles 02 y 03 ya los ocupa el camion del
+                  modelo (y -12,7..2,6), por eso solo se atraca uno.
+                  Capa nueva p7 sobre GRP_MUELLE (Fase 2): niveladora de borde,
+                  luz de muelle rojo/verde, LPR en dos postes, camara por
+                  muelle, LED de anden, intercomunicador IP, gabinete de red y
+                  sensores de presencia, con los puntos M1..M5 rotulados.
+                  web_export, pliegos, bridge_addon y _master_state pasan a
+                  p0..p7; el puente abierto necesita reinicio para encenderla.
+                  Visor: 19 paradas (nueva "recibo" en Fase 2, delante de
+                  acopio), paleta M_Mue_* y dos pinturas M_Alm_Piso* para que
+                  la demarcacion no se entinte. Lamina nueva
+                  render/almacen_muelle.png y acopio re-renderizado.
+                  glb 11,71 MB (839 objetos) -> modelo.js 3,8 MB -> bundle
+                  4,4 MB. Escena: 1.159 objetos.
+2026-11-25 03:40  Tracto camion centrado (opcion A): ubicar_camion.py cuelga
+                  los diez grupos GRP_* de un empty raiz GRP_CAMION en
+                  y = -1,80. Se tocan las cotas de annotations.py (CONT_CY
+                  -8,10) y el holograma de three.js (HOLO_CENTRO_Z 7,8).
+                  Las ruedas replicadas de importar_cabina.py pasan a colgar
+                  de GRP_CHASIS: antes quedaban sueltas y no seguian al
+                  camion.
+                  Vehiculos de la plataforma: se cambian los procedurales de
+                  muelle.py (camion, camioneta y dos montacargas, 160 lineas)
+                  por modelos de Sketchfab en T86_VEHICULOS, con el logo de
+                  ALTIPAL en las dos caras de la caja y la Sprinter de
+                  FUNDASERINCO copiada con malla compartida. Credito CC-BY
+                  actualizado en recorrido3d.html.
+                  Token de Sketchfab guardado en .sketchfab_token y ayudante
+                  blender/sketchfab.py (buscar / bajar) para no volver a
+                  pedirlo.
+                  glb 12,60 MB (845 objetos) -> modelo.js 4,8 MB -> bundle
+                  5,3 MB. Escena: 1.165 objetos.
+2026-11-25 04:10  Parada 03 reencuadrada desde el noreste (obj -6, 2, 6 ·
+                  dist 38 · giro -0,95 · altura 0,35): el tracto camion queda
+                  centrado y completo en el cuadro, con los vanos 02/03 y la
+                  cebra detras. El encuadre anterior, desde el sur, lo dejaba
+                  siempre cortado en el borde derecho por el panel lateral.
+2026-11-25 04:35  Tracto camion al centro exacto: ubicar_camion.py pasa a
+                  DY = -2,90 (centro -8, mitad del anden) y el camion de
+                  reparto se corre a -17,2 para dejar 0,40 m. Cotas y holograma
+                  acompanan (CONT_CY -9,20 · HOLO_CENTRO_Z 8,9).
+                  Los dos montacargas estaban enterrados 1,22 m: se colocaban
+                  con la cota del patio en vez de la del anden. Ahora van en
+                  z = 1,25, en acero claro y por fuera del entintado.
+                  La fila de despacho (las dos Sprinter) pasa junto a la torre
+                  de luz de (20, 8): SITIOS = ((18,4, 5,60), (18,4, 11,20)).
+2026-11-25 04:40  Cinta en movimiento en el visor: la banda troncal y el sorter
+                  del punto A3 avanzan cuando la capa p7 esta encendida
+                  (crearCinta / animarCinta, ver seccion CINTA EN MOVIMIENTO).
+                  El montacargas del muelle 02 estaba encima de tres estibas
+                  (-9,4, 2,2 sobre cajas en y 1,6, las "cajas pegadas"): pasa
+                  a (-8,4, 4,6). Parada 07 reencuadrada desde el pasillo
+                  (obj -18, 2,6, -4 · dist 28 · giro 1,30) para ver el sorter
+                  en vez de quedar metida entre las estanterias.
+2026-11-25 04:45  Muro de video en vivo: las doce pantallas del centro de
+                  seguridad muestran la senal de doce camaras virtuales en sus
+                  sitios del modelo (ver MURO DE VIDEO EN VIVO). En Blender
+                  cada pantalla paso a ser objeto suelto con capa UV, asi que
+                  T83_SEGURIDAD queda en 18 objetos y la escena en 1.177.
+                  Parada 06 reencuadrada dentro de la sala (obj -20,8; 7,5;
+                  -10,8 · dist 6,9 · giro -0,35 · der 0,16) para ver el muro
+                  de frente; antes miraba el cuarto desde arriba y el techo
+                  tapaba el interior.
+2026-11-25 05:10  Tracto camion a la salida: DX = +8,00 m para dejarlo en linea
+                  con el eje de la calzada (x 8) y con el morro hacia la ruta.
+                  Queda en x 6,43..9,57 y los muelles 02 y 03 libres.
+                  Acompanan: Cam_Isometrica y Cam_Target (+8), las cotas y el
+                  suelo del plano colgados de GRP_ANOTACIONES en x 8 y
+                  HOLO_CENTRO_X 8,0 en el visor. Escena: 1.178 objetos.
+                  pliegos.py: fuera tambien T86_VEHICULOS, T91_SIN_LINEAS y
+                  FUR_FLOTA, que asomaban en la lamina al correrse la camara
+                  (los montacargas y las estibas quedaban visibles porque
+                  siguen enlazados al filtro de Freestyle). Cinco laminas
+                  regeneradas a 2048 x 1152 y pasadas a WebP.
+                  Parada 03 reencuadrada (obj -2, 1, 2 · dist 49 · giro 0,72 ·
+                  altura 0,44 · der 0,04): plataforma al centro y el camion
+                  completo a la derecha.
+                  Re-renderizadas las laminas almacen_muelle.png (fase 2, con
+                  la capa p7) y almacen_acopio.png (fase 0, Cam_Entorno) ya con
+                  el montacargas en su sitio. glb y modelo.js regenerados
+                  (13,2 MB / 4,9 MB) y bundle en 5,5 MB.
+2026-11-25 06:10  Areas de programa (blender/programa.py): camara de frio para
+                  lacteos y refrigerados con sus sensores, bloque
+                  administrativo con sala de juntas y TV, subestacion y sala
+                  tecnica de redes (ver AREAS DE PROGRAMA). Nuevas colecciones
+                  T87_FRIO, T88_ADMIN, T89_ENERGIA y T92_REDES, sumadas a
+                  pliegos.py (FUERA) y a la paleta del visor.
+                  Recorrido de 19 a 23 paradas: frio, energia, redes y comite
+                  entran en el orden del documento, cada una en el sitio de la
+                  bodega donde aplica el eje que describe.
+                  Tres fallos corregidos de paso: OrbitControls con
+                  minDistance = 8 empujaba las tomas de interior fuera del
+                  cuarto; (v.der || 0,15) anulaba der: 0; y build_redes
+                  cerraba dos veces el mismo Geo, duplicando el recinto.
+                  UV de pantallas: el exportador glTF invierte la v (ver MURO
+                  DE VIDEO EN VIVO); el muro de video y la TV de juntas salian
+                  cabeza abajo y la TV espejada.
+                  Rotulos de los cuartos nuevos a escala: los de 0,30-0,52 m
+                  median 5-10 m de ancho y se salian del recinto.
+                  glb 13,72 MB (884 objetos) -> modelo.js 5,1 MB -> bundle
+                  5,86 MB. Escena: 1.178 objetos.
+
+SIGUIENTE PASO RECOMENDADO
+--------------------------
+1. Probar el recorrido en la reunión y ajustar los encuadres de secciones.js.
+2. Secuencia animada del despiece (MP4) para correo y presentaciones.
+3. Renders 4K para el anexo impreso y el PDF.
+4. El bundle quedó en 5,3 MB: los modelos de Sketchfab traen textura. Para
+   bajarlo: reducir la textura del camión a 512 px en importar_muelle.py,
+   menos carga en las repisas altas (PESOS en almacen.py), subir DECIMAR en
+   importar_furgon.py o servir el glb aparte.
+5. Si se publica en servidor, servir el glb aparte y no embebido en base64.
+6. Reiniciar Blender para que el puente cargue _set_phase con p5/p6/p7.
+
+RIESGOS Y NOTAS
+---------------
+- Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y
+  devuelve la traza para corregir sin cerrar el programa.
+- El estilo de línea (Freestyle) es más lento que un render plano: para
+  supervisión se usa viewport y para entregables el render final.
+- Los modelos de Sketchfab tienen licencias distintas: revisar licencia antes de
+  usarlos en una propuesta comercial.
+- Los CSS del proyecto van en UTF-8 con BOM porque se abren con file://. Sin
+  BOM, Chrome los lee como Latin-1 y los acentos salen rotos.
+- En modo juego no hay colisión: la cámara atraviesa paredes y estanterías. Los
+  límites la mantienen dentro del sitio, pero si se sale de la nave se ve el
+  vacío. "Vista inicial" o Esc devuelven a la parada del documento.
+- No editar fuentes UTF-8 con Get-Content -Raw | Set-Content -Encoding utf8: el
+  primero lee como ANSI y el segundo vuelve a codificar, y cada acento queda
+  doble (Sección -> SecciÃ³n). Ya pasó una vez con visor/src/main.js y hubo que
+  repararlo a mano. Editar con la herramienta de edición o con python leyendo y
+  escribiendo en UTF-8 explícito.
+- La plataforma de descargue va sin cubierta a propósito: cualquier techo de
+  1,5 a 2,6 m de vuelo tapa el andén en las vistas aéreas del recorrido. Si se
+  quiere cubierta, hay que bajar la cámara de las paradas 03/04 por debajo de
+  5,7 m.
+- Solo hay un camión atracado (muelle 01) porque el muelle 02 y 03 los ocupa
+  el camión del despiece. Ya no: desde que el tracto camión salió a la
+  calzada (DX = 8), los tres vanos están libres y se puede atracar un segundo
+  camión de reparto sin tocar nada del resto.
+- El camión de la plataforma y la camioneta en espera son modelos de Sketchfab
+  (CC-BY). La camioneta no cuesta geometría: es una copia con malla compartida
+  de la Sprinter de la fila de despacho. Si se reemplazan por otros modelos,
+  revisar licencia y tamaño del bundle.
+- El token de Sketchfab (.sketchfab_token) es una credencial personal: no se
+  copia a propuesta-altipal ni a ningún archivo que se entregue. Si se filtra,
+  se revoca desde la cuenta y se guarda uno nuevo.
+=========================================================================

@@ -1,0 +1,29 @@
+﻿# credenciales
+camion-cedi360/.sketchfab_token
+*.token
+.env
+
+# intermedios de Blender
+*.blend
+*.blend1
+*.blend2
+
+# export y bundle intermedios (se regeneran con la cadena de montaje)
+camion-cedi360/export/*.glb
+camion-cedi360/visor/modelo.js
+
+# dependencias
+node_modules/
+
+# renders de proceso del camion y material archivado
+/render/
+/_version anterior/
+
+# sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# cache de python
+__pycache__/
+*.pyc

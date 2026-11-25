@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B1116">
+<title>Recorrido del despiece · CEDI 360 | FUNDASERINCO</title>
+<meta name="description" content="Recorrido interactivo por las cinco fases del camión logístico despiezado: estabilización, modernización, inteligencia y acompañamiento sobre la infraestructura que sostiene la carga.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/logo-simbolo-128.png">
+<link rel="apple-touch-icon" href="assets/img/brand/logo-simbolo-128.png">
+<link rel="stylesheet" href="assets/css/propuesta.css">
+<link rel="stylesheet" href="assets/css/deck.css">
+<link rel="stylesheet" href="assets/css/tema-industrial.css">
+<link rel="stylesheet" href="assets/css/recorrido.css">
+<link rel="preload" as="image" href="assets/img/camion/fase0.webp">
+<link rel="preload" as="image" href="assets/img/camion/fase1.webp">
+</head>
+<body class="recorrido-page">
+
+<header class="topbar">
+  <a class="tb-brand" href="index.html#fases" aria-label="Fundaserinco, volver a la propuesta">
+    <img src="assets/img/brand/logo-simbolo-128.png" alt="Símbolo Fundaserinco">
+    <span class="tb-name">Fundaserinco<span>Ingeniería · Tecnología · IA</span></span>
+  </a>
+  <div class="tb-crumb">
+    <span>CEDI 360</span><span class="sep">/</span><span>ALTIPAL</span><span class="sep">/</span><b>Despiece</b>
+  </div>
+  <div class="tb-right">
+    <button class="btn btn-ghost" id="recFull" type="button">Pantalla completa</button>
+    <a class="btn btn-ghost" href="recorrido3d.html">Recorrido 3D</a>
+    <a class="btn btn-ghost" href="index.html#fases">Propuesta</a>
+    <a class="btn btn-ghost hide-sm" href="../Propuesta%20CEDI%20360%20-%20ALTIPAL%202026.pdf" target="_blank" rel="noopener">PDF</a>
+  </div>
+</header>
+
+<main class="rec" id="rec">
+  <div class="rec-stage" id="recStage">
+    <div class="rec-plate on"><img src="assets/img/camion/fase0.webp" alt="Camión cerrado con el lema de ALTIPAL en el contenedor"></div>
+    <div class="rec-plate"><img src="assets/img/camion/fase1.webp" alt="Techo separado y carga asegurada: estabilización" loading="lazy"></div>
+    <div class="rec-plate"><img src="assets/img/camion/fase2.webp" alt="Paredes y puertas abiertas: interior del contenedor" loading="lazy"></div>
+    <div class="rec-plate"><img src="assets/img/camion/fase3.webp" alt="Capa holográfica de datos sobre el techo elevado" loading="lazy"></div>
+    <div class="rec-plate"><img src="assets/img/camion/fase4.webp" alt="Cabina separada: flota conectada y acompañamiento" loading="lazy"></div>
+    <div class="rec-spots" id="recSpots" aria-live="polite"></div>
+  </div>
+
+  <p class="rec-hint">Usa ← → o la rueda para recorrer</p>
+
+  <section class="rec-hud" id="recHud" aria-live="polite"></section>
+
+  <nav class="rec-rail" id="recRail" aria-label="Fases del despiece">
+    <div class="rec-arrows">
+      <button type="button" class="rec-arrow" id="recPrev" aria-label="Fase anterior" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="rec-arrow" id="recNext" aria-label="Fase siguiente">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="rec-progress"><i id="recProgress"></i></div>
+</main>
+
+<script src="assets/js/recorrido.js" defer></script>
+</body>
+</html>

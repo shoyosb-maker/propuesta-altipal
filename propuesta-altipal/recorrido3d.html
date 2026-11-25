@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B1116">
+<title>Recorrido 3D · CEDI 360 | FUNDASERINCO</title>
+<meta name="description" content="Recorrido 3D interactivo de la propuesta CEDI 360: dieciocho paradas, del centro de acopio a los próximos pasos, sobre el camión que se desarma por fases. Se recorre con el ratón, con el teclado o con un joystick táctil.">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/brand/logo-simbolo-128.png">
+<link rel="apple-touch-icon" href="assets/img/brand/logo-simbolo-128.png">
+<link rel="stylesheet" href="assets/css/propuesta.css">
+<link rel="stylesheet" href="assets/css/deck.css">
+<link rel="stylesheet" href="assets/css/tema-industrial.css">
+<link rel="stylesheet" href="assets/css/recorrido.css">
+</head>
+<body class="recorrido-page">
+
+<header class="topbar">
+  <a class="tb-brand" href="index.html#fases" aria-label="Fundaserinco, volver a la propuesta">
+    <img src="assets/img/brand/logo-simbolo-128.png" alt="Símbolo Fundaserinco">
+    <span class="tb-name">Fundaserinco<span>Ingeniería · Tecnología · IA</span></span>
+  </a>
+  <div class="tb-crumb">
+    <span>CEDI 360</span><span class="sep">/</span><span>ALTIPAL</span><span class="sep">/</span><b>Recorrido 3D</b>
+  </div>
+  <div class="tb-right">
+    <button class="btn btn-ghost" id="visorFull" type="button">Pantalla completa</button>
+    <a class="btn btn-ghost" href="recorrido.html">Láminas</a>
+    <a class="btn btn-ghost hide-sm" href="index.html#fases">Propuesta</a>
+  </div>
+</header>
+
+<main class="rec" id="rec">
+  <div class="rec-stage" id="recStage">
+    <canvas class="visor-canvas" id="visorCanvas" aria-label="Recorrido 3D por el patio del CEDI. Arrastra para girar o activa el modo juego para caminar con el teclado."></canvas>
+    <div class="visor-cargando" id="visorCargando">
+      <div>
+        <p>Cargando el despiece</p>
+        <i></i>
+      </div>
+    </div>
+    <p class="visor-estado" id="visorEstado">Preparando la escena…</p>
+    <div class="visor-juego" id="visorJuegoUI" aria-hidden="true">
+      <div class="visor-joy" id="visorJoy"><i></i></div>
+      <div class="visor-pad" id="visorPad">
+        <button type="button" data-eje="subir" aria-label="Subir">▲</button>
+        <button type="button" data-eje="bajar" aria-label="Bajar">▼</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="rec-hud" id="visorHud" aria-live="polite"></section>
+
+  <div class="visor-tools">
+    <button type="button" id="visorJuego" aria-pressed="false">Recorrer a pie</button>
+    <button type="button" id="visorOrbita">Girar solo</button>
+    <button type="button" id="visorReset">Vista inicial</button>
+  </div>
+
+  <nav class="rec-rail" id="visorRail" aria-label="Secciones del recorrido">
+    <div class="rec-arrows">
+      <button type="button" class="rec-arrow" id="visorPrev" aria-label="Sección anterior" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="rec-arrow" id="visorNext" aria-label="Sección siguiente">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="rec-progress"><i id="visorProgreso"></i></div>
+
+  <p class="credito-modelo">Modelos 3D: «MAN TGX 2010 V8» de DevPoly3D, «Mercedes-Benz Sprinter» de Savelliy 07, «Delivery Truck» de jasmin.daniel y «Forklift low poly» de 380660711785 · Sketchfab · CC-BY</p>
+</main>
+
+<script src="assets/js/visor3d.js" defer></script>
+<script>
+(function () {
+  var boton = document.getElementById('visorFull');
+  if (!boton) return;
+  boton.addEventListener('click', function () {
+    var doc = document;
+    if (doc.fullscreenElement) {
+      if (doc.exitFullscreen) doc.exitFullscreen();
+    } else if (doc.documentElement.requestFullscreen) {
+      doc.documentElement.requestFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    boton.textContent = document.fullscreenElement ? 'Salir' : 'Pantalla completa';
+  });
+})();
+</script>
+</body>
+</html>
