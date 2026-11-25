@@ -427,15 +427,18 @@ ENTINTADO (T91_SIN_LINEAS)
 
 INTEGRACIÓN WEB
 ---------------
-  propuesta-altipal/recorrido.html              visor del despiece
-  propuesta-altipal/assets/css/recorrido.css
-  propuesta-altipal/assets/js/recorrido.js
-  propuesta-altipal/assets/img/camion/fase0..4.webp
+  index.html, recorrido.html, recorrido3d.html en la RAIZ del repo (GitHub
+  Pages publica desde la raiz de main: si el index.html no esta ahi, la URL
+  del sitio muestra el README y el cliente termina en el PDF).
+  recorrido.html                               visor del despiece
+  assets/css/recorrido.css
+  assets/js/recorrido.js
+  assets/img/camion/fase0..4.webp
 
 VISOR 3D (three.js)
 -------------------
-  propuesta-altipal/recorrido3d.html            recorrido completo de la propuesta
-  propuesta-altipal/assets/js/visor3d.js        bundle IIFE (5,3 MB, glb dentro)
+  recorrido3d.html                              recorrido completo de la propuesta
+  assets/js/visor3d.js                         bundle IIFE (5,3 MB, glb dentro)
   camion-cedi360/visor/src/main.js              fuente del visor
   camion-cedi360/visor/src/secciones.js         contenido y encuadre de las 23 paradas
   camion-cedi360/visor/build-modelo.js          glb -> modelo.js (base64)
@@ -447,7 +450,7 @@ VISOR 3D (three.js)
       cd visor
       node build-modelo.js
       npx esbuild src/main.js --bundle --format=iife --target=es2019 ^
-          --minify --outfile=../../propuesta-altipal/assets/js/visor3d.js
+          --minify --outfile=../../assets/js/visor3d.js
 
   El bundle es IIFE a propósito: los módulos ES y el fetch de archivos
   locales están bloqueados cuando la propuesta se abre con file://.

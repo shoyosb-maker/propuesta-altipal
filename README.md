@@ -10,15 +10,22 @@ en el sitio donde aplica cada eje.
 
 | Ruta | Contenido |
 | --- | --- |
-| `propuesta-altipal/index.html` | la propuesta en HTML (se abre con doble clic) |
-| `propuesta-altipal/recorrido3d.html` | recorrido 3D de 23 paradas por la planta |
-| `propuesta-altipal/recorrido.html` | visor de láminas del despiece del tractocamión |
-| `propuesta-altipal/assets/js/visor3d.js` | visor three.js con el modelo dentro (bundle IIFE) |
+| `index.html` | la propuesta en HTML (se abre con doble clic) |
+| `recorrido3d.html` | recorrido 3D de 23 paradas por la planta |
+| `recorrido.html` | visor de láminas del despiece del tractocamión |
+| `assets/js/visor3d.js` | visor three.js con el modelo dentro (bundle IIFE) |
 | `camion-cedi360/blender/` | fuentes del modelo: escena, almacén, muelle, áreas de programa, láminas |
 | `camion-cedi360/visor/src/` | fuentes del visor (`main.js`, `secciones.js`) |
 | `camion-cedi360/estado.txt` | bitácora técnica y decisiones del proyecto |
 | `camion-cedi360/render/` | láminas renderizadas de la planta |
 | `Propuesta CEDI 360 - ALTIPAL 2026.pdf` | propuesta en PDF |
+
+## Publicación en GitHub Pages
+
+El sitio se publica desde la **raíz de la rama `main`**, por eso `index.html`
+vive en la raíz del repositorio: GitHub Pages busca `index.html` en la raíz y,
+si no lo encuentra, muestra este README. La dirección pública es
+<https://shoyosb-maker.github.io/propuesta-altipal/>.
 
 ## Recorrido 3D
 
@@ -38,7 +45,7 @@ python blender\client.py exec --file blender\web_export.py
 cd visor
 node build-modelo.js
 npx esbuild src/main.js --bundle --format=iife --target=es2019 --minify ^
-    --outfile=../../propuesta-altipal/assets/js/visor3d.js
+    --outfile=../../assets/js/visor3d.js
 ```
 
 `build_all.py` reconstruye la escena, las cotas, el holograma, el almacén, el
