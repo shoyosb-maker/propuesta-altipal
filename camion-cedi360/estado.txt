@@ -1123,6 +1123,21 @@ SIGUIENTE PASO RECOMENDADO
 5. Si se publica en servidor, servir el glb aparte y no embebido en base64.
 6. Reiniciar Blender para que el puente cargue _set_phase con p5/p6/p7.
 
+2026-11-25 14:50  La vista previa de MotoBot es ahora una secuencia, como el mini
+                  tutorial de la propuesta de LuxeGrip: recorre la pagina de
+                  inicio (1000 x 2028) hasta el pie, muestra la tarjeta de acceso
+                  de super usuario escribiendo admin y la clave, pulsa Ingresar
+                  y termina en el panel de administracion. La captura del panel
+                  (chatbot-dashboard.webp) se copio de ese mismo proyecto.
+                  Todo es CSS: un ciclo de 9,5 s con seis keyframes (eviTutPan,
+                  eviTutLogin, eviTutTypeU, eviTutTypeP, eviTutBtn y eviTutDash)
+                  que corre mientras el cursor esta sobre la tarjeta y se
+                  reinicia al salir. Sin JS y sin peso extra.
+                  Ojo con las reglas heredadas de la tarjeta: .evi div mete 15 px
+                  de relleno y .evi img fuerza aspect-ratio 16/10, y eso dejaba
+                  la captura en 268 px y sin recorrido; se neutralizan dentro de
+                  .evi-pop con reglas mas especificas.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y

@@ -392,12 +392,79 @@ tbody tr:last-child td{border-bottom:0}
 }
 .evi-pop-shot{height:190px;overflow:hidden;background:var(--paper-3)}
 .evi-pop-shot img{display:block;width:100%;height:auto}
-/* la captura del chatbot es una página completa: al abrir la vista previa se recorre */
-.evi-pop-shot.is-largo img{transition:transform .5s ease}
-.evi:hover .evi-pop-shot.is-largo img,
-.evi:focus-visible .evi-pop-shot.is-largo img{
-  transform:translateY(calc(-100% + 190px));
-  transition:transform 7s linear;
+/* la ventana no hereda el relleno ni el recorte 16/10 de la miniatura */
+.evi .evi-pop{padding:0}
+.evi .evi-pop div{padding:0}
+.evi .evi-pop .evi-pop-bar{padding:7px 10px}
+.evi .evi-pop .evi-pop-foot{padding:7px 10px}
+.evi .evi-pop .evi-tut-login{padding:10px 11px}
+.evi .evi-pop-shot img{
+  width:100%;height:auto;max-width:none;aspect-ratio:auto;object-fit:contain;opacity:1;
+}
+.evi .evi-tut-page img{height:auto;object-fit:fill}
+
+/* la vista previa de MotoBot es una secuencia: recorre la página, entra al panel
+   con usuario y clave y termina en el dashboard. Corre en bucle mientras el
+   cursor está sobre la tarjeta. */
+.evi-tut{position:relative}
+.evi-tut-page,.evi-tut-dash{position:absolute;inset:0;overflow:hidden}
+.evi-tut-page img{width:100%;height:auto}
+.evi-tut-dash{opacity:0;background:#0B1116}
+.evi .evi-tut-dash img{width:100%;height:100%;object-fit:cover;object-position:top left}
+.evi-tut-login{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:202px;padding:10px 11px;border-radius:6px;opacity:0;
+  background:#101A22;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 20px 44px -20px #000;
+}
+.evi-tut-login b{display:block;font-size:.6rem;color:#fff;margin-bottom:3px}
+.evi-tut-login p{font-size:.49rem;line-height:1.35;color:#8A9AA6;margin:0 0 7px}
+.evi-tut-login label{
+  display:block;font-family:var(--mono);font-size:.42rem;letter-spacing:.12em;
+  text-transform:uppercase;color:#7E8C96;margin-bottom:3px;
+}
+.evi .evi-tut-field{
+  display:flex;align-items:center;height:16px;padding:0 6px;margin:0 0 6px;
+  border-radius:3px;background:#0B1116;border:1px solid rgba(255,255,255,.16);
+  font-family:var(--mono);font-size:.52rem;letter-spacing:normal;text-transform:none;
+  color:#E6EDF3;overflow:hidden;
+}
+.evi-tut-txt{display:block;font-style:normal;white-space:nowrap;overflow:hidden;width:0;text-transform:none}
+.evi-tut-btn{
+  display:block;text-align:center;padding:4px 0;border-radius:3px;
+  background:#F08A3C;color:#1A1206;font-size:.5rem;font-weight:700;letter-spacing:.04em;
+}
+.evi:hover .evi-tut-page img{animation:eviTutPan 9.5s linear infinite}
+.evi:hover .evi-tut-login{animation:eviTutLogin 9.5s linear infinite}
+.evi:hover .evi-tut-txt.u{animation:eviTutTypeU 9.5s steps(5,end) infinite}
+.evi:hover .evi-tut-txt.p{animation:eviTutTypeP 9.5s steps(4,end) infinite}
+.evi:hover .evi-tut-btn{animation:eviTutBtn 9.5s linear infinite}
+.evi:hover .evi-tut-dash{animation:eviTutDash 9.5s steps(1,end) infinite}
+@keyframes eviTutPan{
+  0%,18%{transform:translateY(0)}
+  40%,100%{transform:translateY(calc(-100% + 190px))}
+}
+@keyframes eviTutLogin{
+  0%,32%{opacity:0}
+  38%,64%{opacity:1}
+  68%,100%{opacity:0}
+}
+@keyframes eviTutTypeU{
+  0%,38%{width:0}
+  50%,100%{width:5ch}
+}
+@keyframes eviTutTypeP{
+  0%,52%{width:0}
+  62%,100%{width:4.6ch}
+}
+@keyframes eviTutBtn{
+  0%,58%{background:#F08A3C;transform:scale(1)}
+  62%,68%{background:#FFB877;transform:scale(.97)}
+  72%,100%{background:#F08A3C;transform:scale(1)}
+}
+@keyframes eviTutDash{
+  0%,70%{opacity:0}
+  70.1%,100%{opacity:1}
 }
 .evi-pop-foot{
   display:flex;align-items:center;gap:6px;padding:7px 10px;border-top:1px solid var(--line);
