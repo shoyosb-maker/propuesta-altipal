@@ -18,7 +18,7 @@ implementar el agente; el resto del tiempo el demo responde con guiones.
 | Ruta | Contenido |
 | --- | --- |
 | `index.html` | la propuesta en HTML (se abre con doble clic) |
-| `recorrido3d.html` | recorrido 3D de 23 paradas por la planta |
+| `recorrido3d.html` | recorrido 3D de 24 paradas por la planta |
 | `recorrido.html` | visor de láminas del despiece del tractocamión |
 | `assets/js/visor3d.js` | visor three.js con el modelo dentro (bundle IIFE) |
 | `camion-cedi360/blender/` | fuentes del modelo: escena, almacén, muelle, áreas de programa, láminas |
@@ -41,12 +41,33 @@ parada. La rueda del mouse no cambia de parada: sobre el lienzo acerca o aleja
 el modelo y fuera de él hace scroll normal.
 El botón de la esquina —abajo a la izquierda en escritorio, una barra bajo el
 lienzo en el celular— abre el panel de la parada actual hacia arriba: trae el
-texto y el índice `01`–`23`, y tocar un número salta a esa parte del recorrido.
+texto y el índice `01`–`24`, y tocar un número salta a esa parte del recorrido.
 El panel arranca cerrado para dejar el modelo despejado y se cierra con la ×,
 con `Esc` o tocando el modelo.
 El botón **Recorrer a pie** activa el modo juego: `W` adelante, `S` atrás,
 `A` izquierda, `D` derecha, `Shift` agacharse y la barra espaciadora subir;
 en el celular aparece un joystick y el arrastre de la mirada.
+
+## Reparto de áreas del CEDI
+
+La nave de 50 × 46 m queda para almacenamiento: recibo al sur, despacho al
+norte y tres muelles al este. El frío y la energía salieron de la nave y viven
+en dos pabellones exentos al oeste, sobre una plataforma común a la cota del
+piso (1,25 m):
+
+| Área | Medidas | Dónde |
+| --- | --- | --- |
+| Cuarto frío | 18 × 14 m | pabellón exento, x −96 a −78 / y −30 a −16 |
+| Subestación | 18 × 12 m | pabellón exento, x −96 a −78 / y −12 a 0 |
+| Pasillo técnico | 4 × 30 m | acristalado, x −78 a −74 / y −30 a 0 |
+| Jardín de acceso | 12 × 30 m | entre el pasillo y la fachada oeste de la nave |
+| Acceso de personal | puerta de 3 m con marquesina | fachada oeste, y −16 |
+| Anexo administrativo | 12 × 8 m + piso 2 | al norte, con ventanales en planta baja |
+
+El jardín lleva caminos de grava, árboles, bancas, materas y luminarias, y es
+el que conecta la puerta de personal con el pasillo que sirve a los dos
+pabellones. Las áreas se definen en `camion-cedi360/blender/programa.py`
+(`FRIO`, `ENE`, `PASILLO`, `JARDIN`, `PLATAFORMA`).
 
 ## Volver a construir
 

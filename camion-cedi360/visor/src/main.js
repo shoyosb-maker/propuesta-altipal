@@ -207,6 +207,16 @@ function cargarModelo() {
       M_Ene_Breaker: { color: 0x11171E, emissive: 0x1B2530, fuerza: 0.18, opacidad: 1 },
       M_Ene_UPS: { color: 0x1E4C63, emissive: 0x0072B2, fuerza: 0.35, opacidad: 1 },
       M_Ene_Aviso: { color: 0x8A6C08, emissive: 0xFBC710, fuerza: 1.7, opacidad: 1 },
+
+      // plataforma, pasillo tecnico y jardin de acceso
+      M_Pas_Losa: { color: 0x6E7A86, emissive: 0x84909C, fuerza: 0.24, opacidad: 1 },
+      M_Pas_Luz: { color: 0xFFF6DA, emissive: 0xFFEFC2, fuerza: 2.2, opacidad: 1 },
+      M_Jar_Pasto: { color: 0x1E6B3A, emissive: 0x2FA84F, fuerza: 0.60, opacidad: 1 },
+      M_Jar_Grava: { color: 0x9A9384, emissive: 0x8A8476, fuerza: 0.35, opacidad: 1 },
+      M_Jar_Tronco: { color: 0x3E3222, emissive: 0x4A3A24, fuerza: 0.20, opacidad: 1 },
+      M_Jar_Follaje: { color: 0x2E7A48, emissive: 0x3E8F58, fuerza: 0.65, opacidad: 1 },
+      M_Jar_Seto: { color: 0x33704A, emissive: 0x43855C, fuerza: 0.60, opacidad: 1 },
+      M_Jar_Madera: { color: 0x6B4A2E, emissive: 0x4A3420, fuerza: 0.35, opacidad: 1 },
       // sala tecnica de redes
       M_Red_Rack: { color: 0x11171E, emissive: 0x1B2530, fuerza: 0.20, opacidad: 1 },
       M_Red_Patch: { color: 0xC9A227, emissive: 0xA8871E, fuerza: 0.35, opacidad: 1 },

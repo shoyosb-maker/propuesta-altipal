@@ -70,30 +70,43 @@ export const SECCIONES = [
     vista: { obj: [-43.5, 2.4, -9], dist: 19, giro: 1.57, altura: 0.05 }
   },
   {
-    n: '', id: 'frio', corto: 'Frío', titulo: 'La cadena de frío, en una cámara monitoreada',
-    lead: 'Lácteos y refrigerados salen del bloque ambiente: entran a una cámara con panel sanitario, evaporadores redundantes y monitoreo continuo. Temperatura, humedad, apertura de puerta y fuga de refrigerante quedan registradas para la auditoría de la cadena de frío.',
+    n: '', id: 'jardin', corto: 'Acceso', titulo: 'El acceso de personal, con jardín alrededor',
+    lead: 'La nave se entra por una puerta de personal en la fachada occidental, con jardín alrededor y marquesina. Desde ese patio se llega al pasillo acristalado que sirve al cuarto frío y al pabellón eléctrico: los dos quedan fuera del área de almacenamiento, con acceso propio y a la vista.',
     bullets: [
-      'Cámara de 13 × 9,5 m con panel sanitario, piso de fácil lavado y zócalo sanitario',
-      'Dos evaporadores y condensadora exterior, con línea de refrigerante vista',
+      'Puerta de personal con marquesina sobre un patio verde de 12 × 30 m',
+      'Pasillo acristalado de 4 × 30 m entre el jardín y los pabellones técnicos',
+      'Frío y energía fuera de la nave, con acceso independiente y visible',
+      'La operación técnica no se cruza con el flujo de recibo y despacho'
+    ],
+    metrica: 'Acceso peatonal · jardín · pasillo técnico',
+    fase: 1,
+    vista: { obj: [-62.5, 2.65, 14.0], dist: 22.79, giro: 2.015, altura: 0.239, der: 0.05 }
+  },
+  {
+    n: '', id: 'frio', corto: 'Frío', titulo: 'La cadena de frío, en una cámara monitoreada',
+    lead: 'Lácteos y refrigerados salen del bloque ambiente: entran a una cámara exenta con panel sanitario, evaporadores redundantes y monitoreo continuo. Temperatura, humedad, apertura de puerta y fuga de refrigerante quedan registradas para la auditoría de la cadena de frío.',
+    bullets: [
+      'Cámara de 18 × 14 m con panel sanitario, piso de fácil lavado y zócalo sanitario',
+      'Tres evaporadores y dos condensadoras en cubierta, con línea de refrigerante vista',
       'Sondas de temperatura y humedad, contacto de puerta, detector de fuga y registrador',
       'Alarma local con baliza sobre la puerta y traza en el cuarto de monitoreo'
     ],
     metrica: 'Fase 1 · 2 °C a 4 °C sostenidos',
     fase: 1,
-    vista: { obj: [-57.2, 2.1, 24.2], dist: 9.67, giro: 0.473, altura: -0.031, der: 0.0, interior: true }
+    vista: { obj: [-79.0, 3.65, 25.0], dist: 15.65, giro: 3.065, altura: -0.026, der: 0.0, interior: true }
   },
   {
     n: '', id: 'energia', corto: 'Energía', titulo: 'Eje C · La energía que casi nadie mide',
-    lead: 'Subestación, tablero general, protecciones y puesta a tierra. El diagnóstico de cargas y la termografía se hacen aquí, sobre el equipo que ya está instalado, antes de cotizar una sola intervención.',
+    lead: 'Subestación, tablero general, protecciones y puesta a tierra, en un pabellón exento con reja hacia el pasillo. El diagnóstico de cargas y la termografía se hacen aquí, sobre el equipo que ya está instalado, antes de cotizar una sola intervención.',
     bullets: [
-      'Mantenimiento preventivo y correctivo de tableros, subestación y protecciones',
-      'Iluminación LED industrial en bodega, muelles y patios',
-      'Diagnóstico de infraestructura y termografía con hallazgos priorizados',
-      'Eficiencia energética con medición y verificación'
+      'Pabellón eléctrico de 18 × 12 m, fuera de la nave y con acceso desde el pasillo',
+      'Transformador de 500 kVA, tablero general, transferencia y banco de condensadores',
+      'UPS para control, frío y monitoreo, con dado de reserva para un segundo equipo',
+      'Iluminación LED industrial en bodega, muelles y patios'
     ],
     metrica: 'Consumo kWh/m² y hallazgos críticos cerrados',
     fase: 1,
-    vista: { obj: [-59.4, 1.4, -12.8], dist: 9.91, giro: 0.907, altura: 0.045, der: 0.0, interior: true }
+    vista: { obj: [-91.0, 2.25, 10.0], dist: 12.14, giro: -0.727, altura: 0.124, der: 0.0, interior: true }
   },
   {
     n: '', id: 'redes', corto: 'Redes', titulo: 'Eje B · Sin red no hay WMS, ni despacho, ni monitoreo',

@@ -2,7 +2,7 @@
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 05:20
+Actualizado: 2026-11-25 18:00
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1111,6 +1111,41 @@ BITÁCORA
                   De paso se corrige "SentineOps" por "SentinelOps" en el
                   titulo y el alt de esa tarjeta.
 
+2026-11-25 17:30  Reparto oeste del CEDI: el cuarto frio y la subestacion salen
+                  de la nave. Se arma una plataforma comun al oeste (x -97 a
+                  -62,30 y -31,5 a 1,5, cota SLAB) con dos pabellones exentos:
+                  frio de 18 x 14 m en x -96 a -78 / y -30 a -16, y electrico
+                  de 18 x 12 m en x -96 a -78 / y -12 a 0. Los une un pasillo
+                  acristalado de 4 x 30 m (x -78 a -74, y -30 a 0) y los dos
+                  dan al jardin de acceso (12 x 30 m) que llega a la puerta de
+                  personal de la nave en x -62,30 / y -16, con marquesina,
+                  caminos de grava, arboles, bancas, materas y luminarias.
+                  El frio lleva revestimiento azul por fuera y panel sanitario
+                  blanco por dentro; la subestacion pasa a tener reja oriente
+                  hacia el pasillo, transformador de 500 kVA con aisladores y
+                  demarcacion, tablero general, transferencia, dos UPS y banco
+                  de condensadores. Se libera la franja oeste de la nave, que
+                  queda como circulacion y area de crecimiento.
+                  Camaras nuevas de control: Cam_Pasillo_Tec, Cam_Jardin,
+                  Cam_Oeste y Cam_Anexo_Ext.
+2026-11-25 17:40  Anexo visible desde afuera: la planta baja cambia los muros
+                  norte y oriente por ventanales con antepecho y montantes
+                  (_ventanal en programa.py), con un muro central en la fachada
+                  oriente donde cuelga la pantalla de la sala; el piso 2 se
+                  acristala en su costado oriente fuera del tramo de la
+                  escalera y la cubierta gana un alero de 0,90 m.
+                  Las sillas de la sala de juntas estaban giradas sobre el eje
+                  equivocado (tres por cabecera de una mesa de 3,60 x 1,50):
+                  ahora van tres por lado largo y una en cada cabecera, todas
+                  mirando la mesa.
+2026-11-25 17:50  Recorrido 3D: nueva parada 06 "Acceso" (jardin, pasillo y
+                  pabellones) y vistas recalculadas de frio, energia y comite.
+                  La numeracion del HUD sale del orden del arreglo, asi que el
+                  total pasa de 23 a 24 paradas. La paleta del visor (PALETA en
+                  main.js) resuelve por nombre de material: todo material nuevo
+                  que no este ahi cae en el gris oscuro por defecto. Se
+                  agregaron M_Pas_Losa, M_Pas_Luz y los seis M_Jar_*.
+
 SIGUIENTE PASO RECOMENDADO
 --------------------------
 1. Probar el recorrido en la reunión y ajustar los encuadres de secciones.js.
@@ -1178,4 +1213,16 @@ RIESGOS Y NOTAS
 - Los cuartos son cajas cerradas: si se mueve una de esas areas hay que mover
   su vista en secciones.js y su Cam_* en programa.py, o la camara queda dentro
   de la geometria. Las coordenadas de vista van en [x, altura, -y_blender].
+- El jardin, el pasillo y los dos pabellones viven en la coleccion T90_ANEXO
+  (objetos PLA_*, PAS_*, JAR_*), para no agregar colecciones y no tocar la
+  lista FUERA de pliegos.py ni el horneado por fases de web_export.py.
+- Los materiales del visor se resuelven por nombre en PALETA (visor/src/
+  main.js). Un material nuevo que no este ahi sale gris oscuro, aunque en
+  Blender tenga su color: al agregar materiales nuevos hay que agregar la
+  entrada en los dos lados.
+- El frio y la energia ya no son cuartos cerrados dentro de la nave: si se
+  vuelven a mover hay que recalcular Cam_Frio / Cam_Energia en programa.py y
+  las vistas "frio" y "energia" de secciones.js.
+- La plataforma oeste sube 1,25 m sobre el terreno y remata con un borde de
+  0,48 m; la escalera de seis pasos al norte la conecta con el patio.
 =========================================================================
