@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    CEDI 360 · Recorrido del despiece
    Visor a pantalla completa de las cinco láminas del camión,
    con panel de contenido y puntos activos. Hereda los tokens de
@@ -352,3 +352,24 @@ body.jugando .rec-hud{display:none}
   body.recorrido-page{padding-bottom:calc(6px + env(safe-area-inset-bottom,0px))}
 }
 
+
+/* ---------- panel de texto desplegable ---------- */
+.rec-hud-bar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.rec-hud-bar .rn{margin-bottom:0}
+.rec-hud-toggle{
+  flex:0 0 auto;font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;
+  color:#C9D4DC;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.2);
+  border-radius:2px;padding:7px 10px;cursor:pointer;white-space:nowrap;line-height:1;
+  transition:border-color .2s,color .2s,background .2s;
+}
+.rec-hud-toggle:hover,.rec-hud-toggle:focus-visible{border-color:var(--yellow);color:var(--yellow);background:rgba(245,196,0,.1)}
+.rec-hud-body{transition:opacity .2s ease}
+.rec-hud.plegado .rec-hud-body{display:none}
+.rec-hud.plegado h1{
+  font-size:1.02rem;line-height:1.25;margin-bottom:14px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+@media (max-width:900px){
+  .rec-hud-toggle{min-height:38px;padding:9px 12px;font-size:.58rem;letter-spacing:.06em}
+  .rec-hud.plegado h1{font-size:1.12rem}
+}

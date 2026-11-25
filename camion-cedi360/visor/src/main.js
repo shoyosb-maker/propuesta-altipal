@@ -20,6 +20,8 @@ const PROGRESO = document.getElementById('visorProgreso');
 
 let escena, camara, render, controles, mixer, clips = [], modelo;
 let tiempoObjetivo = 0, tiempoActual = 0, seccionActual = 0, girando = false;
+let hudPlegado = false;
+try { hudPlegado = sessionStorage.getItem('cedi:hud') === '1'; } catch (err) {}
 let holo = null;
 let cinta = null;
 let muro = null;
@@ -828,14 +830,40 @@ function pintarHud(i) {
   const s = SECCIONES[i];
   const ultima = i === SECCIONES.length - 1;
   HUD.innerHTML =
-    '<span class="rn">' + s.n + ' de ' + SECCIONES.length + ' · ' + s.id + '</span>' +
+    '<div class="rec-hud-bar">' +
+      '<span class="rn">' + s.n + ' de ' + SECCIONES.length + ' · ' + s.id + '</span>' +
+      '<button type="button" class="rec-hud-toggle" id="visorHudToggle" aria-controls="visorHudBody"' +
+        ' aria-expanded="' + (hudPlegado ? 'false' : 'true') + '">' +
+        (hudPlegado ? 'Ver texto' : 'Ocultar texto') +
+      '</button>' +
+    '</div>' +
     '<h1>' + s.titulo + '</h1>' +
-    '<p>' + s.lead + '</p>' +
-    '<ul>' + s.bullets.map((b) => '<li>' + b + '</li>').join('') + '</ul>' +
-    '<span class="rm">' + s.metrica + '</span>' +
+    '<div class="rec-hud-body" id="visorHudBody">' +
+      '<p>' + s.lead + '</p>' +
+      '<ul>' + s.bullets.map((b) => '<li>' + b + '</li>').join('') + '</ul>' +
+      '<span class="rm">' + s.metrica + '</span>' +
+    '</div>' +
     '<button type="button" class="rec-continuar" id="visorContinuar">' +
     (ultima ? 'Volver al inicio' : 'Continuar · ' + SECCIONES[i + 1].titulo) +
     '</button>';
+  pintarPlegado();
+  const botonPlegar = HUD.querySelector('#visorHudToggle');
+  if (botonPlegar) botonPlegar.addEventListener('click', alternarPlegado);
+}
+
+/* el panel de texto se pliega para mirar el modelo sin obstáculos */
+function alternarPlegado() {
+  hudPlegado = !hudPlegado;
+  pintarPlegado();
+  try { sessionStorage.setItem('cedi:hud', hudPlegado ? '1' : '0'); } catch (err) {}
+}
+
+function pintarPlegado() {
+  HUD.classList.toggle('plegado', hudPlegado);
+  const boton = HUD.querySelector('#visorHudToggle');
+  if (!boton) return;
+  boton.textContent = hudPlegado ? 'Ver texto' : 'Ocultar texto';
+  boton.setAttribute('aria-expanded', hudPlegado ? 'false' : 'true');
 }
 
 function pintarRiel() {

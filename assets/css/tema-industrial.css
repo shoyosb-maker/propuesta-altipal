@@ -656,12 +656,45 @@ button.chip:hover{border-color:var(--ink-3)}
   .chip span,button.chip{padding:10px 13px;font-size:.8rem}
   .acc-head{padding:15px 14px}
 
+  /* navegación del deck en móvil: igual que en escritorio */
+  /* el capítulo deja canaleta a cada lado para los rieles */
+  .chapter{padding-left:20px;padding-right:46px}
+  /* flechas en columna, centradas a la derecha */
   .deck-arrows{
-    top:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));right:10px;left:auto;
-    transform:none;gap:6px;padding:6px 8px;
+    top:50%;bottom:auto;right:0;left:auto;transform:translateY(-50%);
+    flex-direction:column;align-items:center;gap:7px;padding:0;
+    background:transparent;border:0;border-radius:0;box-shadow:none;
+    -webkit-backdrop-filter:none;backdrop-filter:none;
   }
-  .deck-arrow{width:40px;height:40px}
-  .deck-count{font-size:.58rem}
+  .deck-arrow{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line-2);
+    background:rgba(250,248,242,.92);color:var(--ink-2);
+    box-shadow:0 8px 20px -14px rgba(14,22,27,.9);
+  }
+  .deck-arrow:active{background:#fff;border-color:var(--ink);color:var(--ink)}
+  .deck-count{
+    width:38px;text-align:center;font-size:.5rem;letter-spacing:.02em;
+    color:var(--ink-3);background:transparent;padding:0;
+  }
+
+  /* puntos de capítulo a la izquierda, sutiles */
+  .deck-dots{
+    display:flex;left:0;width:16px;gap:0;padding:9px 0;
+    background:rgba(250,248,242,.55);border:1px solid rgba(216,213,203,.7);
+    border-left:0;border-radius:0 8px 8px 0;opacity:.6;
+  }
+  .deck-dots a{
+    width:16px;height:16px;border-radius:50%;background:transparent;
+    display:grid;place-items:center;touch-action:manipulation;
+  }
+  .deck-dots a::before{
+    content:"";width:5px;height:5px;border-radius:50%;background:var(--line-2);
+    transition:background .2s,transform .2s;
+  }
+  .deck-dots a:hover,.deck-dots a.on{background:transparent;box-shadow:none}
+  .deck-dots a:hover::before{background:var(--ink-3)}
+  .deck-dots a.on::before{background:var(--ink);transform:scale(1.7)}
+  .deck-dots a::after{display:none}
 
   /* tablas: se deslizan y la primera columna queda fija como referencia */
   .table-wrap,.matriz-wrap{
@@ -697,7 +730,7 @@ button.chip:hover{border-color:var(--ink-3)}
 /* Tablet: titulares algo más contenidos y márgenes más ajustados para que
    el texto no quede con líneas demasiado cortas. */
 @media (min-width:761px) and (max-width:1100px){
-  .chapter{padding-left:clamp(24px,4vw,44px);padding-right:clamp(24px,4vw,44px)}
+  .chapter{padding-left:clamp(24px,4vw,44px);padding-right:clamp(62px,5vw,76px)}
   .chapter-head h2{font-size:clamp(2.1rem,4.4vw,2.9rem)}
   .cover-block h1{font-size:clamp(2.6rem,5.4vw,4rem)}
   .card{padding:20px}
