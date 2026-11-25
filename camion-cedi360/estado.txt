@@ -502,9 +502,11 @@ VISOR 3D (three.js)
   automatización (flujo del sorter, Fase 2) y comité (sala de juntas). Cada
   parada fija la fase del despiece (0-4) y un encuadre propio; la cámara
   viaja interpolando posición y objetivo.
-  Navegación por riel, flechas, teclado, rueda y el botón "Continuar" del
-  panel. El hash lleva el id de la sección (#fases) y sessionStorage retoma
-  donde se quedó. La numeración del HUD sale del orden del arreglo.
+  Navegación por riel, flechas, teclado y el botón "Continuar" del panel.
+  La rueda no pasa de parada: sobre el lienzo acerca el modelo y fuera de él
+  hace scroll normal. El hash lleva el id de la sección (#fases) y
+  sessionStorage retoma donde se quedó. La numeración del HUD sale del orden
+  del arreglo.
 
   En pantallas anchas el encuadre se corre a la derecha un 15 % del
   ancho visible: el panel tapa la franja izquierda. Ojo: hasta ahora
@@ -710,7 +712,9 @@ ENTORNO OPERATIVO (blender/entorno.py)
 
   Las láminas del visor salen de render/web/ (2048 x 1152) convertidas a
   WebP. Para regenerarlas: phase + render con esas dimensiones y convertir.
-  El visor navega con clic, ← →, rueda, gestos y botón de pantalla completa.
+  El visor de láminas navega con clic, ← →, rueda, gestos y botón de pantalla
+  completa. La rueda sigue pasando láminas solo en recorrido.html; en el
+  recorrido 3D se quitó ese atajo.
 
 FURGONETAS DE REPARTO (blender/importar_furgon.py)
 --------------------------------------------------
@@ -1070,6 +1074,12 @@ BITÁCORA
                   interior: true ya no se alejan; en su lugar el campo vertical
                   se abre para conservar 76 grados horizontales (tope 78).
                   glb 13,8 MB -> modelo.js 5,1 MB -> bundle 5,6 MB.
+2026-11-25 13:45  La rueda ya no cambia de parada en el recorrido 3D: se quito
+                  el listener global de wheel que llamaba a ir() con
+                  deltaY > 26. Ahora la rueda sobre el lienzo acerca el modelo
+                  (OrbitControls) y fuera del lienzo hace scroll normal. La
+                  pista del lienzo pasa a "rueda para acercar". Se mantiene la
+                  navegacion por riel, flechas, teclado y boton Continuar.
 
 SIGUIENTE PASO RECOMENDADO
 --------------------------

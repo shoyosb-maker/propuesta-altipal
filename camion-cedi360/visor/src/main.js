@@ -33,7 +33,7 @@ const FOV_INTERIOR = 76 * Math.PI / 180;
 const tmpA = new THREE.Vector3();
 const tmpB = new THREE.Vector3();
 
-const MENSAJE = 'Arrastra para girar · rueda para pasar de sección · ← → para avanzar';
+const MENSAJE = 'Arrastra para girar · rueda para acercar · ← → para avanzar';
 
 function b64aBuffer(b64) {
   const limpio = b64.replace(/^data:[^,]+,/, '');
@@ -997,16 +997,6 @@ function enlazarControles() {
     if (e.key === 'Home') { ir(0); e.preventDefault(); }
     if (e.key === 'End') { ir(SECCIONES.length - 1); e.preventDefault(); }
   });
-
-  let bloqueo = 0;
-  window.addEventListener('wheel', (e) => {
-    if (modoJuego) return;
-    if (Math.abs(e.deltaY) < 26) return;
-    const ahora = Date.now();
-    if (ahora - bloqueo < 750) return;
-    bloqueo = ahora;
-    ir(seccionActual + (e.deltaY > 0 ? 1 : -1));
-  }, { passive: true });
 }
 
 /* ---------- modo juego: recorrido a pie con teclado y joystick ----------

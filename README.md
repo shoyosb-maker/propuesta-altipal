@@ -29,7 +29,9 @@ si no lo encuentra, muestra este README. La dirección pública es
 
 ## Recorrido 3D
 
-Se navega con el riel inferior, las flechas del teclado o la rueda del mouse.
+Se navega con el riel inferior, las flechas del teclado o el botón de la
+parada. La rueda del mouse no cambia de parada: sobre el lienzo acerca o aleja
+el modelo y fuera de él hace scroll normal.
 El botón de la esquina —abajo a la izquierda en escritorio, una barra bajo el
 lienzo en el celular— abre el panel de la parada actual hacia arriba: trae el
 texto y el índice `01`–`23`, y tocar un número salta a esa parte del recorrido.
