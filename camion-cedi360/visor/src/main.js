@@ -27,6 +27,9 @@ let cinta = null;
 let muro = null;
 let pantalla = null;
 let camDestino = null, tgtDestino = null;
+const FOV_BASE = 38;
+// campo horizontal objetivo de las tomas de interior (radianes)
+const FOV_INTERIOR = 76 * Math.PI / 180;
 const tmpA = new THREE.Vector3();
 const tmpB = new THREE.Vector3();
 
@@ -72,7 +75,7 @@ function iniciar() {
   escena.background = new THREE.Color(0x0B1116);
   escena.fog = new THREE.Fog(0x0B1116, 90, 260);
 
-  camara = new THREE.PerspectiveCamera(38, ancho / alto, 0.5, 900);
+  camara = new THREE.PerspectiveCamera(FOV_BASE, ancho / alto, 0.5, 900);
   camara.position.set(46, 40, 46);
 
   controles = new OrbitControls(camara, render.domElement);
@@ -791,12 +794,23 @@ function ir(indice, directo) {
   if (directo) tiempoActual = tiempoObjetivo;
 
   const v = sec.vista;
-  // en vertical el campo horizontal se estrecha: la cámara se aleja para que
-  // el encuadre de la sección no quede recortado por los lados
+  // en vertical el campo horizontal se estrecha: fuera se aleja la cámara para que
+  // el encuadre no quede recortado; dentro de un cuarto alejarla saldría del recinto,
+  // así que se abre el campo vertical conservando el encuadre horizontal de escritorio
   const proporcion = camara.aspect || 1.6;
-  const distancia = proporcion < 1.6
+  const interior = !!v.interior;
+  const distancia = proporcion < 1.6 && !interior
     ? v.dist * Math.min(1.9, Math.pow(1.6 / proporcion, 0.7))
     : v.dist;
+  // los interiores se miran como con un gran angular: se conserva un campo
+  // horizontal amplio en cualquier proporción sin mover la cámara del cuarto
+  const fovDeseado = interior
+    ? Math.min(78, Math.max(FOV_BASE, 2 * Math.atan(Math.tan(FOV_INTERIOR / 2) / proporcion) * 180 / Math.PI))
+    : FOV_BASE;
+  if (Math.abs(camara.fov - fovDeseado) > 0.01) {
+    camara.fov = fovDeseado;
+    camara.updateProjectionMatrix();
+  }
   // las tomas de interiores necesitan acercarse más de lo que permite el orbital de exteriores
   controles.minDistance = Math.max(1.2, Math.min(8, distancia * 0.6));
   camDestino = posicionCamara(v.obj, distancia, v.giro, v.altura);

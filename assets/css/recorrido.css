@@ -354,11 +354,15 @@ body.jugando .rec-hud{display:none}
 
 
 /* ---------- menú desplegable del recorrido ---------- */
-/* el texto y el índice de paradas viven en un panel que sale de un botón
-   en la esquina; cerrado por defecto para dejar el modelo despejado */
-.rec-menu-btn{
+/* el texto y el índice de paradas viven en un panel que sale del botón
+   hacia arriba; cerrado por defecto para dejar el modelo despejado */
+.rec-menu{
   position:absolute;left:clamp(16px,3vw,44px);bottom:clamp(96px,15vh,132px);
-  z-index:7;display:flex;align-items:center;gap:10px;
+  z-index:7;width:min(420px,calc(100vw - 32px));
+  display:flex;flex-direction:column;align-items:flex-start;
+}
+.rec-menu-btn{
+  display:flex;align-items:center;gap:10px;width:auto;max-width:100%;
   padding:11px 14px;border-radius:2px;cursor:pointer;
   background:rgba(9,15,20,.86);border:1px solid rgba(245,196,0,.42);
   color:#E6EDF3;font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;
@@ -375,11 +379,11 @@ body.jugando .rec-hud{display:none}
 }
 .rec-menu-btn.abierto{border-color:var(--yellow);color:var(--yellow);background:rgba(9,15,20,.96)}
 .rec-menu-btn.abierto .rmb-ico{transform:rotate(180deg)}
-body.jugando .rec-menu-btn{display:none}
+body.jugando .rec-menu{display:none}
 
-.rec-hud{
-  bottom:calc(clamp(96px,15vh,132px) + 58px);
-  max-height:min(58vh,540px);overflow-y:auto;overscroll-behavior:contain;z-index:6;
+.rec-menu .rec-hud{
+  position:absolute;left:0;right:0;bottom:calc(100% + 8px);
+  width:auto;max-height:min(58vh,540px);overflow-y:auto;overscroll-behavior:contain;z-index:6;
 }
 .rec-hud[hidden]{display:none}
 .rec-hud-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
@@ -412,15 +416,14 @@ body.jugando .rec-menu-btn{display:none}
 .rec-idx.on b{color:var(--yellow)}
 
 @media (max-width:900px){
-  /* en móvil el botón y el panel van en el flujo, bajo el lienzo */
-  .rec-menu-btn{
-    position:static;margin:10px 16px 0;width:calc(100% - 32px);
-    justify-content:space-between;min-height:46px;
+  /* en móvil el botón va bajo el lienzo y el panel despliega hacia arriba */
+  .rec-menu{
+    position:relative;left:auto;bottom:auto;width:auto;margin:10px 16px 0;
   }
+  .rec-menu-btn{min-height:46px;width:100%;justify-content:space-between}
   .rec-menu-btn .rmb-txt{max-width:none;font-size:.6rem}
-  .rec-hud{
-    position:relative;left:auto;right:auto;bottom:auto;width:auto;
-    margin:8px 16px 0;max-height:none;overflow:visible;
+  .rec-menu .rec-hud{
+    max-height:min(60vh,420px);padding:16px 16px 14px;
   }
   .rec-hud-close{width:36px;height:36px}
   .rec-idx{min-height:44px}

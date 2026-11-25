@@ -31,10 +31,10 @@ si no lo encuentra, muestra este README. La dirección pública es
 
 Se navega con el riel inferior, las flechas del teclado o la rueda del mouse.
 El botón de la esquina —abajo a la izquierda en escritorio, una barra bajo el
-lienzo en el celular— abre el panel de la parada actual: trae el texto y el
-índice `01`–`23`, y tocar un número salta a esa parte del recorrido. El panel
-arranca cerrado para dejar el modelo despejado y se cierra con la ×, con
-`Esc` o tocando el modelo.
+lienzo en el celular— abre el panel de la parada actual hacia arriba: trae el
+texto y el índice `01`–`23`, y tocar un número salta a esa parte del recorrido.
+El panel arranca cerrado para dejar el modelo despejado y se cierra con la ×,
+con `Esc` o tocando el modelo.
 El botón **Recorrer a pie** activa el modo juego: `W` adelante, `S` atrás,
 `A` izquierda, `D` derecha, `Shift` agacharse y la barra espaciadora subir;
 en el celular aparece un joystick y el arrastre de la mirada.

@@ -41,7 +41,7 @@ from mathutils import Euler, Vector
 
 # --------------------------------------------------------------- geometria
 SLAB = 1.25                 # cota del piso operativo (nivel de anden)
-HX0, HX1 = -56.0, -12.42    # muros oeste y este
+HX0, HX1 = -62.0, -12.42    # muros oeste y este (ampliacion de 6 m al oeste)
 HY0, HY1 = -30.0, 16.0      # muros sur y norte
 MURO = 0.30
 Z_ALERO = 12.0              # cordon inferior de cerchas
@@ -388,7 +388,7 @@ def build_estructura(col):
         # cercha: cordones y montantes en cada vano
         geo.caja((cx, y, Z_ALERO), (ancho, 0.14, 0.20), acero)
         geo.caja((cx, y, Z_CUMBRE), (ancho, 0.14, 0.20), acero)
-        vanos = (HX0, -45.0, -34.8, -23.0, HX1)
+        vanos = (HX0, -54.0, -45.0, -34.8, -23.0, HX1)
         for xa, xb in zip(vanos, vanos[1:]):
             for k in range(1, 4):
                 x = xa + (xb - xa) * k / 4.0
@@ -396,7 +396,7 @@ def build_estructura(col):
             geo.caja(((xa + xb) / 2, y, (Z_ALERO + Z_CUMBRE) / 2),
                      (abs(xb - xa) * 0.94, 0.07, 0.07), acero,
                      rot=(0.0, math.atan2(Z_CUMBRE - Z_ALERO, abs(xb - xa)), 0.0))
-    for x in (-49.0, -43.0, -37.0, -31.0, -25.0, -19.0):
+    for x in (-61.0, -55.0, -49.0, -43.0, -37.0, -31.0, -25.0, -19.0):
         geo.caja((x, cy, Z_CUMBRE + 0.14), (0.10, largo, 0.12), acero)
 
     # luminarias de alta bahia colgadas de la cercha
@@ -681,7 +681,7 @@ def build_seguridad(col, gp_cctv):
     geo.caja((bx, by, piso + alto + 0.10),
              (booth_x1 - booth_x0 + 0.5, booth_y1 - booth_y0 + 0.5, 0.20), estructura)
 
-    # muro oeste ciego; muro sur ciego con el hueco de la puerta
+    # muro oeste ciego
     geo.caja((booth_x0 - 0.06, by, piso + alto / 2),
              (0.12, booth_y1 - booth_y0, alto), banda)
     for x0, x1 in ((booth_x0, puerta_x0), (puerta_x1, booth_x1)):

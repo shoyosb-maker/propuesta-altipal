@@ -21,7 +21,7 @@ como pieza central de la propuesta CEDI 360:
   - Fase 4: la flota conectada, con SLA y mesa de servicio.
 
 El modelo se amplió con el centro de acopio de gran formato que sostiene la
-promesa: nave de 44 x 46 m con estantería selectiva y el catálogo de ALTIPAL
+promesa: nave de 50 x 46 m con estantería selectiva y el catálogo de ALTIPAL
 repartido por familia de producto, centro de seguridad electrónica con CCTV y
 control de acceso, y ocho puntos de automatización (ver más abajo).
 
@@ -384,27 +384,41 @@ MURO DE VIDEO EN VIVO (visor/src/main.js)
 
 AREAS DE PROGRAMA (blender/programa.py)
 ---------------------------------------
-  Cuatro recintos nuevos dentro de la nave, sin capa propia: se ven en todas
-  las fases. programa.py es autocontenido (material, Geo, texto, coleccion,
-  vaciar, uv_frente) y corre despues de muelle.py en build_all.py.
+  Cinco recintos nuevos, sin capa propia: se ven en todas las fases.
+  programa.py es autocontenido (material, Geo, texto, coleccion, vaciar,
+  uv_frente) y corre despues de muelle.py en build_all.py.
 
-    T87_FRIO    camara de frio 11 x 8,2 m, 6 m de alto, panel sanitario,
-                zocalo, puerta corredera con cortina de lamina, tres modulos
-                de estanteria con lacteos y refrigerados, dos evaporadores,
-                condensadora exterior con linea de refrigerante, tres sondas
-                de temperatura, humedad, contacto de puerta, detector de
-                fuga, registrador, baliza y rotulos.   (9 objetos)
-    T88_ADMIN   recepcion + sala de juntas bajo la mezanina del cuarto de
-                control (techo 4,10 m): mesa de 3,6 x 1,5, ocho sillas,
-                credenza, tablero de corcho y TV de pared. ADM_Pantalla va
-                como malla aparte porque lleva su propia textura dinamica.
-                (6 objetos)
-    T89_ENERGIA subestacion de 500 kVA con cerramiento, transformador,
+  El reparto se hizo por franjas para que ningun cuarto quede sobre las
+  estanterias (racks en x -52,2..-22,1, y -19..11, alto 10,85):
+
+    T87_FRIO    camara de frio 13 x 9,5 m en la franja oeste-sur
+                (x -60,8..-47,8, y -29,4..-19,9), 6 m de alto, panel
+                sanitario, zocalo, puerta corredera con cortina de lamina,
+                tres modulos de estanteria con lacteos y refrigerados, dos
+                evaporadores, condensadora exterior con linea de
+                refrigerante, tres sondas de temperatura, humedad, contacto
+                de puerta, detector de fuga, registrador, baliza y rotulos.
+                (9 objetos)
+    T88_ADMIN   recepcion + sala de juntas en anexo exterior al norte
+                (x -38..-26, y 16,9..24,9, techo 4,10 m): mesa de 3,6 x 1,5,
+                ocho sillas, credenza, tablero de corcho y TV de pared.
+                ADM_Pantalla va como malla aparte porque lleva su propia
+                textura dinamica.  (6 objetos)
+    T89_ENERGIA subestacion de 500 kVA en la franja oeste-norte
+                (x -61..-52,9, y 3,6..15,6) con cerramiento, transformador,
                 tablero general de 630 A con circuitos, UPS, banco de
                 condensadores, bandeja y avisos de alta tension. (4 objetos)
-    T92_REDES   sala tecnica con dos gabinetes (patch panels, switch con
-                LED, UPS), bandeja de fibra y dos AP colgados en la nave.
-                (4 objetos)
+    T90_ANEXO   piso 2 del anexo: losa, muros, cubierta, terraza con
+                baranda, escalera exterior con rellano y equipos de cubierta
+                sobre la sala de juntas.  (1 objeto)
+    T92_REDES   sala tecnica en el piso 2 del anexo (x -36,2..-31,2,
+                y 20,2..23,9, piso en SLAB + 4,30): cinco gabinetes con
+                patch panels, switch con LED y UPS, mesa de trabajo, bandeja
+                de fibra y dos AP colgados en la nave. (4 objetos)
+
+  La nave crecio 6 m al occidente (HX0 = -62) para que la camara de frio y
+  la subestacion quepan en la franja oeste sin invadir los racks; los vanos
+  de cercha y las correas de almacen.py acompanan el nuevo vano.
 
   Un objeto Geo se cierra con objeto(); llamarlo dos veces sobre el mismo
   Geo repite toda la geometria acumulada en el segundo objeto (pasaba con
@@ -421,7 +435,7 @@ ENTINTADO (T91_SIN_LINEAS)
   piezas que no deben entintarse se enlazan a T91_SIN_LINEAS (siguen en su
   coleccion real). Alli van las anotaciones, la malla CEDI_Producto (miles
   de cajas) y los sensores IoT. Sin ese filtro, un centro de acopio de
-  44 x 46 m se convierte en una masa de lineas amarillas.
+  50 x 46 m se convierte en una masa de lineas amarillas.
   pliegos.py excluye T81..T85 ademas de T80_ENTORNO: las laminas del camion
   hablan del camion.
 
@@ -1033,6 +1047,29 @@ BITÁCORA
                   median 5-10 m de ancho y se salian del recinto.
                   glb 13,72 MB (884 objetos) -> modelo.js 5,1 MB -> bundle
                   5,86 MB. Escena: 1.178 objetos.
+2026-11-25 18:30  Reparto del programa y menu del recorrido. Los tres cuartos
+                  se veian amontonados en la esquina suroriente de la nave.
+                  Ahora: la nave crece 6 m al occidente (HX0 -62) y las areas
+                  se reparten por franjas libres de estanterias (ver AREAS DE
+                  PROGRAMA): frio 13 x 9,5 en la franja oeste-sur, subestacion
+                  8,1 x 12 en la franja oeste-norte, sala de juntas y recepcion
+                  en un anexo exterior al norte, y redes en el piso 2 de ese
+                  anexo (T90_ANEXO: losa, muros, terraza con baranda, escalera
+                  exterior y equipos de cubierta). Se descarto poner redes en un
+                  entrepiso dentro de la nave: a 5,6 m atravesaba las
+                  estanterias de 10,85. Se revirtio el paso abierto en el muro
+                  oeste del cuarto de control, que ya no lleva a ninguna parte.
+                  Camaras Cam_* y vistas de secciones.js recalculadas para los
+                  cuatro interiores.
+                  Menu del recorrido: boton y panel dentro de .rec-menu; el
+                  panel sale hacia arriba (bottom: 100% + 8px) en escritorio y
+                  en movil, con scroll interno y tope de 58-60 vh.
+                  Tomas de interior en el visor: la compensacion por
+                  proporcion alejaba la camara y en vertical la sacaba del
+                  cuarto (pantalla azul). Las secciones marcadas con
+                  interior: true ya no se alejan; en su lugar el campo vertical
+                  se abre para conservar 76 grados horizontales (tope 78).
+                  glb 13,8 MB -> modelo.js 5,1 MB -> bundle 5,6 MB.
 
 SIGUIENTE PASO RECOMENDADO
 --------------------------
@@ -1079,4 +1116,11 @@ RIESGOS Y NOTAS
 - El token de Sketchfab (.sketchfab_token) es una credencial personal: no se
   copia a propuesta-altipal ni a ningún archivo que se entregue. Si se filtra,
   se revoca desde la cuenta y se guarda uno nuevo.
+- Las paradas que miran dentro de un cuarto cerrado (frio, energia, redes,
+  seguridad, comite) llevan interior: true en secciones.js. Sin esa marca la
+  compensacion por proporcion aleja la camara en vertical y la saca del
+  recinto: se ve solo la cara exterior del muro, una pantalla plana.
+- Los cuartos son cajas cerradas: si se mueve una de esas areas hay que mover
+  su vista en secciones.js y su Cam_* en programa.py, o la camara queda dentro
+  de la geometria. Las coordenadas de vista van en [x, altura, -y_blender].
 =========================================================================

@@ -30,15 +30,21 @@ from mathutils import Euler, Vector
 
 # --------------------------------------------------------------- geometria
 SLAB = 1.25
-HX0, HX1 = -56.0, -12.42
+HX0, HX1 = -62.0, -12.42
 HY0, HY1 = -30.0, 16.0
 
-FRIO = (-46.4, -35.4, -29.2, -21.0)     # x0, x1, y0, y1
-FRIO_ALTO = 6.00                        # de SLAB hacia arriba
-ADMIN = (-21.90, -13.70, 9.60, 15.80)
-ADMIN_ALTO = 4.10                       # techo a 5,35 (entrepiso del control)
-ENE = (-55.10, -48.40, -29.40, -24.10)
-RED = (-30.20, -26.40, 12.40, 15.70)
+# Reparto del programa: cada area en su propia zona, sin compartir esquina.
+#   frio     suroeste, contra la fachada sur de recibo (nave ampliada)
+#   energia  noroeste, contra la fachada norte
+#   admin    edificio anexo, fuera de la nave, al norte
+#   redes    entrepiso junto al cuarto de control (piso de arriba)
+FRIO = (-60.80, -47.80, -29.40, -19.90)     # 13 x 9,5 m
+FRIO_ALTO = 6.00                            # de SLAB hacia arriba
+ADMIN = (-38.00, -26.00, 16.90, 24.90)      # 12 x 8 m, anexo exterior
+ADMIN_ALTO = 4.10
+ENE = (-61.00, -52.90, 3.60, 15.60)        # 8,1 x 12 m, franja oeste
+RED = (-36.20, -31.20, 20.20, 23.90)        # sala tecnica en el piso 2 del anexo
+RED_Z0 = SLAB + 4.30
 
 # ------------------------------------------------------------- paleta sRGB
 AZUL = 0x00274B
@@ -497,6 +503,9 @@ def build_admin(col):
     acero = mat("M_Alm_Acero")
 
     geo = Geo("ADM_Estructura")
+    # el anexo se apoya en el patio, a nivel de anden
+    geo.caja(((x0 + x1) / 2, (y0 + y1) / 2, z0 / 2),
+             (x1 - x0 + 1.40, y1 - y0 + 1.40, z0), mat("M_Alm_Losa"))
     # piso y cielo raso
     geo.caja(((x0 + x1) / 2, (y0 + y1) / 2, z0 + 0.02),
              (x1 - x0, y1 - y0, 0.04), piso)
@@ -643,10 +652,10 @@ def build_energia(col):
     t_ambar = mat("M_Ene_Aviso")
     texto("ENE_Rotulo", "SUBESTACION 500 kVA · TABLERO GENERAL",
           ((x0 + x1) / 2, y1 - 0.20, z0 + 2.60), 0.18, col, t_blanco,
-          rot=(math.radians(90), 0.0, math.radians(180)))
+          rot=(math.radians(90), 0.0, 0.0))
     texto("ENE_Aviso", "ALTA TENSION · SOLO PERSONAL AUTORIZADO",
           ((x0 + x1) / 2, y1 - 0.22, z0 + 2.20), 0.14, col, t_ambar,
-          rot=(math.radians(90), 0.0, math.radians(180)))
+          rot=(math.radians(90), 0.0, 0.0))
     texto("ENE_Piso", "SUBESTACION",
           ((x0 + x1) / 2, y0 + 1.10, z0 + 0.018), 0.40, col, t_blanco,
           rot=(0.0, 0.0, 0.0))
@@ -655,7 +664,7 @@ def build_energia(col):
 # ------------------------------------------------------------------ redes
 def build_redes(col):
     x0, x1, y0, y1 = RED
-    z0 = SLAB
+    z0 = RED_Z0
     techo = z0 + 3.60
     muro = mat("M_Adm_Muro")
     vidrio = mat("M_Adm_Vidrio")
@@ -664,8 +673,10 @@ def build_redes(col):
     switch = mat("M_Red_Switch")
     led = mat("M_Red_Led")
     acero = mat("M_Alm_Acero")
+    estructura = mat("M_Alm_Estructura")
 
     geo = Geo("RED_Sala")
+    geog = geo
     geo.caja(((x0 + x1) / 2, (y0 + y1) / 2, z0 + 0.03),
              (x1 - x0, y1 - y0, 0.06), mat("M_Adm_Piso"))
     # muros: occidente, oriente y norte ciegos; sur vidriado con puerta
@@ -682,9 +693,9 @@ def build_redes(col):
              (x1 - x0 - 0.3, y1 - y0 - 0.3, 0.10), mat("M_Alm_Acero"))
     geo.objeto(col, "RED_Sala")
 
-    # dos gabinetes con patch panels, switch, ODF y UPS
+    # cinco gabinetes con patch panels, switch, ODF y UPS
     rackes = Geo("RED_Racks")
-    for i, x in enumerate((x0 + 0.75, x0 + 1.55)):
+    for i, x in enumerate([x0 + 0.75 + i * 0.80 for i in range(5)]):
         rackes.caja((x, y1 - 0.80, z0 + 1.05), (0.60, 0.80, 2.00), rack)
         rackes.caja((x, y1 - 1.22, z0 + 1.10), (0.54, 0.04, 1.80),
                     mat("M_Frio_Rejilla"))
@@ -697,6 +708,14 @@ def build_redes(col):
                         (0.02, 0.02, 0.03), led)
         rackes.caja((x, y1 - 1.26, z0 + 0.62), (0.46, 0.05, 0.14),
                     mat("M_Red_UPS"))
+    # mesa de trabajo y punto de acceso de la propia sala
+    rackes.caja(((x0 + x1) / 2, y0 + 0.95, z0 + 0.78),
+                (1.60, 0.70, 0.06), mat("M_Adm_Mesa"))
+    for dx in (-0.68, 0.68):
+        rackes.caja(((x0 + x1) / 2 + dx, y0 + 0.95, z0 + 0.39),
+                    (0.08, 0.60, 0.78), mat("M_Adm_Mueble"))
+    rackes.caja(((x0 + x1) / 2, y0 + 0.95, z0 + 0.86),
+                (0.44, 0.32, 0.10), mat("M_Red_UPS"))
     # bandeja de fibra hacia el cuarto de control
     rackes.caja(((x0 + x1) / 2, y0 + 0.60, techo - 0.20),
                 (x1 - x0 - 0.4, 0.22, 0.08), acero)
@@ -740,18 +759,72 @@ def camara(nombre, loc, objetivo, lente=35.0):
     return cam
 
 
+# ------------------------------------------------------------------ anexo
+def build_anexo(col):
+    """Piso 2 del anexo: terraza al sur, volumen cerrado y escalera exterior."""
+    x0, x1, y0, y1 = ADMIN
+    z1 = SLAB + ADMIN_ALTO + 0.10        # losa del piso 2
+    z2 = z1 + 3.40                       # cubierta
+    losa = mat("M_Alm_Losa")
+    muro = mat("M_Adm_Muro")
+    vidrio = mat("M_Adm_Vidrio")
+    acero = mat("M_Alm_Acero")
+
+    geo = Geo("ANX_Piso2")
+    geo.caja(((x0 + x1) / 2, (y0 + y1) / 2, z1 + 0.11),
+             (x1 - x0 + 0.50, y1 - y0 + 0.50, 0.22), losa)
+    # baranda de la terraza que queda sobre la cubierta de la planta baja
+    for (cx, cy, sx, sy) in (((x0 + x1) / 2, y0 + 0.10, x1 - x0 + 0.5, 0.10),
+                             (x0 - 0.20, y0 + 1.15, 0.10, 2.30),
+                             (x1 + 0.20, y0 + 1.15, 0.10, 2.30)):
+        geo.caja((cx, cy, z1 + 0.70), (sx, sy, 1.20), acero)
+
+    # volumen cerrado, retranqueado 2,2 m al sur para dejar la terraza
+    px0, px1 = x0 + 0.45, x1 - 0.45
+    py0, py1 = y0 + 2.20, y1
+    geo.caja(((px0 + px1) / 2, py0, z1 + 1.70), (px1 - px0, 0.16, 3.40), muro)
+    geo.caja(((px0 + px1) / 2, py0 + 0.05, z1 + 1.95),
+             ((px1 - px0) * 0.60, 0.06, 1.70), vidrio)
+    for (cx, cy, sx, sy) in ((px0, (py0 + py1) / 2, 0.16, py1 - py0),
+                             (px1, (py0 + py1) / 2, 0.16, py1 - py0),
+                             ((px0 + px1) / 2, py1 - 0.08, px1 - px0, 0.16)):
+        geo.caja((cx, cy, z1 + 1.70), (sx, sy, 3.40), muro)
+    geo.caja(((px0 + px1) / 2, (py0 + py1) / 2, z2 + 0.18),
+             (px1 - px0 + 0.90, py1 - py0 + 0.90, 0.36), losa)
+
+    # escalera exterior sobre el costado oriental, con rellano y puerta
+    pasos = 13
+    dy = 5.20 / pasos
+    dz = (z1 + 0.22 - SLAB) / pasos
+    for k in range(pasos):
+        geo.caja((px1 + 0.95, y0 + 0.60 + (k + 0.5) * dy,
+                  SLAB + (k + 1) * dz - 0.08), (1.60, dy + 0.05, 0.16), acero)
+    geo.caja((px1 + 0.95, y0 + 6.35, z1 + 0.11), (1.60, 1.50, 0.22), acero)
+    for xr in (px1 + 0.32, px1 + 1.58):
+        geo.caja((xr, y0 + 3.90, (SLAB + z1) / 2 + 0.55),
+                 (0.06, 6.60, 1.10), acero)
+    geo.caja((px1 - 0.03, y0 + 6.35, z1 + 1.05), (0.06, 1.00, 2.10), vidrio)
+
+    # equipos de cubierta
+    for dx in (-2.10, 1.90):
+        geo.caja(((px0 + px1) / 2 + dx, (py0 + py1) / 2 + 0.60, z2 + 0.85),
+                 (1.90, 1.60, 0.95), acero)
+    geo.objeto(col, "ANX_Piso2")
+
+
 def build_camaras():
     # interiores: las cuatro areas son cuartos cerrados, se miran por dentro
-    camara("Cam_Frio", (-36.4, -22.3, 3.1), (-44.6, -26.2, 2.2), 22.0)
-    camara("Cam_Admin", (-20.8, 10.1, 2.7), (-15.3, 13.9, 1.7), 20.0)
-    camara("Cam_Energia", (-42.8, -19.6, 8.2), (-51.6, -26.6, 2.2), 30.0)
-    camara("Cam_Redes", (-29.9, 13.0, 2.3), (-27.2, 15.3, 1.2), 22.0)
+    camara("Cam_Frio", (-48.60, -28.60, 1.80), (-57.20, -24.20, 2.10), 22.0)
+    camara("Cam_Admin", (-34.60, 19.90, 1.65), (-31.40, 21.00, 1.15), 26.0)
+    camara("Cam_Energia", (-53.30, 5.00, 1.85), (-59.40, 12.80, 1.40), 24.0)
+    camara("Cam_Redes", (-31.90, 20.85, 7.25), (-35.10, 23.30, 6.60), 24.0)
 
 
 def build():
     mats()
     cols = {}
-    for nombre in ("T87_FRIO", "T88_ADMIN", "T89_ENERGIA", "T92_REDES"):
+    for nombre in ("T87_FRIO", "T88_ADMIN", "T89_ENERGIA", "T90_ANEXO",
+                   "T92_REDES"):
         col = coleccion(nombre)
         vaciar(col)
         cols[nombre] = col
@@ -759,13 +832,15 @@ def build():
     build_frio(cols["T87_FRIO"])
     build_admin(cols["T88_ADMIN"])
     build_energia(cols["T89_ENERGIA"])
+    build_anexo(cols["T90_ANEXO"])
     build_redes(cols["T92_REDES"])
     build_camaras()
     bpy.context.view_layer.update()
 
-    print("[CEDI360] programa: %d frio, %d admin, %d energia, %d redes"
+    print("[CEDI360] programa: %d frio, %d admin, %d energia, %d anexo, %d redes"
           % (len(cols["T87_FRIO"].objects), len(cols["T88_ADMIN"].objects),
-             len(cols["T89_ENERGIA"].objects), len(cols["T92_REDES"].objects)))
+             len(cols["T89_ENERGIA"].objects), len(cols["T90_ANEXO"].objects),
+             len(cols["T92_REDES"].objects)))
     return cols
 
 

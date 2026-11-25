@@ -27,7 +27,7 @@ FASES = 5
 # ese filtro. Las anotaciones se quedan porque viven en T90.
 FUERA = ("T80_ENTORNO", "T81_CEDI", "T82_RACKS", "T83_SEGURIDAD",
          "T84_AUTOMATIZACION", "T85_MUELLE", "T86_VEHICULOS",
-         "T87_FRIO", "T88_ADMIN", "T89_ENERGIA", "T92_REDES",
+         "T87_FRIO", "T88_ADMIN", "T89_ENERGIA", "T90_ANEXO", "T92_REDES",
          "T91_SIN_LINEAS", "FUR_FLOTA")
 
 

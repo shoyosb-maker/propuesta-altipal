@@ -45,7 +45,7 @@ export const SECCIONES = [
   },
   {
     n: '', id: 'acopio', corto: 'Acopio', titulo: 'El centro de acopio que sostiene la promesa',
-    lead: 'Cuatro unidades de negocio y más de cincuenta marcas aliadas caben en un solo piso operativo. El modelo levanta la nave completa: 44 × 46 m, seis pasillos de estantería selectiva y cada familia del catálogo con su letrero, su cenefa y su pasillo.',
+    lead: 'Cuatro unidades de negocio y más de cincuenta marcas aliadas caben en un solo piso operativo. El modelo levanta la nave completa: 50 × 46 m, seis pasillos de estantería selectiva y cada familia del catálogo con su letrero, su cenefa y su pasillo.',
     bullets: [
       '960 posiciones de pallet en 12 estanterías de cuatro niveles',
       'Doce familias: de bebidas y licores a lubricantes Shell',
@@ -54,7 +54,7 @@ export const SECCIONES = [
     ],
     metrica: '47.300 m² de fulfillment · 64.000+ posiciones',
     fase: 0,
-    vista: { obj: [-31, 4.2, 1], dist: 56, giro: -0.79, altura: 0.33 }
+    vista: { obj: [-37.2, 4.2, 1], dist: 58, giro: -0.79, altura: 0.33 }
   },
   {
     n: '', id: 'estanterias', corto: 'Estanterías', titulo: 'Cada producto en su caja, cada caja en su repisa',
@@ -73,14 +73,14 @@ export const SECCIONES = [
     n: '', id: 'frio', corto: 'Frío', titulo: 'La cadena de frío, en una cámara monitoreada',
     lead: 'Lácteos y refrigerados salen del bloque ambiente: entran a una cámara con panel sanitario, evaporadores redundantes y monitoreo continuo. Temperatura, humedad, apertura de puerta y fuga de refrigerante quedan registradas para la auditoría de la cadena de frío.',
     bullets: [
-      'Cámara de 11 × 8 m con panel sanitario, piso de fácil lavado y zócalo sanitario',
+      'Cámara de 13 × 9,5 m con panel sanitario, piso de fácil lavado y zócalo sanitario',
       'Dos evaporadores y condensadora exterior, con línea de refrigerante vista',
       'Sondas de temperatura y humedad, contacto de puerta, detector de fuga y registrador',
       'Alarma local con baliza sobre la puerta y traza en el cuarto de monitoreo'
     ],
     metrica: 'Fase 1 · 2 °C a 4 °C sostenidos',
     fase: 1,
-    vista: { obj: [-41.5, 2.2, 26.0], dist: 6.86, giro: -0.702, altura: 0.117, der: 0.0 }
+    vista: { obj: [-57.2, 2.1, 24.2], dist: 9.67, giro: 0.473, altura: -0.031, der: 0.0, interior: true }
   },
   {
     n: '', id: 'energia', corto: 'Energía', titulo: 'Eje C · La energía que casi nadie mide',
@@ -93,7 +93,7 @@ export const SECCIONES = [
     ],
     metrica: 'Consumo kWh/m² y hallazgos críticos cerrados',
     fase: 1,
-    vista: { obj: [-52.5, 1.9, 26.5], dist: 6.72, giro: -0.852, altura: 0.656, der: 0.0 }
+    vista: { obj: [-59.4, 1.4, -12.8], dist: 9.91, giro: 0.907, altura: 0.045, der: 0.0, interior: true }
   },
   {
     n: '', id: 'redes', corto: 'Redes', titulo: 'Eje B · Sin red no hay WMS, ni despacho, ni monitoreo',
@@ -106,7 +106,7 @@ export const SECCIONES = [
     ],
     metrica: 'Disponibilidad de enlace y puntos certificados',
     fase: 1,
-    vista: { obj: [-30.2, 2.2, -14.9], dist: 4.37, giro: 1.410, altura: 0.069, der: 0.0 }
+    vista: { obj: [-35.1, 6.6, -23.3], dist: 4.08, giro: 0.653, altura: 0.160, der: 0.0, interior: true }
   },
   {
     n: '', id: 'seguridad', corto: 'Seguridad', titulo: 'Centro de seguridad electrónica sobre el piso de carga',
@@ -119,7 +119,7 @@ export const SECCIONES = [
     ],
     metrica: 'Fase 1 · estabilización',
     fase: 1,
-    vista: { obj: [-20.8, 7.5, -10.8], dist: 6.9, giro: -0.35, altura: -0.04, der: 0.16 }
+    vista: { obj: [-20.8, 7.5, -10.8], dist: 6.9, giro: -0.35, altura: -0.04, der: 0.16, interior: true }
   },
   {
     n: '', id: 'automatizacion', corto: 'Automatización', titulo: 'Ocho puntos de automatización sobre el flujo',
@@ -145,7 +145,7 @@ export const SECCIONES = [
     ],
     metrica: 'Comité mensual · acta y tablero de compromisos',
     fase: 1,
-    vista: { obj: [-14.3, 2.45, -13.1], dist: 5.2, giro: 2.60, altura: 0.10, der: 0.06 }
+    vista: { obj: [-31.9, 1.45, -21.0], dist: 4.07, giro: 2.712, altura: 0.049, der: 0.06, interior: true }
   },
   {
     n: '03', id: 'reto', corto: 'El reto', titulo: 'Cinco eslabones, una sola promesa',

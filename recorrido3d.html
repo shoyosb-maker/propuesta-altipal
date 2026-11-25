@@ -49,13 +49,15 @@
     </div>
   </div>
 
-  <button class="rec-menu-btn" id="visorMenuBtn" type="button" aria-expanded="false" aria-controls="visorHud">
-    <span class="rmb-num" id="visorMenuNum">01</span>
-    <span class="rmb-txt" id="visorMenuTxt">Menú del recorrido</span>
-    <svg class="rmb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-  </button>
+  <div class="rec-menu" id="visorMenu">
+    <button class="rec-menu-btn" id="visorMenuBtn" type="button" aria-expanded="false" aria-controls="visorHud">
+      <span class="rmb-num" id="visorMenuNum">01</span>
+      <span class="rmb-txt" id="visorMenuTxt">Menú del recorrido</span>
+      <svg class="rmb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
 
-  <section class="rec-hud" id="visorHud" aria-live="polite" hidden></section>
+    <section class="rec-hud" id="visorHud" aria-live="polite" hidden></section>
+  </div>
 
   <div class="visor-tools">
     <button type="button" id="visorJuego" aria-pressed="false">Recorrer a pie</button>
