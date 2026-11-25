@@ -13,6 +13,7 @@ import MODELO_B64 from '../modelo.js';
 
 const LIENZO = document.getElementById('visorCanvas');
 const HUD = document.getElementById('visorHud');
+const BOTON_MENU = document.getElementById('visorMenuBtn');
 const RIEL = document.getElementById('visorRail');
 const CARGANDO = document.getElementById('visorCargando');
 const ESTADO = document.getElementById('visorEstado');
@@ -20,8 +21,7 @@ const PROGRESO = document.getElementById('visorProgreso');
 
 let escena, camara, render, controles, mixer, clips = [], modelo;
 let tiempoObjetivo = 0, tiempoActual = 0, seccionActual = 0, girando = false;
-let hudPlegado = false;
-try { hudPlegado = sessionStorage.getItem('cedi:hud') === '1'; } catch (err) {}
+let menuAbierto = false;
 let holo = null;
 let cinta = null;
 let muro = null;
@@ -111,6 +111,7 @@ function iniciar() {
   cinta = crearCinta();
   enlazarControles();
   enlazarJuego();
+  enlazarMenu();
   requestAnimationFrame(bucle);
   window.addEventListener('resize', reajustar);
 }
@@ -829,16 +830,31 @@ function ir(indice, directo) {
 function pintarHud(i) {
   const s = SECCIONES[i];
   const ultima = i === SECCIONES.length - 1;
+
+  let indice = '';
+  SECCIONES.forEach((sec, k) => {
+    const actual = k === i;
+    indice +=
+      '<button type="button" class="rec-idx' + (actual ? ' on' : '') + '" data-ir="' + k + '"' +
+      ' title="' + sec.corto + '"' +
+      (actual ? ' aria-current="true"' : '') +
+      ' aria-label="Ir a la parada ' + sec.n + ': ' + sec.titulo + '">' +
+      '<b>' + sec.n + '</b></button>';
+  });
+
   HUD.innerHTML =
     '<div class="rec-hud-bar">' +
       '<span class="rn">' + s.n + ' de ' + SECCIONES.length + ' · ' + s.id + '</span>' +
-      '<button type="button" class="rec-hud-toggle" id="visorHudToggle" aria-controls="visorHudBody"' +
-        ' aria-expanded="' + (hudPlegado ? 'false' : 'true') + '">' +
-        (hudPlegado ? 'Ver texto' : 'Ocultar texto') +
+      '<button type="button" class="rec-hud-close" id="visorHudClose" aria-label="Cerrar el menú">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>' +
       '</button>' +
     '</div>' +
+    '<div class="rec-index">' +
+      '<p class="rec-index-t">Ir a una parada</p>' +
+      '<div class="rec-index-grid">' + indice + '</div>' +
+    '</div>' +
     '<h1>' + s.titulo + '</h1>' +
-    '<div class="rec-hud-body" id="visorHudBody">' +
+    '<div class="rec-hud-body">' +
       '<p>' + s.lead + '</p>' +
       '<ul>' + s.bullets.map((b) => '<li>' + b + '</li>').join('') + '</ul>' +
       '<span class="rm">' + s.metrica + '</span>' +
@@ -846,24 +862,50 @@ function pintarHud(i) {
     '<button type="button" class="rec-continuar" id="visorContinuar">' +
     (ultima ? 'Volver al inicio' : 'Continuar · ' + SECCIONES[i + 1].titulo) +
     '</button>';
-  pintarPlegado();
-  const botonPlegar = HUD.querySelector('#visorHudToggle');
-  if (botonPlegar) botonPlegar.addEventListener('click', alternarPlegado);
+
+  if (BOTON_MENU) {
+    const num = BOTON_MENU.querySelector('.rmb-num');
+    const txt = BOTON_MENU.querySelector('.rmb-txt');
+    if (num) num.textContent = s.n;
+    if (txt) txt.textContent = s.corto || s.titulo;
+    BOTON_MENU.setAttribute('aria-label', 'Menú del recorrido · parada ' + s.n + ': ' + s.titulo);
+  }
 }
 
-/* el panel de texto se pliega para mirar el modelo sin obstáculos */
-function alternarPlegado() {
-  hudPlegado = !hudPlegado;
-  pintarPlegado();
-  try { sessionStorage.setItem('cedi:hud', hudPlegado ? '1' : '0'); } catch (err) {}
+/* el texto y el índice viven en un panel que sale del botón de la esquina */
+function abrirMenu(estado) {
+  menuAbierto = !!estado;
+  HUD.hidden = !menuAbierto;
+  if (menuAbierto) HUD.scrollTop = 0;
+  if (!BOTON_MENU) return;
+  BOTON_MENU.classList.toggle('abierto', menuAbierto);
+  BOTON_MENU.setAttribute('aria-expanded', menuAbierto ? 'true' : 'false');
 }
 
-function pintarPlegado() {
-  HUD.classList.toggle('plegado', hudPlegado);
-  const boton = HUD.querySelector('#visorHudToggle');
-  if (!boton) return;
-  boton.textContent = hudPlegado ? 'Ver texto' : 'Ocultar texto';
-  boton.setAttribute('aria-expanded', hudPlegado ? 'false' : 'true');
+function enlazarMenu() {
+  if (BOTON_MENU) BOTON_MENU.addEventListener('click', () => abrirMenu(!menuAbierto));
+
+  HUD.addEventListener('click', (e) => {
+    const destino = e.target.closest ? e.target.closest('[data-ir]') : null;
+    if (destino) {
+      ir(Number(destino.getAttribute('data-ir')));
+      HUD.scrollTop = 0;
+      if (window.matchMedia('(max-width:900px)').matches) abrirMenu(false);
+      return;
+    }
+    if (e.target.id === 'visorHudClose') abrirMenu(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuAbierto) abrirMenu(false);
+  });
+
+  // tocar el modelo cierra el menú para dejar ver la escena
+  LIENZO.addEventListener('pointerdown', () => {
+    if (menuAbierto) abrirMenu(false);
+  });
+
+  abrirMenu(false);
 }
 
 function pintarRiel() {

@@ -461,6 +461,12 @@ VISOR 3D (three.js)
   equipo reajustar() rehace el encuadre actual. La compensación horizontal
   del panel lateral sólo aplica sobre 1000 px de ancho.
 
+  Navegación: el texto de cada parada vive en un panel desplegable que sale
+  del botón de la esquina (arranca cerrado para dejar ver el modelo). Dentro
+  del panel va el índice de las 23 paradas: tocar un número salta a esa
+  sección (en móvil el panel se cierra al saltar). El riel inferior sigue
+  siendo el acceso rápido.
+
   glTF no entiende drivers, así que web_export.py hornea los keyframes
   aplicando las mismas fórmulas del despiece (techo, paredes, puertas,
   carga y cabina) sobre 121 frames. Los drivers de Blender no se
