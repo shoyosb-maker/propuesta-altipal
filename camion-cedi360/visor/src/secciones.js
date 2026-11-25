@@ -158,7 +158,7 @@ export const SECCIONES = [
     ],
     metrica: 'Comité mensual · acta y tablero de compromisos',
     fase: 1,
-    vista: { obj: [-31.9, 1.45, -21.0], dist: 4.07, giro: 2.712, altura: 0.049, der: 0.06, interior: true }
+    vista: { obj: [-30.0, 1.9, -22.5], dist: 7.89, giro: 2.529, altura: 0.127, der: 0.06, interior: true }
   },
   {
     n: '03', id: 'reto', corto: 'El reto', titulo: 'Cinco eslabones, una sola promesa',
