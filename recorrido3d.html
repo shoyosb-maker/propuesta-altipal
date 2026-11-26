@@ -25,9 +25,9 @@
     <span>CEDI 360</span><span class="sep">/</span><span>ALTIPAL</span><span class="sep">/</span><b>Recorrido 3D</b>
   </div>
   <div class="tb-right">
-    <button class="btn btn-ghost" id="visorFull" type="button">Pantalla completa</button>
+    <button class="btn btn-ghost" id="visorFull" type="button"><span class="lbl-lg">Pantalla completa</span><span class="lbl-sm">Pantalla</span></button>
     <a class="btn btn-ghost" href="recorrido.html">Láminas</a>
-    <a class="btn btn-ghost hide-sm" href="index.html#fases">Propuesta</a>
+    <a class="btn btn-ghost" href="index.html#inicio">Propuesta</a>
   </div>
 </header>
 
@@ -89,6 +89,13 @@
 (function () {
   var boton = document.getElementById('visorFull');
   if (!boton) return;
+  // el rótulo largo y el corto viven en dos span; en móvil se muestra el corto
+  var largo = boton.querySelector('.lbl-lg');
+  var corto = boton.querySelector('.lbl-sm');
+  function rotular(dentro) {
+    if (largo) largo.textContent = dentro ? 'Salir' : 'Pantalla completa';
+    if (corto) corto.textContent = dentro ? 'Salir' : 'Pantalla';
+  }
   boton.addEventListener('click', function () {
     var doc = document;
     if (doc.fullscreenElement) {
@@ -98,7 +105,7 @@
     }
   });
   document.addEventListener('fullscreenchange', function () {
-    boton.textContent = document.fullscreenElement ? 'Salir' : 'Pantalla completa';
+    rotular(!!document.fullscreenElement);
   });
 })();
 </script>

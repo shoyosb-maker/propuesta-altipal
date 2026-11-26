@@ -214,7 +214,12 @@
       }
     });
     document.addEventListener('fullscreenchange', function () {
-      full.textContent = document.fullscreenElement ? 'Salir' : 'Pantalla completa';
+      var dentro = !!document.fullscreenElement;
+      var largo = full.querySelector('.lbl-lg');
+      var corto = full.querySelector('.lbl-sm');
+      if (largo) largo.textContent = dentro ? 'Salir' : 'Pantalla completa';
+      if (corto) corto.textContent = dentro ? 'Salir' : 'Pantalla';
+      if (!largo) full.textContent = dentro ? 'Salir' : 'Pantalla completa';
     });
   }
 

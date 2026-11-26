@@ -320,7 +320,7 @@ body.jugando .rec-hud{display:none}
 .credito-modelo{
   position:absolute; right:clamp(16px,3vw,44px); top:calc(var(--bar-h) + 12px);
   margin:0; font-family:var(--mono); font-size:.5rem; letter-spacing:.1em;
-  text-transform:uppercase; color:#5C6873; z-index:4; pointer-events:none;
+  text-transform:uppercase; color:#8B99A3; z-index:4; pointer-events:none;
 }
 @media (max-width:900px){
   .credito-modelo{position:static;padding:8px 16px 0;text-align:right}

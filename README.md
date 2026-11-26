@@ -132,6 +132,12 @@ panel de operación. No toca el marcado ni la estructura.
   su número; en móvil vuelven a ser puntos finos con canaleta propia.
 - **Panel de operación**: cada acción es un interruptor tipo iOS (pista y pomo
   como pseudo-elementos sobre `aria-pressed`), agrupado en filas con su rótulo.
+- **Rótulos adaptativos**: «Pantalla completa» lleva dos `span` (`lbl-lg` /
+  `lbl-sm`) y en móvil muestra «Pantalla», para que entren las tres acciones y
+  el nombre de la marca a partir de 360 px.
+- **Contraste revisado**: el subtítulo de la marca, las migas y la etiqueta de
+  la barra de documentos pasaron de `--ink-4` (2,7:1) a `--ink-3`; en pantallas
+  pequeñas el vidrio se opaca para que la letra gane sobre cualquier fondo.
 
 `assets/js/ui-menus.js` escribe `--ui-mx` / `--ui-my` en la superficie que está
 bajo el cursor y el CSS los usa como centro de un degradado radial, para que el

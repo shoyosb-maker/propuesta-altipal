@@ -2,7 +2,7 @@
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 20:20
+Actualizado: 2026-11-25 20:55
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1261,6 +1261,24 @@ SIGUIENTE PASO RECOMENDADO
                   En movil los puntos vuelven a ser puntos finos y el capitulo
                   deja 30 px de canaleta para que no pisen el texto.
 
+2026-11-25 20:55  Ajustes de navegacion y legibilidad en los menus.
+                  El boton "Propuesta" del recorrido (y del despiece) apunta
+                  ahora a index.html#inicio: cae en la portada, no en el
+                  capitulo de fases. En movil no se veia porque el enlace
+                  llevaba la clase hide-sm (display:none por debajo de 760):
+                  se quito. Para que entren las tres acciones con el nombre de
+                  la marca, el boton de pantalla completa paso a dos span
+                  (lbl-lg "Pantalla completa" / lbl-sm "Pantalla") que el CSS
+                  alterna a 900 px y el script de fullscreen actualiza a la
+                  vez; con eso el nombre de la marca aparece desde 360 px sin
+                  desbordar la barra. Repaso de contraste: el subtitulo de la
+                  marca, las migas y la etiqueta de doc-nav estaban en --ink-4
+                  (2,7:1 sobre papel) y pasan a --ink-3; el credito de modelos
+                  del visor sube de #5C6873 a #8B99A3; los rotulos del panel y
+                  del HUD (grupos, aviso, pie) suben de alfa y, por debajo de
+                  900 px, el vidrio se opaca (0,88 a 0,95) para que la letra
+                  gane sobre cualquier fondo.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y
@@ -1348,4 +1366,10 @@ RIESGOS Y NOTAS
 - El separador de la barra superior asume que el contenido empieza a 58 px del
   borde (`.chapter` en index.html). Si se vuelve a tocar ese padding, los
   puntos de capitulo vuelven a pisar el texto.
+- El rotulo de pantalla completa vive en dos span y lo reescribe el listener de
+  fullscreenchange (recorrido3d.html y assets/js/recorrido.js). Si se agrega otro
+  boton de pantalla completa, hay que replicar ese par de span o el texto se
+  pierde al entrar y salir.
+- El nombre de la marca en el recorrido solo aparece desde 360 px: por debajo,
+  las tres acciones no caben y el CSS lo oculta a proposito.
 =========================================================================
