@@ -176,6 +176,12 @@ panel de operación. No toca el marcado ni la estructura.
   reforzado en `ui-menus.js` por si el HTML llega cacheado). El interruptor
   día/noche se retiró; los tokens del tema claro siguen en `ui-menus.css` por si
   se quiere volver a encender.
+- **Puntas redondeadas**: los cuadros del tema industrial venían con 2 px de
+  radio; la capa de menús los sube a una curva de tarjeta (16 px en paneles,
+  tarjetas, notas, tablas y fotos; pastilla completa en botones, chips y
+  rótulos). Las tablas redondean la primera y la última celda del encabezado
+  para no clipear el desplazamiento horizontal, y el pie de página sube con las
+  puntas de arriba redondeadas.
 - **Fondo de las secciones**: la foto de la caja ALTIPAL vive en dos capas
   fijas —`body::before` con `blur(38px)` y `body::after` con el velo— así que
   acompaña el scroll sin repetirse en cada capítulo, y el contenido queda

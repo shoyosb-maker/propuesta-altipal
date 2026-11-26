@@ -1398,6 +1398,22 @@ SIGUIENTE PASO RECOMENDADO
                   regla nocturna y se veian como bolitas; ahora se anulan y
                   el halo blanco de dia pasa a negro.
 
+2026-11-26 08:40  Puntas redondeadas y QR nuevo. Los cuadros del tema
+                  industrial traian 2 px de radio: ahora --radius pasa a 16 px
+                  y --radius-sm a 12 px, y una seccion 13 de ui-menus.css
+                  redondea paneles, tarjetas, notas, tablas y fotos, mientras
+                  botones, chips y rotulos pasan a pastilla (999 px). Las
+                  tablas no pueden llevar overflow:hidden porque se desplazan
+                  en horizontal, asi que las esquinas las dan la primera y la
+                  ultima celda del encabezado; el pie sube con 28 px arriba.
+                  El QR del pie (index, 07-fases y 10-comercial) se regenera
+                  con la libreria qrcode para https://shoyosb-maker.github.io/
+                  propuesta-altipal/ (version 4, 33 modulos, correccion M,
+                  630 px, 4 modulos de silencio) y el rotulo pasa a "Propuesta
+                  CEDI 360", con el alt y la nota del capitulo 11 alineados.
+                  No se recorto el QR de la captura: se regenero para
+                  garantizar que escanee.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y

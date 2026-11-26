@@ -1605,3 +1605,35 @@ body.doc-page .card{background-color:var(--surface)}
   html body.deck-page,html body.doc-page{background:#fff}
 }
 
+/* =========================================================
+   13. PUNTAS REDONDEADAS · todo el sistema en la misma curva
+   Los cuadros del tema industrial venían con 2 px de radio; aquí
+   se suben a una curva de tarjeta y los rótulos pasan a pastilla.
+   ========================================================= */
+:root{
+  --radius:16px;
+  --radius-sm:12px;
+}
+
+.card,.cap-card,.eje-card,.annex-card,.ally,.evi,.note,.kpi,.quote,.acc,
+.phase-panel,.armador-resumen,.ruta,.table-wrap,.matriz-wrap{ border-radius:16px }
+
+/* rótulos, chips y botones: pastilla completa */
+.btn,.cap-tag,.tag,.chip span,button.chip,.eyebrow,.tracking,
+.eje-kind,.eje-go,.tk-state,.annex-card .ph{ border-radius:999px }
+
+/* las esquinas de la tabla las redondea la primera y la última celda,
+   porque el contenedor tiene que seguir desplazándose en horizontal */
+.table-wrap thead th:first-child,
+.matriz-wrap thead th:first-child{ border-top-left-radius:15px }
+.table-wrap thead th:last-child,
+.matriz-wrap thead th:last-child{ border-top-right-radius:15px }
+
+/* fotografía y código QR */
+.cover-photo,.band-photo,.eje-photo{border-radius:18px}
+figure img{border-radius:16px}
+.qr img{border-radius:16px}
+
+/* el pie sube como una hoja por debajo del contenido */
+footer.site{border-radius:28px 28px 0 0}
+
