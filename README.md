@@ -176,6 +176,12 @@ panel de operación. No toca el marcado ni la estructura.
   nocturno solo remapea los tokens de color —papel, tinta, líneas y las
   superficies `--surface`/`--bar`— más un puñado de piezas que el tema
   industrial fija en claro; al imprimir vuelve al papel blanco.
+- **Ficha del programa (portada)**: tarjeta negra con marco prismático —oro,
+  violeta y cian— montado con dos capas de `background` (`padding-box` /
+  `border-box`), brillo de vitrina en `::after`, título en degradado con corona
+  y rayo, chip con la referencia `CDI-360-2026-ALT` y filas de datos con
+  etiqueta mono y valor en blanco. Es la misma tarjeta en modo día y en modo
+  noche (como una tarjeta física); al imprimir vuelve a caja clara sin adornos.
 - **Panel de operación**: cada acción es un interruptor tipo iOS (pista y pomo
   como pseudo-elementos sobre `aria-pressed`), agrupado en filas con su rótulo.
 - **Rótulos adaptativos**: «Pantalla completa» lleva dos `span` (`lbl-lg` /

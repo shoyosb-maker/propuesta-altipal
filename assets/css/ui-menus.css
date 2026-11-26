@@ -1126,6 +1126,167 @@ body.jugando .dato-capa{display:none}
 }
 
 /* =========================================================
+   10b. FICHA DEL PROGRAMA · acabado premium
+   La tarjeta negra del hero: vidrio oscuro con marco prismático
+   (oro, violeta y cian), título en degradado con corona y rayos,
+   chip de referencia y filas de datos. Vive fuera de los temas:
+   es la misma tarjeta de día y de noche, como una tarjeta física.
+   ========================================================= */
+.ficha{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  padding:22px 22px 18px;
+  border:1px solid transparent;
+  border-radius:20px;
+  background:
+    linear-gradient(164deg,#141E26 0%,#0C141A 58%,#0F1A22 100%) padding-box,
+    linear-gradient(125deg,#FFE9A8 0%,#F5C400 20%,#7CE0EE 46%,#C08BF5 66%,
+      #F5C400 86%,#FFE9A8 100%) border-box;
+  box-shadow:
+    0 36px 74px -46px rgba(4,10,14,.95),
+    0 0 0 1px rgba(255,240,196,.16),
+    0 0 30px -10px rgba(245,196,0,.55),
+    0 0 44px -18px rgba(185,139,240,.5),
+    inset 0 1px 0 rgba(255,255,255,.10);
+}
+/* fuera la barra amarilla de la izquierda: el marco ya manda */
+.ficha::before{display:none}
+/* brillo de vitrina: dos halos y una franja de luz en diagonal */
+.ficha::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(120% 62% at 8% -12%,rgba(245,196,0,.20),transparent 62%),
+    radial-gradient(92% 58% at 104% -4%,rgba(185,139,240,.16),transparent 60%),
+    linear-gradient(114deg,transparent 32%,rgba(255,255,255,.07) 46%,
+      rgba(255,255,255,.02) 51%,transparent 63%);
+}
+.ficha > *{position:relative;z-index:1}
+
+.ficha-head{
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+.ficha-head p{color:#E8C86A;font-size:.5rem;letter-spacing:.22em}
+.ficha-head .ok{color:#9FE08A;font-size:.52rem;font-weight:700;letter-spacing:.12em}
+.ficha-head .ok i{background:#9FE08A;box-shadow:0 0 8px rgba(159,224,138,.85)}
+
+.ficha-brand{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:16px 0 9px;
+  font-family:var(--display);
+  font-size:1.9rem;
+  line-height:1;
+  letter-spacing:.015em;
+  color:#FFF3CF;
+  background:linear-gradient(96deg,#FFF6DC 0%,#F5C400 40%,#E4A730 66%,#FFEFC0 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.ficha-brand em{font-style:normal}
+.ficha-corona{
+  width:23px;height:23px;flex:none;
+  fill:#F5C400;
+  filter:drop-shadow(0 0 7px rgba(245,196,0,.55));
+}
+.ficha-rayo{
+  margin-left:auto;
+  width:46px;height:38px;flex:none;
+  display:block;
+}
+.ficha-rayo svg{
+  width:100%;height:100%;
+  fill:#FFF6DC;
+  filter:drop-shadow(0 0 9px rgba(245,196,0,.85)) drop-shadow(0 2px 4px rgba(0,0,0,.55));
+}
+
+.ficha-code{
+  display:inline-flex;
+  align-items:center;
+  margin:0 0 11px;
+  padding:5px 10px 5px 11px;
+  border:1px solid rgba(245,196,0,.30);
+  border-radius:8px;
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  font-family:var(--mono);
+  font-size:.56rem;
+  letter-spacing:.16em;
+  color:#E9EEF2;
+}
+
+.ficha-sub{color:#8FA0AC;margin-bottom:14px;line-height:1.5}
+
+.frow{
+  padding:9px 9px;
+  margin:0 -9px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  border-radius:9px;
+  transition:background .25s var(--ui-ease);
+}
+.frow:hover{background:rgba(255,255,255,.04)}
+.frow:last-of-type{border-bottom:0}
+.frow span{color:#93A5B2;font-size:.53rem;letter-spacing:.14em}
+.frow b{color:#F7F9FB;font-size:.81rem;font-weight:600}
+
+.ficha-foot{
+  margin:14px 0 0;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.10);
+  color:#93A2AD;
+  font-size:.64rem;
+  line-height:1.55;
+}
+
+@media (max-width:760px){
+  .ficha{border-radius:18px;padding:18px 16px 14px}
+  /* en tarjeta angosta el rótulo y el estado van uno bajo el otro */
+  .ficha-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .ficha-head p{letter-spacing:.18em}
+  .ficha-brand{font-size:1.6rem;gap:8px}
+  .ficha-corona{width:19px;height:19px}
+  .ficha-rayo{width:32px;height:27px}
+  .ficha-code{font-size:.53rem;letter-spacing:.13em}
+  .ficha-sub{font-size:.55rem;letter-spacing:.08em}
+  .frow{padding:8px 7px;margin:0 -7px}
+}
+
+/* en papel la tarjeta vuelve a ser una caja clara y sin adornos */
+@media print{
+  .ficha{
+    background:#fff!important;
+    border:1px solid #C9D9EA!important;
+    border-radius:0;
+    box-shadow:none!important;
+  }
+  .ficha::after{display:none}
+  .ficha-corona,.ficha-rayo{display:none!important}
+  .ficha-brand{
+    background:none!important;
+    color:#00274B!important;
+    -webkit-text-fill-color:#00274B!important;
+    font-size:1.1rem;
+  }
+  .ficha-code{
+    border-color:#C9D9EA!important;
+    background:none!important;
+    color:#41586E!important;
+  }
+  .ficha-head p,.ficha-sub,.ficha-foot,.frow span{color:#41586E!important}
+  .ficha-head .ok{color:#4F7D22!important}
+  .ficha-head .ok i{background:#4F7D22!important;box-shadow:none!important}
+  .frow b{color:#00274B!important}
+  .frow:hover{background:none}
+}
+
+/* =========================================================
    11. MODO NOCHE · el mismo sistema, papel oscuro
    El interruptor vive en la barra superior y escribe data-tema
    en <html>. Aquí solo se remapean los tokens y las pocas

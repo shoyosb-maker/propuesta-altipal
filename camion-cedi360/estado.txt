@@ -1349,6 +1349,18 @@ SIGUIENTE PASO RECOMENDADO
                   mono de 0,5 rem con un halo de color --bar, como el texto
                   pequeno de la version de escritorio.
 
+2026-11-26 07:55  Acabado premium de la ficha del programa (portada). Marco
+                  prismatico de 1 px hecho con dos capas de background (relleno
+                  en padding-box y borde en border-box: oro -> cian -> violeta
+                  -> oro), halo exterior dorado y violeta, vidrio oscuro con
+                  dos halos y una franja de luz en ::after, titulo CEDI 360 en
+                  degradado con background-clip:text, corona y rayo en SVG,
+                  chip con la referencia CDI-360-2026-ALT y filas con etiqueta
+                  mono y valor en blanco. La tarjeta es igual de dia y de noche
+                  (no usa los tokens del tema); en <=760 px el rotulo y el
+                  estado se apilan y en papel vuelve a caja clara sin adornos.
+                  La barra amarilla de la izquierda se retira: el marco manda.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y
