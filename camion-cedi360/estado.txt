@@ -2,7 +2,7 @@
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 19:05
+Actualizado: 2026-11-25 19:40
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1224,6 +1224,25 @@ SIGUIENTE PASO RECOMENDADO
                   la captura en 268 px y sin recorrido; se neutralizan dentro de
                   .evi-pop con reglas mas especificas.
 
+2026-11-25 19:40  Luces y camaras accionables desde el panel. Para que el
+                  encendido se LEA (las luminarias del modelo solo emitian y
+                  no alumbraban) cada zona gana focos reales: PointLight con
+                  cono aditivo (el haz) y halo (resplandor del artefacto).
+                  Zonas en FOCOS de panel.js: nave (6 focos de 120), anden (2
+                  de 55), jardin (2 de 22) y anexo (1 de 45), tres.js r169
+                  necesita esas intensidades con distance/decay. Al apagar la
+                  zona se apagan luz, haz y halo, y el material de la luminaria
+                  baja de 2,2x a 0,02. El ambiente nocturno baja a 0,18/0,20.
+                  Seguridad electronica: el array CCTV de main.js lleva ahora
+                  el grupo de cada camara ('muelles', 'interiores',
+                  'perimetro'); crearMuroVideo() guarda activa[], un cartel
+                  "SIN SEÑAL" en canvas y los metodos alternar(indices, on),
+                  todasActivas() y activas(). El mapping camara-monitor se hace
+                  al crear el muro, asi que apagar un grupo apaga sus monitores
+                  al instante, sin esperar a que el muro se refresque.
+                  CANALES en panel.js: muelles 0-2, interiores 3-9, perimetro
+                  10-11. El boton Grabacion (NVR) apaga o restablece los 12.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y
@@ -1295,4 +1314,11 @@ RIESGOS Y NOTAS
   o el porton queda enterrado en el anden.
 - build_all.py ejecuta simulacion.py; pliegos.py la excluye con T93_SIM.
   web_export.py la exporta con el resto (no tiene capa de fase).
+- El apagado de camaras se ve en el muro de video del cuarto de control, no en
+  el modelo: las camaras son geometria fija. Si se agregan canales hay que
+  sumarlos a CCTV (main.js) y a CANALES (panel.js) con su grupo, o el boton no
+  los toca.
+- Los halos y los conos de luz son aditivos y no escriben profundidad: si se
+  sube la opacidad (tope 0,16 y halo 2,1x) se ven como niebla sobre las
+  estanterias. Ajustar en FOCOS de panel.js, no en el CSS.
 =========================================================================

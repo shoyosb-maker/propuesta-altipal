@@ -11,6 +11,8 @@
    simulacro la suelta.
    ========================================================= */
 
+import * as THREE from 'three';
+
 const VELOCIDAD = 5.5;
 
 const LUCES = {
@@ -18,6 +20,21 @@ const LUCES = {
   jardin: ['M_Pas_Luz'],
   admin: ['M_Adm_Luz'],
   patio: ['M_Luz_Torre']
+};
+
+/* focos reales por zona: son los que hacen visible el encendido y apagado
+   sobre el piso, las estanterías y la carga (las luminarias del modelo solo
+   brillan; no alumbran) */
+const FOCOS = {
+  nave: { color: 0xfff0c8, fuerza: 120, dist: 34, decay: 1.6,
+    sitios: [[-50, 10.4, 20], [-38, 10.4, 12], [-26, 10.4, 4],
+             [-50, 10.4, 4], [-38, 10.4, -4], [-26, 10.4, -12]] },
+  anden: { color: 0xdfe6ea, fuerza: 55, dist: 18, decay: 1.7,
+    sitios: [[-9.2, 5.4, 18], [-9.2, 5.4, 4]] },
+  jardin: { color: 0xfff6da, fuerza: 22, dist: 12, decay: 1.8,
+    sitios: [[-69.6, 3.9, 22], [-65.0, 3.9, 10]] },
+  admin: { color: 0xfff6da, fuerza: 45, dist: 16, decay: 1.8,
+    sitios: [[-32.0, 3.2, -24.5]] }
 };
 
 /* el estado de cada interruptor y el objetivo de la animación */
@@ -31,11 +48,30 @@ const INICIAL = () => ({
   furgoneta: false,
   carga: 0,
   alarma: false,
-  corte: false
+  corte: false,
+  camaras: { muelles: true, interiores: true, perimetro: true }
 });
 
+const CANALES = { muelles: [0, 1, 2], interiores: [3, 4, 5, 6, 7, 8, 9],
+  perimetro: [10, 11] };
+
+/* resplandor radial del artefacto encendido, sin cargar una imagen */
+function texturaHalo() {
+  const lado = 128;
+  const lienzo = document.createElement('canvas');
+  lienzo.width = lienzo.height = lado;
+  const ctx = lienzo.getContext('2d');
+  const g = ctx.createRadialGradient(lado / 2, lado / 2, 0, lado / 2, lado / 2, lado / 2);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.35, 'rgba(255,255,255,0.42)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, lado, lado);
+  return new THREE.CanvasTexture(lienzo);
+}
+
 export function crearPanel(ctx) {
-  const { escena, modelo, luces } = ctx;
+  const { escena, modelo, luces, muro } = ctx;
   const estado = INICIAL();
   const paso = { porton: [0, 0, 0], frio: 0, cortina: 0, furgoneta: 0 };
 
@@ -95,6 +131,45 @@ export function crearPanel(ctx) {
   /* las piezas de simulacro arrancan escondidas */
   cajas.concat(palets, amr, banda, balizas).forEach((o) => { o.visible = false; });
   balizas.forEach((o) => o.scale.setScalar(1.9));
+
+  /* focos por zona: el encendido se ve en el piso y en las estanterías.
+     Cada foco lleva un cono aditivo (el haz de la luminaria) y un halo
+     (el resplandor del artefacto): al apagar la zona desaparecen los dos */
+  const HALO = texturaHalo();
+  const focos = [];
+  Object.keys(FOCOS).forEach((zona) => {
+    const def = FOCOS[zona];
+    def.sitios.forEach((p) => {
+      const luz = new THREE.PointLight(def.color, def.fuerza, def.dist, def.decay);
+      luz.position.set(p[0], p[1], p[2]);
+      escena.add(luz);
+
+      const alto = Math.max(4, p[1] - 1.0);
+      const ancho = zona === 'nave' ? 2.9 : 2.0;
+      const cono = new THREE.Mesh(
+        new THREE.ConeGeometry(ancho, alto, 16, 1, true),
+        new THREE.MeshBasicMaterial({
+          color: def.color, transparent: true, opacity: 0.16,
+          blending: THREE.AdditiveBlending, depthWrite: false,
+          side: THREE.DoubleSide
+        })
+      );
+      cono.position.set(p[0], p[1] - alto / 2, p[2]);
+      cono.renderOrder = 3;
+      escena.add(cono);
+
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: HALO, color: def.color, transparent: true, opacity: 0.5,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      }));
+      halo.position.set(p[0], p[1] - 0.35, p[2]);
+      halo.scale.setScalar(zona === 'nave' ? 5.6 : 4.0);
+      halo.renderOrder = 4;
+      escena.add(halo);
+
+      focos.push({ zona, luz, cono, halo, base: def.fuerza, tope: 0.16 });
+    });
+  });
   if (puertaFrio) puertaFrio.position.z = baseDe(puertaFrio).z;
   portones.forEach((o) => { o.scale.y = 1; });
 
@@ -105,16 +180,27 @@ export function crearPanel(ctx) {
       LUCES[clave].forEach((nombre) => {
         const m = materiales.get(nombre);
         if (!m) return;
-        const objetivo = encendida ? brilloBase.get(m) : 0.03;
+        const objetivo = encendida ? brilloBase.get(m) * 2.2 : 0.02;
         m.emissiveIntensity += (objetivo - m.emissiveIntensity) * Math.min(1, dt * VELOCIDAD);
       });
+    });
+
+    focos.forEach((f) => {
+      const encendida = estado.luces[f.zona] && !estado.corte;
+      const objetivo = encendida ? f.base : 0;
+      f.luz.intensity += (objetivo - f.luz.intensity) * Math.min(1, dt * VELOCIDAD);
+      const opacidad = f.base > 0 ? f.tope * (f.luz.intensity / f.base) : 0;
+      f.cono.material.opacity = opacidad;
+      f.cono.visible = opacidad > 0.004;
+      f.halo.material.opacity = opacidad * 2.1;
+      f.halo.visible = opacidad > 0.004;
     });
 
     const noche = estado.noche || estado.corte;
     const k = Math.min(1, dt * 2.2);
     if (luces) {
-      if (luces.hemi) luces.hemi.intensity += ((noche ? 0.22 : ambienteBase.hemi) - luces.hemi.intensity) * k;
-      if (luces.dir) luces.dir.intensity += ((noche ? 0.24 : ambienteBase.dir) - luces.dir.intensity) * k;
+      if (luces.hemi) luces.hemi.intensity += ((noche ? 0.18 : ambienteBase.hemi) - luces.hemi.intensity) * k;
+      if (luces.dir) luces.dir.intensity += ((noche ? 0.20 : ambienteBase.dir) - luces.dir.intensity) * k;
       if (luces.contra) luces.contra.intensity += ((noche ? 0.14 : ambienteBase.contra) - luces.contra.intensity) * k;
     }
     if (ambienteBase.fondo && escena.background && escena.background.setHex) {
@@ -240,6 +326,12 @@ export function crearPanel(ctx) {
     { titulo: 'Sistemas', items: [
       { id: 'sistemas', texto: 'Banda troncal y AMR', tipo: 'simple', clave: 'sistemas' }
     ] },
+    { titulo: 'Seguridad electrónica', items: [
+      { id: 'cam-muelles', texto: 'Cámaras de muelle', tipo: 'cam', clave: 'muelles' },
+      { id: 'cam-interiores', texto: 'Cámaras interiores', tipo: 'cam', clave: 'interiores' },
+      { id: 'cam-perimetro', texto: 'Cámaras de perímetro', tipo: 'cam', clave: 'perimetro' },
+      { id: 'cam-nvr', texto: 'Grabación (NVR)', tipo: 'nvr' }
+    ] },
     { titulo: 'Simulacro', items: [
       { id: 'furgo', texto: 'Llega la furgoneta', tipo: 'simple', clave: 'furgoneta' },
       { id: 'cargar', texto: 'Descargar paquetes', tipo: 'carga', delta: 4 },
@@ -318,6 +410,24 @@ export function crearPanel(ctx) {
       aviso(estado.portones[item.indice]
         ? 'Muelle 0' + (item.indice + 1) + ' habilitado para cargue'
         : 'Muelle 0' + (item.indice + 1) + ' cerrado y asegurado', 'ok');
+    } else if (item.tipo === 'cam') {
+      const clave = item.clave;
+      const on = !estado.camaras[clave];
+      estado.camaras[clave] = on;
+      if (muro) muro.alternar(CANALES[clave], on);
+      const cuantas = CANALES[clave].length;
+      aviso(on
+        ? cuantas + ' cámaras de ' + (clave === 'muelles' ? 'muelle' : clave) + ' en servicio'
+        : cuantas + ' cámaras de ' + (clave === 'muelles' ? 'muelle' : clave)
+          + ' fuera de servicio · evento en acta', on ? 'ok' : 'alerta');
+    } else if (item.tipo === 'nvr') {
+      const todas = estado.camaras.muelles && estado.camaras.interiores
+        && estado.camaras.perimetro;
+      const on = !todas;
+      estado.camaras = { muelles: on, interiores: on, perimetro: on };
+      if (muro) muro.alternar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], on);
+      aviso(on ? 'Grabación en marcha · 12 canales' : 'Grabación detenida · muro sin señal',
+        on ? 'ok' : 'alerta');
     } else if (item.tipo === 'carga') {
       estado.carga = Math.max(0, Math.min(cajas.length, estado.carga + item.delta));
       aviso(estado.carga === 0
@@ -368,6 +478,14 @@ export function crearPanel(ctx) {
       else if (id === 'p0') encendido = estado.portones[0];
       else if (id === 'p1') encendido = estado.portones[1];
       else if (id === 'p2') encendido = estado.portones[2];
+      else if (id === 'cam-muelles') encendido = estado.camaras.muelles;
+      else if (id === 'cam-interiores') encendido = estado.camaras.interiores;
+      else if (id === 'cam-perimetro') encendido = estado.camaras.perimetro;
+      else if (id === 'cam-nvr') {
+        encendido = estado.camaras.muelles && estado.camaras.interiores
+          && estado.camaras.perimetro;
+        b.textContent = encendido ? 'Grabación (12/12)' : 'Grabación detenida';
+      }
       else if (id === 'cargar' || id === 'vaciar') {
         b.textContent = id === 'cargar' ? 'Descargar paquetes' : 'Retirar la carga';
         encendido = false;

@@ -397,7 +397,7 @@ function cargarModelo() {
     escena.add(modelo);
     muro = crearMuroVideo();
     pantalla = crearPantallaAdmin();
-    panel = crearPanel({ escena, modelo, luces: lucesEscena });
+    panel = crearPanel({ escena, modelo, luces: lucesEscena, muro });
 
     mixer = new THREE.AnimationMixer(modelo);
     clips = gltf.animations || [];
@@ -576,18 +576,18 @@ function animarCinta(pAuto, dt) {
    como hija de la camara, en la capa 1, para que quede "quemada" en la senal
    y no aparezca nunca en la vista principal. */
 const CCTV = [
-  { nombre: 'MUELLE 01', pos: [-10.2, 4.5, 19.0], tgt: [-2.5, 1.6, 14.0], fov: 60 },
-  { nombre: 'MUELLE 02', pos: [-10.2, 4.5, 11.0], tgt: [-2.5, 1.6, 5.0], fov: 60 },
-  { nombre: 'MUELLE 03', pos: [-10.2, 4.5, 3.0], tgt: [-2.5, 1.6, -2.0], fov: 60 },
-  { nombre: 'PASILLO 1', pos: [-49.3, 10.7, 11.0], tgt: [-49.3, 2.4, -14.0], fov: 62 },
-  { nombre: 'PASILLO 3', pos: [-37.7, 10.7, 11.0], tgt: [-37.7, 2.4, -14.0], fov: 62 },
-  { nombre: 'CORREDOR', pos: [-23.0, 8.8, 20.3], tgt: [-50.0, 2.4, 20.3], fov: 58 },
-  { nombre: 'BANDA TRONCAL', pos: [-16.6, 8.0, 24.0], tgt: [-16.6, 2.0, -3.0], fov: 62 },
-  { nombre: 'SORTER', pos: [-43.0, 9.6, 18.0], tgt: [-29.0, 1.8, 11.9], fov: 58 },
-  { nombre: 'CONTROL DE ACCESO', pos: [-16.6, 2.6, 25.0], tgt: [-20.4, 1.4, 21.6], fov: 62 },
-  { nombre: 'SALA DE MONITOREO', pos: [-13.9, 7.5, -8.1], tgt: [-19.6, 5.6, -12.6], fov: 60 },
-  { nombre: 'PATIO NORTE', pos: [12.0, 7.6, 20.0], tgt: [-2.0, 2.0, 10.0], fov: 55 },
-  { nombre: 'PATIO SUR', pos: [13.0, 7.4, -9.0], tgt: [-2.0, 2.0, 1.0], fov: 55 }
+  { nombre: 'MUELLE 01', grupo: 'muelles', pos: [-10.2, 4.5, 19.0], tgt: [-2.5, 1.6, 14.0], fov: 60 },
+  { nombre: 'MUELLE 02', grupo: 'muelles', pos: [-10.2, 4.5, 11.0], tgt: [-2.5, 1.6, 5.0], fov: 60 },
+  { nombre: 'MUELLE 03', grupo: 'muelles', pos: [-10.2, 4.5, 3.0], tgt: [-2.5, 1.6, -2.0], fov: 60 },
+  { nombre: 'PASILLO 1', grupo: 'interiores', pos: [-49.3, 10.7, 11.0], tgt: [-49.3, 2.4, -14.0], fov: 62 },
+  { nombre: 'PASILLO 3', grupo: 'interiores', pos: [-37.7, 10.7, 11.0], tgt: [-37.7, 2.4, -14.0], fov: 62 },
+  { nombre: 'CORREDOR', grupo: 'interiores', pos: [-23.0, 8.8, 20.3], tgt: [-50.0, 2.4, 20.3], fov: 58 },
+  { nombre: 'BANDA TRONCAL', grupo: 'interiores', pos: [-16.6, 8.0, 24.0], tgt: [-16.6, 2.0, -3.0], fov: 62 },
+  { nombre: 'SORTER', grupo: 'interiores', pos: [-43.0, 9.6, 18.0], tgt: [-29.0, 1.8, 11.9], fov: 58 },
+  { nombre: 'CONTROL DE ACCESO', grupo: 'interiores', pos: [-16.6, 2.6, 25.0], tgt: [-20.4, 1.4, 21.6], fov: 62 },
+  { nombre: 'SALA DE MONITOREO', grupo: 'interiores', pos: [-13.9, 7.5, -8.1], tgt: [-19.6, 5.6, -12.6], fov: 60 },
+  { nombre: 'PATIO NORTE', grupo: 'perimetro', pos: [12.0, 7.6, 20.0], tgt: [-2.0, 2.0, 10.0], fov: 55 },
+  { nombre: 'PATIO SUR', grupo: 'perimetro', pos: [13.0, 7.4, -9.0], tgt: [-2.0, 2.0, 1.0], fov: 55 }
 ];
 
 const frustula = new THREE.Frustum();
@@ -642,7 +642,47 @@ function crearMuroVideo() {
     senal.pantalla = pantalla;
     pantalla.material = senal.mat;
   });
-  return { senales, pantallas, siguiente: 0, cuadro: 0, espera: 0, enCuadro: false };
+
+  const estado = {
+    senales, pantallas, siguiente: 0, cuadro: 0, espera: 0, enCuadro: false,
+    activa: senales.map(() => true),
+    sinSenal: crearSinSenal()
+  };
+  estado.alternar = (indices, activo) => {
+    indices.forEach((i) => {
+      const senal = estado.senales[i];
+      if (!senal) return;
+      estado.activa[i] = activo;
+      if (senal.pantalla) senal.pantalla.material = activo ? senal.mat : estado.sinSenal;
+    });
+  };
+  estado.todasActivas = () => estado.activa.every(Boolean);
+  estado.activas = () => estado.activa.filter(Boolean).length;
+  return estado;
+}
+
+/* cartel de "sin senal" que reemplaza la imagen de una camara apagada */
+function crearSinSenal() {
+  const lienzo = document.createElement('canvas');
+  lienzo.width = 384;
+  lienzo.height = 216;
+  const ctx = lienzo.getContext('2d');
+  ctx.fillStyle = '#08121A';
+  ctx.fillRect(0, 0, 384, 216);
+  ctx.strokeStyle = '#F2C21A';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(6, 6, 372, 204);
+  ctx.fillStyle = '#F2C21A';
+  ctx.font = 'bold 34px Consolas, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('SIN SEÑAL', 192, 104);
+  ctx.fillStyle = '#69727D';
+  ctx.font = '15px Consolas, monospace';
+  ctx.fillText('CAMARA FUERA DE SERVICIO', 192, 140);
+  ctx.fillText('PANEL DE OPERACION', 192, 164);
+  const tex = new THREE.CanvasTexture(lienzo);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
 }
 
 /* ---------- pantalla de la sala de juntas ----------
@@ -755,8 +795,17 @@ function animarMuroVideo(p5, dt) {
   if (!muro.enCuadro) return;
 
   muro.cuadro++;
-  const senal = muro.senales[muro.siguiente];
-  muro.siguiente = (muro.siguiente + 1) % muro.senales.length;
+  // se salta las camaras apagadas: su pantalla queda con el cartel de sin senal
+  const total = muro.senales.length;
+  let senal = null;
+  let intento = 0;
+  while (intento < total) {
+    const i = muro.siguiente % total;
+    muro.siguiente = (i + 1) % total;
+    intento++;
+    if (muro.activa[i]) { senal = muro.senales[i]; break; }
+  }
+  if (!senal) return;
 
   pintarSenal(senal);
   // el holograma de la propuesta no sale en un CCTV de planta y la pantalla

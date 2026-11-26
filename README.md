@@ -94,6 +94,7 @@ lienzo— que mueve el modelo en vivo para mostrar cómo se opera el CEDI:
 | Iluminación | Enciende y apaga nave y andén, jardín y pasillo, anexo y patio; el ambiente nocturno baja la luz de escena |
 | Puertas y accesos | Abre y cierra los tres portones seccionales, las cortinas de tiras y la puerta corredera del frío |
 | Sistemas | Pone en marcha la banda troncal y los dos AMR del corredor central |
+| Seguridad electrónica | Prende y apaga las cámaras de muelle, interiores y perímetro por grupos, y la grabación (NVR); al apagarlas, los monitores del cuarto de control pasan a «SIN SEÑAL» |
 | Simulacro | Llega la furgoneta al muelle 01, descarga y retira paquetes, alarma de intrusión, corte de energía y restablecer el turno |
 
 Las piezas que el panel mueve salen de `camion-cedi360/blender/simulacion.py`
@@ -102,6 +103,13 @@ Las piezas que el panel mueve salen de `camion-cedi360/blender/simulacion.py`
 los AMR y las cajas de la banda viajan ocultos hasta que el simulacro los
 suelta. La lógica vive en `camion-cedi360/visor/src/panel.js` y se engancha al
 bucle del visor desde `main.js`.
+
+El encendido de luces no se queda en el material de las luminarias: cada zona
+tiene focos reales (`PointLight`), un cono aditivo que dibuja el haz y un halo
+en el artefacto, para que el cambio se lea sobre el piso, las estanterías y la
+carga incluso con el ambiente diurno. El muro de video del cuarto de control,
+en cambio, cambia de señal al instante: cada cámara está atada a su monitor y
+al apagarla el visor pinta el cartel de «SIN SEÑAL».
 
 ## Volver a construir
 
