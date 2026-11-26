@@ -629,22 +629,24 @@ function animarCinta(pAuto, reloj) {
 
 /* ---------- logo de FUNDASERINCO pintado en el patio de maniobras ----------
    El patio queda a nivel de calzada (cota 0), asi que el logo va como calcomania
-   sobre la losa: se lee desde el acceso, con el texto corriendo de poniente a
-   oriente y la cabecera hacia el norte. */
+   sobre la losa. Corre a lo largo del patio (norte-sur), en la franja libre entre
+   el tractocamion y la cerca, para que se lea desde el acceso y desde la vista
+   general del recorrido. */
 function crearLogoPatio() {
   const textura = new THREE.TextureLoader().load('assets/img/brand/fundaserinco-blanco.png');
   textura.colorSpace = THREE.SRGBColorSpace;
   textura.anisotropy = render.capabilities.getMaxAnisotropy();
-  const ancho = 18.0;
+  const largo = 24.0;
   const plano = new THREE.Mesh(
-    new THREE.PlaneGeometry(ancho, ancho * 200 / 933),
+    new THREE.PlaneGeometry(largo, largo * 200 / 933),
     new THREE.MeshBasicMaterial({
-      map: textura, transparent: true, opacity: 0.90,
+      map: textura, transparent: true, opacity: 0.92,
       depthWrite: false, toneMapped: false
     })
   );
-  plano.rotation.set(-Math.PI / 2, 0, 0);
-  plano.position.set(15.0, 0.05, 15.5);
+  plano.rotation.x = -Math.PI / 2;
+  plano.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+  plano.position.set(13.6, 0.05, 0.5);
   plano.renderOrder = 2;
   escena.add(plano);
   return plano;

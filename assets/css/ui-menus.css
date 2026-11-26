@@ -1060,7 +1060,7 @@ body.jugando .dato-capa{display:none}
   .deck-dots::before{display:none}
   .deck-dots a{
     display:grid;place-items:center;
-    width:14px;height:14px;
+    width:22px;height:18px;
     border-radius:50%;
     background:transparent;
     box-shadow:none;
@@ -1068,7 +1068,7 @@ body.jugando .dato-capa{display:none}
   }
   .deck-dots a::before{
     content:"";
-    width:6px;height:6px;
+    width:7px;height:7px;
     border-radius:50%;
     background:rgba(14,22,27,.24);
     filter:drop-shadow(0 0 2px rgba(255,255,255,.95));
@@ -1076,15 +1076,35 @@ body.jugando .dato-capa{display:none}
   }
   .deck-dots a:hover{background:transparent}
   .deck-dots a:hover::before{background:rgba(14,22,27,.55)}
-  .deck-dots a.on{width:14px;height:14px;background:transparent;box-shadow:none;font-size:0}
+  .deck-dots a.on{width:22px;height:18px;background:transparent;box-shadow:none;font-size:0}
   .deck-dots a.on::before{background:var(--ink);transform:scale(1.4)}
   .deck-dots a::after{display:none}
 
-  .deck-arrow{
-    width:38px;height:38px;
-    background-image:linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
+  /* en el teléfono la navegación se queda con lo mínimo: los puntos y el
+     indicador de página. Las flechas estorban sobre el texto y se van */
+  .deck-arrow{display:none}
+  .deck-arrows{
+    left:2px;
+    right:auto;
+    top:auto;
+    bottom:14px;
+    transform:none;
+    display:block;
+    width:max-content;
   }
-  .deck-count{padding:3px 0;background:none;border:0;font-size:.48rem}
+  .deck-count{
+    padding:4px 9px;
+    border:1px solid var(--ui-hair);
+    border-radius:999px;
+    background-color:var(--bar);
+    -webkit-backdrop-filter:blur(14px) saturate(1.5);
+    backdrop-filter:blur(14px) saturate(1.5);
+    box-shadow:0 8px 18px -14px rgba(14,22,27,.7);
+    font-size:.52rem;
+    letter-spacing:.08em;
+    white-space:nowrap;
+    color:var(--ink-3);
+  }
 }
 @media (max-width:760px){
   .chapter{padding-left:30px}

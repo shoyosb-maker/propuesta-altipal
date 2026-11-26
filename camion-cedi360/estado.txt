@@ -1309,6 +1309,35 @@ SIGUIENTE PASO RECOMENDADO
                   900 px, el vidrio se opaca (0,88 a 0,95) para que la letra
                   gane sobre cualquier fondo.
 
+2026-11-26 06:40  Puntos siempre visibles en movil y modo dia/noche. El
+                  interruptor sol/luna de la barra superior escribe data-tema
+                  en html y lo recuerda en localStorage (cedi:tema), con un
+                  script de una linea en el head de index, 07-fases y
+                  10-comercial para que no parpadee. El tema nocturno vive en
+                  la seccion 11 de ui-menus.css: remapea los tokens de color y
+                  las superficies --surface/--bar/--bar-soft (por eso los
+                  background:#fff de las tres hojas pasaron a variable), y al
+                  imprimir vuelve al papel blanco. Los puntos de capitulo
+                  dejaban de verse en movil porque deck.css (760 px) y
+                  propuesta.css (1240 px) los apagaban con display:none: ahora
+                  la columna la define ui-menus.css. En movil el boton de tema
+                  no recibia el clic porque el bloque de la marca se lo comia:
+                  .tb-right sube con position/z-index.
+
+2026-11-26 07:20  Navegacion minima en el telefono y logo del patio corrido.
+                  En <=760 px la barra de capitulos se queda con lo puesto: se
+                  retiran las dos flechas (tapaban el texto) y el contador
+                  pasa a ser una pastilla de vidrio al pie de la columna, en el
+                  mismo carril que los puntos. Los puntos ganan area de toque
+                  (22 x 18 px con el punto de 7 px dentro) sin crecer a la
+                  vista. El logo pintado en el patio pasa de 18 a 24 m y se
+                  corre del rincon noreste al centro del patio, en la franja
+                  libre entre el tractocamion (x 6,1-9,9) y las dos Sprinter de
+                  la fila de despacho (x 17,4-19,4), x 13,6, de z -11,5 a
+                  12,5; ahora corre a lo largo del patio (norte-sur) en vez de
+                  poniente-oriente, con la cabecera al occidente. La franja se
+                  midio sobre los nodos del glb (export/cedi360.glb), no a ojo.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y

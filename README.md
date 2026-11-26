@@ -85,8 +85,9 @@ maniobras, y todos los vanos son huecos reales en el muro:
 
 El logo de FUNDASERINCO va en grande sobre dos paredes del almacén (muro oeste
 interior, 11 m, y banda norte, 12 m), en la fachada este sobre el andén
-(7,5 m) y pintado en el suelo del patio de maniobras (18 m, en
-`assets/img/brand/fundaserinco-blanco.png`); los de pared se arman en
+(7,5 m) y pintado en el suelo del patio de maniobras (24 m, corrido a lo largo
+del patio —norte-sur— en la franja libre entre el tractocamión y las dos
+furgonetas, en `assets/img/brand/fundaserinco-blanco.png`); los de pared se arman en
 `camion-cedi360/blender/marca_altipal.py` con la textura
 `assets/marca/fundaserinco-blanco.png`.
 
@@ -162,6 +163,10 @@ panel de operación. No toca el marcado ni la estructura.
   foco llega con el teclado; entonces aparece con un velo translúcido. En móvil
   y tablet (≤900 px) queda siempre visible, porque ahí no hay hover que la
   descubra. El capítulo actual se estira en una píldora con su número.
+- **Navegación mínima en el teléfono** (≤760 px): quedan solo los puntos y el
+  indicador de página. Las flechas se retiran —tapaban el texto— y el contador
+  `01 / 14` pasa a ser una pastilla de vidrio al pie de la columna, como
+  `.deck-count`.
 - **Modo día / modo noche**: el interruptor de la barra superior escribe
   `data-tema` en `<html>` y lo recuerda en `localStorage` (`cedi:tema`). El tema
   nocturno solo remapea los tokens de color —papel, tinta, líneas y las
