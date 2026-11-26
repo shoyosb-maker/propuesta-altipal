@@ -1206,7 +1206,17 @@ BITÁCORA
                   vista. El plan completo queda en plan-datos-al-valor.txt.
                   Se retira el simulacro de llegada de la furgoneta y la banda
                   pasa a un solo interruptor de pausa y continuacion (los AMR
-                  quedan siempre en operacion, fuera del panel).
+                  salen del panel).
+2026-11-26 02:15  De la banda solo se mueve la banda: se esconden los AMR y
+                  se quitan las bandejas del sorter de la cinta de three.js,
+                  asi que la pausa detiene exactamente el recorrido de las
+                  cajas. El panel de operacion se corre a la izquierda de la
+                  columna de herramientas para no tapar interruptores.
+2026-11-26 02:20  Escalera del anexo separada de la fachada: el vuelo se corre
+                  dos metros al oriente (con zocalo macizo bajo el arranque) y
+                  llega al piso 2 por una pasarela de 3,73 x 1,50 m al rellano,
+                  con barandas en sus tres bordes libres. Ya no cruza el
+                  ventanal de la sala de juntas.
 
 SIGUIENTE PASO RECOMENDADO
 --------------------------

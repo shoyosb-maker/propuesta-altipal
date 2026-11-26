@@ -1190,28 +1190,35 @@ def build_anexo(col):
     geo.caja(((px0 + px1) / 2, (py0 + py1) / 2, z2 + 0.18),
              (px1 - px0 + 0.90, py1 - py0 + 0.90, 0.36), losa)
 
-    # escalera exterior sobre el costado oriental, con rellano y puerta
+    # escalera exterior: el vuelo se separa de la fachada acristalada para no
+    # tapar la sala de juntas, y llega al rellano por una pasarela corta
+    retiro = 2.00
     pasos = 13
     dy = 5.20 / pasos
     dz = (z1 + 0.22 - SLAB) / pasos
     ang = math.atan2(z1 + 0.22 - SLAB, 5.20)
+    xe = px1 + retiro
+    # zócalo macizo bajo el arranque del vuelo, a la cota del anexo
+    geo.caja((xe + 0.95, y0 + 1.25, SLAB / 2.0), (1.76, 1.90, SLAB), losa)
     for k in range(pasos):
-        geo.caja((px1 + 0.95, y0 + 0.60 + (k + 0.5) * dy,
+        geo.caja((xe + 0.95, y0 + 0.60 + (k + 0.5) * dy,
                   SLAB + (k + 1) * dz - 0.09), (1.56, dy + 0.06, 0.18), acero)
     # zancas inclinadas bajo los peldaños
-    for xr in (px1 + 0.24, px1 + 1.66):
+    for xr in (xe + 0.24, xe + 1.66):
         geo.caja((xr, y0 + 0.60 + 2.60, (SLAB + z1 + 0.22) / 2.0 - 0.22),
                  (0.10, 6.85, 0.34), acero, rot=(ang, 0.0, 0.0))
-    # rellano y puerta de acceso al piso 2
-    geo.caja((px1 + 0.95, y0 + 6.35, z1 + 0.11), (1.60, 1.50, 0.22), acero)
+    # pasarela de la llegada del vuelo a la puerta del piso 2
+    ancho_pasarela = xe + 1.73 - px1
+    geo.caja((px1 + ancho_pasarela / 2.0, y0 + 6.35, z1 + 0.11),
+             (ancho_pasarela, 1.50, 0.22), acero)
     geo.caja((px1 - 0.03, y0 + 6.35, z1 + 1.05), (0.06, 1.00, 2.10), vidrio)
-    # pasamanos de la escalera y baranda del rellano
-    for xr in (px1 + 0.18, px1 + 1.72):
+    # pasamanos del vuelo y barandas de la pasarela en sus tres bordes libres
+    for xr in (xe + 0.18, xe + 1.72):
         baranda_rampa(geo, xr, y0 + 0.60, SLAB, 5.20, z1 + 0.22 - SLAB,
                       acero)
-    baranda(geo, "y", px1 + 1.80, y0 + 5.60, y0 + 7.10, z1 + 0.22, acero)
-    baranda(geo, "x", y0 + 6.35 + 0.78, px1 + 0.20, px1 + 1.80, z1 + 0.22,
-            acero)
+    baranda(geo, "x", y0 + 7.10, px1, xe + 1.78, z1 + 0.22, acero)
+    baranda(geo, "y", xe + 1.78, y0 + 5.60, y0 + 7.10, z1 + 0.22, acero)
+    baranda(geo, "x", y0 + 5.60, px1, xe + 0.18, z1 + 0.22, acero)
 
     # equipos de cubierta
     for dx in (-2.10, 1.90):

@@ -66,6 +66,7 @@ piso (1,25 m):
 | Jardín de acceso | 12 × 30 m | entre el pasillo y la fachada oeste de la nave |
 | Acceso de personal | puerta de 3 m con marquesina | fachada oeste, y −16 |
 | Anexo administrativo | 12 × 8 m + piso 2 | al norte, con ventanales en planta baja |
+| Escalera del anexo | 13 peldaños, separada 2 m de la fachada | sube al piso 2 por una pasarela al rellano |
 
 El jardín lleva caminos de grava, árboles, bancas, materas y luminarias, y es
 el que conecta la puerta de personal con el pasillo que sirve a los dos
@@ -102,9 +103,10 @@ lienzo— que mueve el modelo en vivo para mostrar cómo se opera el CEDI:
 
 Las piezas que el panel mueve salen de `camion-cedi360/blender/simulacion.py`
 (colección `T93_SIM`), con el pivote resuelto: los portones cuelgan del dintel
-(se recogen escalando en Z), la hoja del frío corre sobre su vano y la carga,
-los AMR y las cajas de la banda viajan ocultos hasta que el simulacro los
-suelta. La lógica vive en `camion-cedi360/visor/src/panel.js` y se engancha al
+(se recogen escalando en Z), la hoja del frío corre sobre su vano y la carga
+viaja oculta hasta que el simulacro la suelta. De la banda solo se mueve ella
+con sus cajas: los AMR y el sorter quedan fuera del visor. La lógica vive en
+`camion-cedi360/visor/src/panel.js` y se engancha al
 bucle del visor desde `main.js`.
 
 ## Capa de datos (puntos 1 a 3 de «De los datos al valor empresarial»)
