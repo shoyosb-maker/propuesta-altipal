@@ -23,6 +23,11 @@
   --ui-paper-1:rgba(255,255,255,.76);
   --ui-paper-2:rgba(250,248,242,.62);
   --ui-paper-solid:#fff;
+  /* fondo de la barra flotante: el modo noche lo remapea */
+  --ui-bar-bg:rgba(250,248,242,.68);
+  --ui-bar-bg-on:rgba(255,255,255,.82);
+  --ui-bar-glow:rgba(255,255,255,.85);
+  --ui-bar-edge:rgba(255,255,255,.90);
 
   --ui-night-hair:rgba(255,255,255,.13);
   --ui-night-1:rgba(23,32,41,.86);
@@ -49,22 +54,22 @@
   padding:0 clamp(10px,1.5vw,18px);
   border:1px solid var(--ui-hair);
   border-radius:var(--ui-radius);
-  background-color:rgba(250,248,242,.68);
+  background-color:var(--ui-bar-bg);
   background-image:
     radial-gradient(300px 150px at var(--ui-mx,50%) var(--ui-my,-40%),
-      rgba(255,255,255,.85),rgba(255,255,255,0) 72%),
+      var(--ui-bar-glow),rgba(255,255,255,0) 72%),
     linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
   -webkit-backdrop-filter:blur(24px) saturate(1.7);
   backdrop-filter:blur(24px) saturate(1.7);
-  box-shadow:var(--ui-shadow-2),inset 0 1px 0 rgba(255,255,255,.9);
+  box-shadow:var(--ui-shadow-2),inset 0 1px 0 var(--ui-bar-edge);
   transition:box-shadow .5s var(--ui-ease),background-color .5s var(--ui-ease),
     border-color .5s var(--ui-ease),transform .5s var(--ui-ease);
 }
 .topbar.is-scrolled{
-  background-color:rgba(255,255,255,.82);
+  background-color:var(--ui-bar-bg-on);
   border-color:var(--ui-hair-2);
   box-shadow:0 1px 2px rgba(14,22,27,.08),0 22px 46px -22px rgba(14,22,27,.44),
-    inset 0 1px 0 rgba(255,255,255,.95);
+    inset 0 1px 0 var(--ui-bar-edge);
 }
 
 /* el símbolo, en su pozo circular */
@@ -172,6 +177,9 @@ body.recorrido-page :focus-visible{outline-color:var(--yellow)}
    ========================================================= */
 .deck-dots{
   left:12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   gap:7px;
   padding:11px 9px;
   border-radius:var(--ui-radius);
@@ -189,13 +197,14 @@ body.recorrido-page :focus-visible{outline-color:var(--yellow)}
 .deck-dots:hover,
 .deck-dots:focus-within{
   opacity:1;
-  background-color:rgba(250,248,242,.45);
+  background-color:var(--bar-soft);
   -webkit-backdrop-filter:blur(16px) saturate(1.4);
   backdrop-filter:blur(16px) saturate(1.4);
 }
-/* en pantallas táctiles no hay hover: la barra queda siempre visible */
-@media (hover:none){
-  .deck-dots{opacity:1;background-color:rgba(250,248,242,.45)}
+/* sin hover (táctil) o pantalla angosta la barra queda siempre visible:
+   en un teléfono no hay puntero que la descubra */
+@media (hover:none),(max-width:900px){
+  .deck-dots{opacity:1;background-color:var(--bar-soft)}
 }
 .deck-dots a{
   display:grid;place-items:center;
@@ -227,7 +236,7 @@ body.recorrido-page :focus-visible{outline-color:var(--yellow)}
 .deck-arrow{
   width:40px;height:40px;
   border-radius:50%;
-  background-color:rgba(250,248,242,.78);
+  background-color:var(--ui-bar-bg);
   background-image:linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
   border:1px solid var(--ui-hair);
   -webkit-backdrop-filter:blur(18px) saturate(1.6);
@@ -270,10 +279,10 @@ body.doc-page{padding-bottom:78px}
   height:52px;
   border-radius:var(--ui-radius);
   border:1px solid var(--ui-hair);
-  background-color:rgba(250,248,242,.72);
+  background-color:var(--ui-bar-bg);
   background-image:
     radial-gradient(260px 130px at var(--ui-mx,50%) var(--ui-my,60%),
-      rgba(255,255,255,.9),rgba(255,255,255,0) 72%),
+      var(--ui-bar-glow),rgba(255,255,255,0) 72%),
     linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
   -webkit-backdrop-filter:blur(24px) saturate(1.7);
   backdrop-filter:blur(24px) saturate(1.7);
@@ -717,7 +726,7 @@ body.doc-page{padding-bottom:78px}
   background-color:rgba(9,15,20,.92);
 }
 .dato-pin.aqui i{
-  background:#fff;
+  background:var(--surface);
   box-shadow:0 0 0 3px rgba(245,196,0,.40),0 0 18px rgba(245,196,0,.95);
 }
 .dato-pin.aqui span{border-color:rgba(245,196,0,.45);color:#fff}
@@ -991,11 +1000,11 @@ body.jugando .dato-capa{display:none}
   .visor-tools button{border-radius:var(--ui-radius-pill)}
 
   /* en pantalla pequeña el vidrio se opaca un poco: la letra siempre gana */
-  .topbar{background-color:rgba(250,248,242,.90)}
+  .topbar{background-color:var(--bar)}
   body.recorrido-page .topbar{background-color:rgba(9,15,20,.88)}
-  .doc-nav{background-color:rgba(250,248,242,.94)}
+  .doc-nav{background-color:var(--bar)}
   /* la barra de puntos se queda translúcida también en tablet */
-  .deck-dots{background-color:rgba(250,248,242,.45)}
+  .deck-dots{background-color:var(--bar-soft)}
   .rec-rail{background-color:rgba(9,15,20,.88)}
   .rec-hud{background-color:rgba(9,15,20,.94)}
   .rec-menu-btn{background-color:rgba(9,15,20,.88)}
@@ -1083,3 +1092,144 @@ body.jugando .dato-capa{display:none}
 @media (max-width:360px){
   .chapter{padding-left:24px}
 }
+
+/* =========================================================
+   11. MODO NOCHE · el mismo sistema, papel oscuro
+   El interruptor vive en la barra superior y escribe data-tema
+   en <html>. Aquí solo se remapean los tokens y las pocas
+   superficies que el tema industrial fija en claro.
+   ========================================================= */
+html[data-tema="noche"]{
+  color-scheme:dark;
+
+  --paper:#0B1116;
+  --paper-2:#0F171E;
+  --paper-3:#16202A;
+
+  --ink:#EDF3F8;
+  --ink-2:#D3DFE8;
+  --ink-3:#9BADB9;
+  --ink-4:#7A8C98;
+
+  --line:#22303A;
+  --line-2:#33434F;
+
+  --accent-ink:#F5C400;
+  --sky:#A9BCC8;
+
+  --text:var(--ink-2);
+  --title:var(--ink);
+  --muted:var(--ink-3);
+  --muted-2:var(--ink-4);
+
+  --panel:var(--paper-2);
+  --panel-solid:var(--paper-2);
+  --panel-2:var(--paper);
+
+  --surface:#16202A;
+  --bar:rgba(10,16,21,.90);
+  --bar-soft:rgba(10,16,21,.55);
+
+  --ui-hair:rgba(255,255,255,.10);
+  --ui-hair-2:rgba(255,255,255,.18);
+  --ui-paper-1:rgba(32,44,54,.82);
+  --ui-paper-2:rgba(12,19,25,.74);
+  --ui-paper-solid:#16212B;
+  --ui-bar-bg:rgba(10,16,21,.72);
+  --ui-bar-bg-on:rgba(10,16,21,.90);
+  --ui-bar-glow:rgba(255,255,255,.10);
+  --ui-bar-edge:rgba(255,255,255,.07);
+  --ui-shadow-1:0 1px 1px rgba(0,0,0,.42),0 2px 6px -2px rgba(0,0,0,.55);
+  --ui-shadow-2:0 1px 2px rgba(0,0,0,.50),0 14px 32px -16px rgba(0,0,0,.72),
+    0 40px 70px -48px #000;
+}
+html[data-tema="noche"] body{background:var(--paper);color:var(--text)}
+
+/* la barra flotante deja de brillar en blanco */
+html[data-tema="noche"] .topbar{
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 var(--ui-bar-edge);
+}
+html[data-tema="noche"] .topbar.is-scrolled{
+  box-shadow:0 1px 2px rgba(0,0,0,.5),0 22px 46px -22px rgba(0,0,0,.8),
+    inset 0 1px 0 var(--ui-bar-edge);
+}
+html[data-tema="noche"] .tb-brand img{box-shadow:0 1px 3px rgba(0,0,0,.5)}
+
+/* el brillo del vidrio que sigue al cursor era blanco puro */
+html[data-tema="noche"] .deck-arrow,
+html[data-tema="noche"] .rec-menu-btn{
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 var(--ui-bar-edge);
+}
+
+/* piezas que el tema industrial fija en blanco o papel */
+html[data-tema="noche"] .card:hover,
+html[data-tema="noche"] .topic:hover,
+html[data-tema="noche"] .pg:hover,
+html[data-tema="noche"] .deck-arrow:hover,
+html[data-tema="noche"] .btn-ghost:hover{
+  background:var(--paper-3);
+}
+html[data-tema="noche"] .acc-head:hover,
+html[data-tema="noche"] tbody tr:hover td{background:var(--paper-3)}
+
+/* cifras y acentos que el tema fija en azul de marca */
+html[data-tema="noche"] .bignum{color:var(--ink)}
+html[data-tema="noche"] .bignum.y{color:var(--yellow)}
+html[data-tema="noche"] .bignum.t{color:#7FD8C4}
+
+/* los puntos de capítulo eran tinta oscura: sobre papel oscuro se invierten */
+html[data-tema="noche"] .deck-dots a{background:rgba(237,243,248,.30)}
+html[data-tema="noche"] .deck-dots a:hover{background:rgba(237,243,248,.66)}
+html[data-tema="noche"] .deck-dots a.on{background:var(--yellow);color:#0B1116;
+  box-shadow:0 0 0 3px rgba(245,196,0,.18)}
+html[data-tema="noche"] .deck-dots a::before{background:rgba(237,243,248,.34)}
+html[data-tema="noche"] .deck-dots a:hover::before{background:rgba(237,243,248,.70)}
+html[data-tema="noche"] .deck-dots a.on::before{background:var(--yellow)}
+html[data-tema="noche"] .deck-dots::before{color:var(--ink-3)}
+
+/* el botón del interruptor: sol y luna en el mismo pozo */
+.tb-right .btn-tema{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;padding:0;gap:0;flex:0 0 auto;
+  border-radius:var(--ui-radius-pill);
+}
+.tb-right .btn-tema svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:currentColor;
+  stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tb-right .btn-tema .ico-luna{display:none}
+html[data-tema="noche"] .tb-right .btn-tema .ico-sol{display:none}
+html[data-tema="noche"] .tb-right .btn-tema .ico-luna{display:block}
+html[data-tema="noche"] .tb-right .btn-tema{color:var(--yellow)}
+
+@media (max-width:900px){
+  .tb-right .btn-tema{width:32px;height:32px}
+  .tb-right .btn-tema svg{width:15px;height:15px}
+}
+@media (max-width:420px){
+  .tb-right .btn-tema{width:28px;height:28px;padding:0}
+  .tb-right .btn-tema svg{width:13px;height:13px}
+}
+
+/* el papel manda al imprimir: el modo noche no se cuela en el PDF */
+@media print{
+  html[data-tema="noche"]{
+    color-scheme:light;
+    --paper:#fff;
+    --paper-2:#fff;
+    --paper-3:#F2F0E9;
+    --ink:#0E161B;
+    --ink-2:#242E35;
+    --ink-3:#5B676E;
+    --ink-4:#8A9399;
+    --line:#D8D5CB;
+    --line-2:#B9B6AA;
+    --text:var(--ink-2);
+    --title:var(--ink);
+    --muted:var(--ink-3);
+    --muted-2:var(--ink-4);
+    --surface:#fff;
+    --bar:#fff;
+    --bar-soft:#fff;
+  }
+  .btn-tema{display:none!important}
+}
+

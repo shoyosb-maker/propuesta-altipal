@@ -159,10 +159,14 @@ panel de operación. No toca el marcado ni la estructura.
   común; al pasar el ratón cada una recibe su propia cápsula blanca.
 - **Puntos de capítulo**: la columna no tiene caja propia —sin borde, sin sombra
   y sin fondo— y se mantiene invisible hasta que el puntero entra en ella o el
-  foco llega con el teclado; entonces aparece con un velo translúcido. El
-  capítulo actual se estira en una píldora oscura con su número, y en móvil
-  vuelven a ser puntos finos con canaleta propia (siempre visibles, porque ahí
-  no hay hover).
+  foco llega con el teclado; entonces aparece con un velo translúcido. En móvil
+  y tablet (≤900 px) queda siempre visible, porque ahí no hay hover que la
+  descubra. El capítulo actual se estira en una píldora con su número.
+- **Modo día / modo noche**: el interruptor de la barra superior escribe
+  `data-tema` en `<html>` y lo recuerda en `localStorage` (`cedi:tema`). El tema
+  nocturno solo remapea los tokens de color —papel, tinta, líneas y las
+  superficies `--surface`/`--bar`— más un puñado de piezas que el tema
+  industrial fija en claro; al imprimir vuelve al papel blanco.
 - **Panel de operación**: cada acción es un interruptor tipo iOS (pista y pomo
   como pseudo-elementos sobre `aria-pressed`), agrupado en filas con su rótulo.
 - **Rótulos adaptativos**: «Pantalla completa» lleva dos `span` (`lbl-lg` /

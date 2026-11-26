@@ -154,7 +154,7 @@ button.chip.on{border-color:rgba(251,199,16,.55);background:rgba(251,199,16,.13)
   position:relative;font-size:0;line-height:0;color:transparent;overflow:visible;
   transition:background .2s,box-shadow .2s;
 }
-.deck-dots a:hover{background:#fff}
+.deck-dots a:hover{background:var(--surface)}
 .deck-dots a.on{background:var(--yellow);box-shadow:0 0 0 3px rgba(251,199,16,.18)}
 .deck-dots a::after{
   content:attr(data-nav);position:absolute;left:17px;top:50%;transform:translateY(-50%) translateX(-4px);
@@ -280,15 +280,15 @@ body.doc-page{padding-bottom:56px}
   .eje-back{display:none}
   .eje-hero h1{font-size:16pt;color:#00274B}
   .eje-facts{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .eje-facts div{background:#fff;border-color:#D5DFEA}
+  .eje-facts div{background:var(--surface);border-color:#D5DFEA}
   .eje-facts b{color:#00274B}
   .eje-facts span{color:#5A7186}
-  .eje-card{background:#fff;border-color:#D5DFEA}
+  .eje-card{background:var(--surface);border-color:#D5DFEA}
   .eje-card h3,.eje-card p,.eje-card li{color:#00274B}
   .eje-index{display:none}
   .eje-sec{break-inside:auto;margin-bottom:14px}
   .eje-sec h2{font-size:13pt;color:#00274B}
-  .armador-resumen{position:static;background:#fff;border-color:#D5DFEA}
+  .armador-resumen{position:static;background:var(--surface);border-color:#D5DFEA}
   .matriz-wrap{border-color:#D5DFEA}
   .matriz-table th,.matriz-table td{color:#00274B;border-color:#E3E9F0}
   .matriz-table thead th{background:#F2F6FA;color:#41586E}
