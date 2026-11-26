@@ -1188,6 +1188,8 @@ html[data-tema="noche"] .deck-dots a.on::before{background:var(--yellow)}
 html[data-tema="noche"] .deck-dots::before{color:var(--ink-3)}
 
 /* el botón del interruptor: sol y luna en el mismo pozo */
+.tb-right{position:relative;z-index:2}
+.topbar .tb-brand{position:relative;z-index:1;min-width:0}
 .tb-right .btn-tema{
   display:inline-flex;align-items:center;justify-content:center;
   width:34px;height:34px;padding:0;gap:0;flex:0 0 auto;
