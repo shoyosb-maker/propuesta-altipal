@@ -522,11 +522,10 @@ function crearHolo() {
 
 /* ---------- cinta transportadora en marcha (fase 2) ----------
    El modelo exporta la banda, el sorter y los AMR fundidos en una sola malla,
-   asi que el movimiento se resuelve con piezas nuevas en three.js: paquetes
-   que recorren la banda troncal y bandejas que salen por el sorter. Aparecen
-   con la capa de automatizacion (misma fase que los puntos A1-A8). */
+   asi que el movimiento se resuelve con piezas nuevas en three.js. Solo se
+   mueve la banda con sus paquetes: el sorter y los AMR no entran al visor.
+   Aparece con la capa de automatizacion (misma fase que los puntos A1-A8). */
 const CINTA_TRONCAL = { x: -16.6, y: 2.28, z0: 25.0, z1: -8.4, n: 9, paso: 0.055 };
-const CINTA_SORTER = { y: 2.44, z: -11.95, x0: -46.4, x1: -21.2, n: 6, paso: 0.07 };
 
 function crearCinta() {
   const grupo = new THREE.Group();
@@ -535,39 +534,26 @@ function crearCinta() {
     roughness: 0.82, metalness: 0.05
   });
   const caja = new THREE.BoxGeometry(0.52, 0.42, 0.50);
-  const bandeja = new THREE.BoxGeometry(0.62, 0.10, 0.84);
-  const piezas = [];
+  const paquetes = [];
   for (let i = 0; i < CINTA_TRONCAL.n; i++) {
     const m = new THREE.Mesh(caja, material);
     m.position.set(CINTA_TRONCAL.x, CINTA_TRONCAL.y, CINTA_TRONCAL.z0);
     grupo.add(m);
-    piezas.push({ obj: m, t: i / CINTA_TRONCAL.n, tipo: 0 });
-  }
-  for (let i = 0; i < CINTA_SORTER.n; i++) {
-    const m = new THREE.Mesh(bandeja, material);
-    m.position.set(CINTA_SORTER.x0, CINTA_SORTER.y, CINTA_SORTER.z);
-    grupo.add(m);
-    piezas.push({ obj: m, t: i / CINTA_SORTER.n, tipo: 1 });
+    paquetes.push({ obj: m, t: i / CINTA_TRONCAL.n });
   }
   grupo.visible = false;
   escena.add(grupo);
-  return { grupo, piezas };
+  return { grupo, paquetes };
 }
 
 function animarCinta(pAuto, dt) {
   if (!cinta) return;
   cinta.grupo.visible = pAuto > 0.05;
   if (!cinta.grupo.visible) return;
-  cinta.piezas.forEach((p) => {
-    const paso = p.tipo === 0 ? CINTA_TRONCAL.paso : CINTA_SORTER.paso;
-    p.t = (p.t + dt * paso) % 1;
-    if (p.tipo === 0) {
-      const c = CINTA_TRONCAL;
-      p.obj.position.z = c.z0 + (c.z1 - c.z0) * p.t;
-    } else {
-      const s = CINTA_SORTER;
-      p.obj.position.x = s.x0 + (s.x1 - s.x0) * p.t;
-    }
+  const c = CINTA_TRONCAL;
+  cinta.paquetes.forEach((p) => {
+    p.t = (p.t + dt * c.paso) % 1;
+    p.obj.position.z = c.z0 + (c.z1 - c.z0) * p.t;
   });
 }
 

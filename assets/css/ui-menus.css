@@ -513,8 +513,11 @@ body.doc-page{padding-bottom:78px}
    ========================================================= */
 .sim-panel{
   top:calc(var(--bar-h) + 20px);
-  right:14px;
+  /* deja libre la columna de herramientas: si no, los interruptores
+     quedan debajo de los botones flotantes */
+  right:calc(14px + 160px);
   width:306px;
+  max-height:calc(100% - 156px);
   border-radius:var(--ui-radius);
   border:1px solid var(--ui-night-hair);
   background-color:rgba(9,15,20,.74);

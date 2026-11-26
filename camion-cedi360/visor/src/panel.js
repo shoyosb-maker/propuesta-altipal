@@ -91,13 +91,12 @@ export function crearPanel(ctx) {
   const cortinas = porPrefijo('Muelle_Tira_');
   const cajas = porPrefijo('SIM_Caja_');
   const palets = porPrefijo('SIM_Palet_');
-  const amr = porPrefijo('SIM_AMR_');
   const banda = porPrefijo('SIM_Banda_Caja_');
   const balizas = porPrefijo('SIM_Baliza_');
 
   /* posiciones de partida, para volver siempre al mismo sitio */
   const base = new Map();
-  [puertaFrio].concat(amr, banda, cajas, palets).forEach((o) => {
+  [puertaFrio].concat(banda, cajas, palets).forEach((o) => {
     if (o) base.set(o, { x: o.position.x, y: o.position.y, z: o.position.z, ry: o.rotation.y });
   });
   const baseDe = (o) => base.get(o) || { x: 0, y: 0, z: 0, ry: 0 };
@@ -120,10 +119,12 @@ export function crearPanel(ctx) {
     fondo: escena.background ? escena.background.clone() : null
   };
 
-  /* la carga y las balizas arrancan escondidas; la banda y los AMR
-     trabajan desde el primer segundo */
+  /* la carga y las balizas arrancan escondidas; la banda de boxes
+     trabaja desde el primer segundo. Los AMR no entran al visor: la
+     única pieza en movimiento de este sistema es la banda con sus cajas */
   cajas.concat(palets, balizas).forEach((o) => { o.visible = false; });
-  amr.concat(banda).forEach((o) => { o.visible = true; });
+  banda.forEach((o) => { o.visible = true; });
+  porPrefijo('SIM_AMR_').forEach((o) => { o.visible = false; });
   balizas.forEach((o) => o.scale.setScalar(1.9));
 
   /* focos por zona: el encendido se ve en el piso y en las estanterías.
@@ -245,15 +246,9 @@ export function crearPanel(ctx) {
   }
 
   let reloj = 0;
-  /* la banda solo recibe pausa y continuación: los AMR no dependen de ella */
+  /* la banda solo recibe pausa y continuación: es la única pieza que se mueve */
   function aplicarBanda(dt) {
     reloj += dt;
-    amr.forEach((o, i) => {
-      const b = baseDe(o);
-      const fase = reloj * 0.42 + i * Math.PI;
-      o.position.z = b.z + Math.sin(fase) * 9.5;
-      o.position.x = b.x + Math.cos(fase * 0.5) * 0.18;
-    });
     const enMarcha = estado.banda && !estado.corte;
     if (!enMarcha) return;
     banda.forEach((o, i) => {
