@@ -1149,6 +1149,27 @@ body.jugando .dato-capa{display:none}
     0 0 30px -10px rgba(245,196,0,.55),
     0 0 44px -18px rgba(185,139,240,.5),
     inset 0 1px 0 rgba(255,255,255,.10);
+  /* la tarjeta se inclina hacia el borde donde está el puntero:
+     --fx y --fy van de -1 a 1 y los escribe ui-menus.js */
+  transform:
+    perspective(1100px)
+    rotateX(calc(var(--fy,0) * -4.5deg))
+    rotateY(calc(var(--fx,0) * 5.5deg))
+    translate3d(calc(var(--fx,0) * 7px),calc(var(--fy,0) * 5px),0);
+  transform-style:preserve-3d;
+  transition:transform .45s var(--ui-ease),box-shadow .45s var(--ui-ease);
+  will-change:transform;
+}
+@media (hover:hover) and (pointer:fine){
+  .ficha:hover{
+    transition-duration:.14s;
+    box-shadow:
+      0 46px 90px -46px rgba(4,10,14,.95),
+      0 0 0 1px rgba(255,240,196,.26),
+      0 0 42px -8px rgba(245,196,0,.7),
+      0 0 60px -16px rgba(185,139,240,.6),
+      inset 0 1px 0 rgba(255,255,255,.14);
+  }
 }
 /* fuera la barra amarilla de la izquierda: el marco ya manda */
 .ficha::before{display:none}
@@ -1197,15 +1218,48 @@ body.jugando .dato-capa{display:none}
   fill:#F5C400;
   filter:drop-shadow(0 0 7px rgba(245,196,0,.55));
 }
-.ficha-rayo{
-  margin-left:auto;
-  width:46px;height:38px;flex:none;
-  display:block;
+/* la caja del programa en lugar del rayo. El render llega con el fondo
+   fundido en alfa, así que se apoya en el vidrio sin marco visible */
+.ficha-caja{
+  margin:-8px -8px -12px auto;
+  width:clamp(96px,28%,150px);
+  height:auto;flex:none;
+  transform:rotate(-2deg);
+  filter:drop-shadow(0 12px 20px rgba(0,0,0,.60));
+  transition:transform .5s var(--ui-ease);
 }
-.ficha-rayo svg{
-  width:100%;height:100%;
-  fill:#FFF6DC;
-  filter:drop-shadow(0 0 9px rgba(245,196,0,.85)) drop-shadow(0 2px 4px rgba(0,0,0,.55));
+.ficha:hover .ficha-caja{transform:rotate(0deg) scale(1.05)}
+
+/* estela de luz: una sola pasada cada vez que el puntero entra en la tarjeta */
+.ficha-estela{
+  position:absolute;
+  inset:-30% -60%;
+  z-index:2;
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(104deg,
+    transparent 40%,
+    rgba(255,246,220,.10) 45%,
+    rgba(255,255,255,.46) 50%,
+    rgba(255,246,220,.10) 55%,
+    transparent 60%);
+  transform:translate3d(-70%,0,0) rotate(6deg);
+}
+@media (hover:hover) and (pointer:fine){
+  .ficha:hover .ficha-estela{
+    animation:estelaFicha .95s var(--ui-ease) 1 both;
+  }
+}
+@keyframes estelaFicha{
+  0%{opacity:0;transform:translate3d(-70%,0,0) rotate(6deg)}
+  10%{opacity:1}
+  80%{opacity:.9}
+  100%{opacity:0;transform:translate3d(70%,0,0) rotate(6deg)}
+}
+@media (prefers-reduced-motion:reduce){
+  .ficha{transform:none;transition:none}
+  .ficha-estela{animation:none!important}
+  .ficha:hover .ficha-caja{transform:none}
 }
 
 .ficha-code{
@@ -1252,7 +1306,7 @@ body.jugando .dato-capa{display:none}
   .ficha-head p{letter-spacing:.18em}
   .ficha-brand{font-size:1.6rem;gap:8px}
   .ficha-corona{width:19px;height:19px}
-  .ficha-rayo{width:32px;height:27px}
+  .ficha-caja{width:84px;margin:-6px -4px -8px auto}
   .ficha-code{font-size:.53rem;letter-spacing:.13em}
   .ficha-sub{font-size:.55rem;letter-spacing:.08em}
   .frow{padding:8px 7px;margin:0 -7px}
@@ -1265,9 +1319,10 @@ body.jugando .dato-capa{display:none}
     border:1px solid #C9D9EA!important;
     border-radius:0;
     box-shadow:none!important;
+    transform:none!important;
   }
   .ficha::after{display:none}
-  .ficha-corona,.ficha-rayo{display:none!important}
+  .ficha-corona,.ficha-caja,.ficha-estela{display:none!important}
   .ficha-brand{
     background:none!important;
     color:#00274B!important;
@@ -1285,6 +1340,62 @@ body.jugando .dato-capa{display:none}
   .frow b{color:#00274B!important}
   .frow:hover{background:none}
 }
+
+/* =========================================================
+   10c. TELÓN DE CAPÍTULO · la caja ALTIPAL antes de cada sección
+   Aparece un segundo al cambiar de capítulo (puntos o flechas) y
+   se va sola: la sección ya está colocada cuando se levanta.
+   ========================================================= */
+.telon{
+  position:fixed;
+  inset:0;
+  z-index:400;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  background-color:#070B0F;
+  background-image:url(../img/brand/altipal-telon.webp);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  transition:opacity .26s ease,visibility 0s linear .3s;
+}
+.telon.on{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition:opacity .26s ease;
+}
+.telon::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(120% 78% at 50% 44%,rgba(5,9,12,.16),rgba(5,9,12,.72) 78%),
+    linear-gradient(180deg,rgba(5,9,12,.58),rgba(5,9,12,.14) 44%,rgba(5,9,12,.80));
+}
+.telon-linea{
+  position:absolute;
+  left:50%;
+  bottom:11vh;
+  transform:translateX(-50%);
+  width:min(260px,42vw);
+  height:2px;
+  border-radius:2px;
+  overflow:hidden;
+  background:rgba(255,255,255,.14);
+}
+.telon-linea i{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:2px;
+  background:linear-gradient(90deg,#F5C400,#FFF0C4);
+  box-shadow:0 0 12px rgba(245,196,0,.8);
+}
+.telon.on .telon-linea i{animation:telonCarga .8s ease-out .08s 1 both}
+@keyframes telonCarga{from{width:0}to{width:100%}}
+@media print{.telon{display:none!important}}
 
 /* =========================================================
    11. MODO NOCHE · el mismo sistema, papel oscuro

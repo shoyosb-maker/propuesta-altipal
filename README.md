@@ -178,10 +178,22 @@ panel de operación. No toca el marcado ni la estructura.
   industrial fija en claro; al imprimir vuelve al papel blanco.
 - **Ficha del programa (portada)**: tarjeta negra con marco prismático —oro,
   violeta y cian— montado con dos capas de `background` (`padding-box` /
-  `border-box`), brillo de vitrina en `::after`, título en degradado con corona
-  y rayo, chip con la referencia `CDI-360-2026-ALT` y filas de datos con
-  etiqueta mono y valor en blanco. Es la misma tarjeta en modo día y en modo
-  noche (como una tarjeta física); al imprimir vuelve a caja clara sin adornos.
+  `border-box`), brillo de vitrina en `::after`, título en degradado con corona,
+  chip con la referencia `CDI-360-2026-ALT` y filas de datos con etiqueta mono
+  y valor en blanco. La caja ALTIPAL del render (`altipal-caja.webp`, recortada
+  con el fondo fundido en alfa) ocupa la esquina alta. Con ratón la tarjeta se
+  inclina hacia el borde donde está el puntero —`ui-menus.js` escribe `--fx` y
+  `--fy`— y una estela de luz la cruza **una sola vez** por cada entrada del
+  puntero (animación CSS atada a `:hover`, así se reinicia al volver a entrar).
+  Es la misma tarjeta en modo día y en modo noche; al imprimir vuelve a caja
+  clara sin adornos.
+- **Telón de capítulo**: al cambiar de sección con los puntos o las flechas, la
+  foto de la caja ALTIPAL ocupa la pantalla ~1 s (240 ms de entrada, 520 de
+  espera y 320 de salida) con una línea de progreso dorada. La navegación se
+  ejecuta con el telón puesto, así que al levantarse la sección ya está en su
+  sitio. Se intercepta el clic en captura y se reemite marcado (`__telon`) para
+  que el deck haga su trabajo una sola vez; con `prefers-reduced-motion` no
+  aparece.
 - **Panel de operación**: cada acción es un interruptor tipo iOS (pista y pomo
   como pseudo-elementos sobre `aria-pressed`), agrupado en filas con su rótulo.
 - **Rótulos adaptativos**: «Pantalla completa» lleva dos `span` (`lbl-lg` /

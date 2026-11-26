@@ -1361,6 +1361,24 @@ SIGUIENTE PASO RECOMENDADO
                   estado se apilan y en papel vuelve a caja clara sin adornos.
                   La barra amarilla de la izquierda se retira: el marco manda.
 
+2026-11-26 08:10  La ficha se mueve y la caja ALTIPAL entra en escena. El rayo
+                  se sustituye por el render de la caja (assets/img/brand/
+                  altipal-caja.webp): recorte ajustado con el fondo fundido en
+                  alfa, hecho con PIL (margen radial en smoothstep y desenfoque
+                  de 2 px), apoyado en la tarjeta con sombra propia. Con raton
+                  la tarjeta se inclina hacia el borde donde esta el puntero
+                  (ui-menus.js escribe --fx/--fy; rotateX/rotateY de 4,5 y 5,5
+                  grados y traslacion de 7 y 5 px) y la estela de luz la cruza
+                  una sola vez por entrada del puntero: la animacion cuelga de
+                  :hover, asi que se reinicia sola al salir y volver. Ambas
+                  cosas van bajo (hover:hover) and (pointer:fine) y se apagan
+                  con prefers-reduced-motion.
+                  Telon entre capitulos: la foto de la caja (altipal-telon.webp,
+                  1500 px) ocupa la pantalla 240 + 520 + 320 ms con linea de
+                  progreso; el clic se intercepta en captura, se muestra el
+                  telon, se reemite marcado con __telon y el deck navega debajo.
+                  Con movimiento reducido no aparece.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y

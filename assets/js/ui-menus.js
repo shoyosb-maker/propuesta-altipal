@@ -116,3 +116,87 @@
     crear();
   }
 })();
+
+/* =========================================================
+   Ficha del programa: se inclina hacia el borde donde va el puntero.
+   Solo con ratón; en táctil y con movimiento reducido se queda quieta.
+   ========================================================= */
+(function () {
+  'use strict';
+  var ficha = document.querySelector('.ficha');
+  if (!ficha) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  var pendiente = 0;
+  var destino = { x: 0, y: 0 };
+
+  function pintar() {
+    pendiente = 0;
+    ficha.style.setProperty('--fx', destino.x.toFixed(3));
+    ficha.style.setProperty('--fy', destino.y.toFixed(3));
+  }
+  function encolar() {
+    if (!pendiente) pendiente = window.requestAnimationFrame(pintar);
+  }
+  function seguir(ev) {
+    var caja = ficha.getBoundingClientRect();
+    destino.x = ((ev.clientX - caja.left) / caja.width - 0.5) * 2;
+    destino.y = ((ev.clientY - caja.top) / caja.height - 0.5) * 2;
+    encolar();
+  }
+  function soltar() {
+    destino.x = 0;
+    destino.y = 0;
+    encolar();
+  }
+
+  ficha.addEventListener('pointermove', seguir);
+  ficha.addEventListener('pointerleave', soltar);
+})();
+
+/* =========================================================
+   Telón de la caja ALTIPAL entre capítulos.
+   Se interpone un segundo antes de cambiar de sección: la
+   navegación se ejecuta con el telón puesto, así que al
+   levantarse la sección ya está en su sitio.
+   ========================================================= */
+(function () {
+  'use strict';
+  var telon = document.getElementById('telon');
+  if (!telon) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var ENTRA = 240;
+  var MANTIENE = 520;
+  var SALE = 320;
+  var ocupado = false;
+
+  function pasar(accion) {
+    ocupado = true;
+    telon.classList.add('on');
+    window.setTimeout(function () {
+      try { accion(); } catch (err) {}
+      window.setTimeout(function () {
+        telon.classList.remove('on');
+        window.setTimeout(function () { ocupado = false; }, SALE);
+      }, MANTIENE);
+    }, ENTRA);
+  }
+
+  document.addEventListener('click', function (ev) {
+    if (ev.__telon) return;
+    var destino = ev.target && ev.target.closest
+      ? ev.target.closest('.deck-dots a, #deckPrev, #deckNext')
+      : null;
+    if (!destino) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (ocupado) return;
+    pasar(function () {
+      var eco = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+      eco.__telon = true;
+      destino.dispatchEvent(eco);
+    });
+  }, true);
+})();
