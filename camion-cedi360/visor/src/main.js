@@ -30,6 +30,7 @@ let muro = null;
 let pantalla = null;
 let panel = null;
 let capaDatos = null;
+let relojCinta = 0;
 let lucesEscena = null;
 let camDestino = null, tgtDestino = null;
 const FOV_BASE = 38;
@@ -119,6 +120,7 @@ function iniciar() {
   cargarModelo();
   holo = crearHolo();
   cinta = crearCinta();
+  crearLogoPatio();
   enlazarControles();
   enlazarJuego();
   enlazarMenu();
@@ -520,41 +522,132 @@ function crearHolo() {
   return { grupo, materiales };
 }
 
-/* ---------- cinta transportadora en marcha (fase 2) ----------
-   El modelo exporta la banda, el sorter y los AMR fundidos en una sola malla,
-   asi que el movimiento se resuelve con piezas nuevas en three.js. Solo se
-   mueve la banda con sus paquetes: el sorter y los AMR no entran al visor.
-   Aparece con la capa de automatizacion (misma fase que los puntos A1-A8). */
-const CINTA_TRONCAL = { x: -16.6, y: 2.28, z0: 25.0, z1: -8.4, n: 9, paso: 0.055 };
+/* ---------- bandas transportadoras en marcha (fase 2) ----------
+   El modelo exporta la banda troncal fundida en una malla y el corredor
+   central llego sin banda: aqui se completa esa segunda linea con la misma
+   seccion y el mismo reloj, para que las dos empiecen y terminen juntas y
+   ningun paquete viaje fuera del tablero. Aparecen con la capa de
+   automatizacion (misma fase que los puntos A1-A8). */
+const CINTA_ALTO = 2.07;                     // tablero de la troncal en el modelo
+const CINTA_TRAMO = { z0: 26.0, z1: -8.6 };  // extremos reales del tablero
+const CINTA_TRONCAL = { x: -16.6, n: 9, paso: 0.055 };
+const CINTA_CORREDOR = { x: -20.3, n: 7, paso: 0.055 };
+const CINTA_PAQUETE_Y = CINTA_ALTO + 0.21;
 
 function crearCinta() {
-  const grupo = new THREE.Group();
   const material = new THREE.MeshStandardMaterial({
     color: 0x4A3E2A, emissive: 0x9FC55A, emissiveIntensity: 0.30,
     roughness: 0.82, metalness: 0.05
   });
   const caja = new THREE.BoxGeometry(0.52, 0.42, 0.50);
+  const grupo = new THREE.Group();
   const paquetes = [];
-  for (let i = 0; i < CINTA_TRONCAL.n; i++) {
-    const m = new THREE.Mesh(caja, material);
-    m.position.set(CINTA_TRONCAL.x, CINTA_TRONCAL.y, CINTA_TRONCAL.z0);
-    grupo.add(m);
-    paquetes.push({ obj: m, t: i / CINTA_TRONCAL.n });
-  }
+  [CINTA_TRONCAL, CINTA_CORREDOR].forEach((linea) => {
+    for (let i = 0; i < linea.n; i++) {
+      const m = new THREE.Mesh(caja, material);
+      m.position.set(linea.x, CINTA_PAQUETE_Y, CINTA_TRAMO.z0);
+      grupo.add(m);
+      paquetes.push({ obj: m, x: linea.x, paso: linea.paso, t0: i / linea.n });
+    }
+  });
+  const corredor = crearBandaCorredor();
   grupo.visible = false;
   escena.add(grupo);
-  return { grupo, paquetes };
+  return { grupo, corredor, paquetes };
 }
 
-function animarCinta(pAuto, dt) {
-  if (!cinta) return;
-  cinta.grupo.visible = pAuto > 0.05;
-  if (!cinta.grupo.visible) return;
-  const c = CINTA_TRONCAL;
-  cinta.paquetes.forEach((p) => {
-    p.t = (p.t + dt * c.paso) % 1;
-    p.obj.position.z = c.z0 + (c.z1 - c.z0) * p.t;
+/* tablero, rieles y patas del corredor, con la seccion de la troncal */
+function crearBandaCorredor() {
+  const grupo = new THREE.Group();
+  const tablero = new THREE.MeshStandardMaterial({
+    color: 0x141A21, emissive: 0x232C36, emissiveIntensity: 0.35,
+    roughness: 0.75, metalness: 0.20
   });
+  const acero = new THREE.MeshStandardMaterial({
+    color: 0x8C99A6, roughness: 0.45, metalness: 0.55
+  });
+  const lente = new THREE.MeshStandardMaterial({
+    color: 0x9FC55A, emissive: 0x9FC55A, emissiveIntensity: 1.10, roughness: 0.5
+  });
+  const largo = CINTA_TRAMO.z0 - CINTA_TRAMO.z1;
+  const cz = (CINTA_TRAMO.z0 + CINTA_TRAMO.z1) / 2;
+  const x = CINTA_CORREDOR.x;
+
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(1.20, 0.05, largo), tablero);
+  deck.position.set(x, CINTA_ALTO, cz);
+  grupo.add(deck);
+  for (const lado of [-1, 1]) {
+    const riel = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.14, largo), acero);
+    riel.position.set(x + lado * 0.63, CINTA_ALTO + 0.09, cz);
+    grupo.add(riel);
+    const tira = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, largo), lente);
+    tira.position.set(x + lado * 0.66, CINTA_ALTO + 0.17, cz);
+    grupo.add(tira);
+  }
+  const patas = Math.max(2, Math.round(largo / 2.4));
+  const alto = CINTA_ALTO - 0.025 - 1.25;
+  for (let k = 0; k <= patas; k++) {
+    const z = CINTA_TRAMO.z1 + (largo * k) / patas;
+    for (const lado of [-1, 1]) {
+      const pata = new THREE.Mesh(new THREE.BoxGeometry(0.08, alto, 0.08), acero);
+      pata.position.set(x + lado * 0.54, 1.25 + alto / 2, z);
+      grupo.add(pata);
+    }
+  }
+  // rodillos a la vista, como los de la banda troncal
+  const rodillos = Math.max(2, Math.round(largo / 0.62));
+  const geoRodillo = new THREE.CylinderGeometry(0.045, 0.045, 1.14, 8);
+  geoRodillo.rotateZ(Math.PI / 2);
+  const instancia = new THREE.InstancedMesh(geoRodillo, tablero, rodillos + 1);
+  const matriz = new THREE.Matrix4();
+  for (let k = 0; k <= rodillos; k++) {
+    const z = CINTA_TRAMO.z1 + (largo * k) / rodillos;
+    matriz.makeTranslation(x, CINTA_ALTO + 0.035, z);
+    instancia.setMatrixAt(k, matriz);
+  }
+  instancia.instanceMatrix.needsUpdate = true;
+  instancia.frustumCulled = false;
+  grupo.add(instancia);
+  grupo.visible = false;
+  escena.add(grupo);
+  return grupo;
+}
+
+function animarCinta(pAuto, reloj) {
+  if (!cinta) return;
+  const visible = pAuto > 0.05;
+  cinta.grupo.visible = visible;
+  cinta.corredor.visible = visible;
+  if (!visible) return;
+  const largo = CINTA_TRAMO.z0 - CINTA_TRAMO.z1;
+  cinta.paquetes.forEach((p) => {
+    const t = (reloj * p.paso + p.t0) % 1;
+    p.obj.position.z = CINTA_TRAMO.z0 - largo * t;
+  });
+}
+
+
+/* ---------- logo de FUNDASERINCO pintado en el patio de maniobras ----------
+   El patio queda a nivel de calzada (cota 0), asi que el logo va como calcomania
+   sobre la losa: se lee desde el acceso, con el texto corriendo de poniente a
+   oriente y la cabecera hacia el norte. */
+function crearLogoPatio() {
+  const textura = new THREE.TextureLoader().load('assets/img/brand/fundaserinco-blanco.png');
+  textura.colorSpace = THREE.SRGBColorSpace;
+  textura.anisotropy = render.capabilities.getMaxAnisotropy();
+  const ancho = 18.0;
+  const plano = new THREE.Mesh(
+    new THREE.PlaneGeometry(ancho, ancho * 200 / 933),
+    new THREE.MeshBasicMaterial({
+      map: textura, transparent: true, opacity: 0.90,
+      depthWrite: false, toneMapped: false
+    })
+  );
+  plano.rotation.set(-Math.PI / 2, 0, 0);
+  plano.position.set(15.0, 0.05, 15.5);
+  plano.renderOrder = 2;
+  escena.add(plano);
+  return plano;
 }
 
 /* ---------- muro de video del centro de seguridad (fase 1) ----------
@@ -1401,7 +1494,8 @@ function bucle() {
   animarHolo(Math.max(0, Math.min(1, avance - 2)), performance.now() / 1000);
   // la pausa de la banda detiene el recorrido de los paquetes, no la escena
   const marcha = panel && panel.bandaActiva && panel.bandaActiva() ? real : 0;
-  animarCinta(Math.max(0, Math.min(1, avance - 1.5)), marcha);
+  relojCinta += marcha;
+  animarCinta(Math.max(0, Math.min(1, avance - 1.5)), relojCinta);
   animarMuroVideo(Math.min(1, avance), real);
   if (panel) panel.tick(real);
   if (capaDatos) capaDatos.tick();

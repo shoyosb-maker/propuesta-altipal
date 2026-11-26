@@ -91,12 +91,11 @@ export function crearPanel(ctx) {
   const cortinas = porPrefijo('Muelle_Tira_');
   const cajas = porPrefijo('SIM_Caja_');
   const palets = porPrefijo('SIM_Palet_');
-  const banda = porPrefijo('SIM_Banda_Caja_');
   const balizas = porPrefijo('SIM_Baliza_');
 
   /* posiciones de partida, para volver siempre al mismo sitio */
   const base = new Map();
-  [puertaFrio].concat(banda, cajas, palets).forEach((o) => {
+  [puertaFrio].concat(cajas, palets).forEach((o) => {
     if (o) base.set(o, { x: o.position.x, y: o.position.y, z: o.position.z, ry: o.rotation.y });
   });
   const baseDe = (o) => base.get(o) || { x: 0, y: 0, z: 0, ry: 0 };
@@ -119,12 +118,13 @@ export function crearPanel(ctx) {
     fondo: escena.background ? escena.background.clone() : null
   };
 
-  /* la carga y las balizas arrancan escondidas; la banda de boxes
-     trabaja desde el primer segundo. Los AMR no entran al visor: la
-     única pieza en movimiento de este sistema es la banda con sus cajas */
+  /* la carga y las balizas arrancan escondidas. Las cajas de banda y los AMR
+     del modelo no entran al visor: la banda del corredor se dibuja completa en
+     three.js, con su tablero y sus paquetes, para que ninguna caja ruede por el
+     piso ni cruce un muro */
   cajas.concat(palets, balizas).forEach((o) => { o.visible = false; });
-  banda.forEach((o) => { o.visible = true; });
-  porPrefijo('SIM_AMR_').forEach((o) => { o.visible = false; });
+  porPrefijo('SIM_Banda_Caja_').concat(porPrefijo('SIM_AMR_'))
+    .forEach((o) => { o.visible = false; });
   balizas.forEach((o) => o.scale.setScalar(1.9));
 
   /* focos por zona: el encendido se ve en el piso y en las estanterías.
@@ -242,20 +242,6 @@ export function crearPanel(ctx) {
     cortinas.forEach((o, i) => {
       const signo = i % 2 ? 1 : -1;
       o.rotation.y = signo * 0.62 * paso.cortina;
-    });
-  }
-
-  let reloj = 0;
-  /* la banda solo recibe pausa y continuación: es la única pieza que se mueve */
-  function aplicarBanda(dt) {
-    reloj += dt;
-    const enMarcha = estado.banda && !estado.corte;
-    if (!enMarcha) return;
-    banda.forEach((o, i) => {
-      const b = baseDe(o);
-      const recorrido = 30;
-      const t = ((reloj * 1.6 + i * 4.3) % recorrido) / recorrido;
-      o.position.z = b.z + 15 - t * recorrido;
     });
   }
 
@@ -482,7 +468,6 @@ export function crearPanel(ctx) {
       aplicarLuces(dt);
       aplicarAlarma(dt, relojAlarma);
       aplicarPuertas(dt);
-      aplicarBanda(dt);
       aplicarCarga(dt);
     },
     estado

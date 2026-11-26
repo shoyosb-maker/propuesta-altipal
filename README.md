@@ -84,9 +84,21 @@ maniobras, y todos los vanos son huecos reales en el muro:
 | Puerta del anexo | muro sur del anexo, alineada con el paso | 1,0 × 2,1 m |
 
 El logo de FUNDASERINCO va en grande sobre dos paredes del almacén (muro oeste
-interior, 11 m, y banda norte, 12 m) y en la fachada este sobre el andén
-(7,5 m); los tres se arman en `camion-cedi360/blender/marca_altipal.py` con la
-textura `assets/marca/fundaserinco-blanco.png`.
+interior, 11 m, y banda norte, 12 m), en la fachada este sobre el andén
+(7,5 m) y pintado en el suelo del patio de maniobras (18 m, en
+`assets/img/brand/fundaserinco-blanco.png`); los de pared se arman en
+`camion-cedi360/blender/marca_altipal.py` con la textura
+`assets/marca/fundaserinco-blanco.png`.
+
+## Bandas transportadoras
+
+La banda troncal viene del modelo; el corredor central llegó sin banda, así que
+el visor la completa en three.js con la misma sección: tablero, rieles, patas y
+rodillos. Las dos líneas recorren el mismo tramo (z 26 a −8,6, los extremos
+reales del tablero del modelo) y comparten un solo reloj, de modo que los
+paquetes de ambas arrancan y terminan a la vez y ninguno se sale de la cinta ni
+cruza un muro. El interruptor «Banda de boxes» pausa ese reloj: no mueve nada
+más de la escena.
 
 ## Panel de operación (simulacro)
 
@@ -97,7 +109,7 @@ lienzo— que mueve el modelo en vivo para mostrar cómo se opera el CEDI:
 | --- | --- |
 | Iluminación | Enciende y apaga nave y andén, jardín y pasillo, anexo y patio; el ambiente nocturno baja la luz de escena |
 | Puertas y accesos | Abre y cierra los tres portones seccionales, las cortinas de tiras y la puerta corredera del frío |
-| Sistemas | Un solo interruptor sobre la banda que transporta las cajas: pausa y continuación |
+| Sistemas | Un solo interruptor sobre las dos líneas de banda: pausa y continuación |
 | Seguridad electrónica | Prende y apaga las cámaras de muelle, interiores y perímetro por grupos, y la grabación (NVR); al apagarlas, los monitores del cuarto de control pasan a «SIN SEÑAL» |
 | Simulacro | Descarga y retira paquetes en el andén, alarma de intrusión, corte de energía y restablecer el turno |
 
