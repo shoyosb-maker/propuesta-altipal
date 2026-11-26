@@ -10,6 +10,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { SECCIONES } from './secciones.js';
 import { crearPanel } from './panel.js';
+import { crearCapaDatos } from './datos.js';
 import MODELO_B64 from '../modelo.js';
 
 const LIENZO = document.getElementById('visorCanvas');
@@ -28,6 +29,7 @@ let cinta = null;
 let muro = null;
 let pantalla = null;
 let panel = null;
+let capaDatos = null;
 let lucesEscena = null;
 let camDestino = null, tgtDestino = null;
 const FOV_BASE = 38;
@@ -398,6 +400,7 @@ function cargarModelo() {
     muro = crearMuroVideo();
     pantalla = crearPantallaAdmin();
     panel = crearPanel({ escena, modelo, luces: lucesEscena, muro });
+    capaDatos = crearCapaDatos({ camara, render });
 
     mixer = new THREE.AnimationMixer(modelo);
     clips = gltf.animations || [];
@@ -911,6 +914,7 @@ function ir(indice, directo) {
 
   pintarHud(seccionActual);
   if (pantalla) pantalla.pintar(sec.fase);
+  if (capaDatos) capaDatos.seccion(sec.id);
   pintarRiel();
   if (PROGRESO) PROGRESO.style.width = ((seccionActual + 1) / SECCIONES.length * 100) + '%';
   if (history.replaceState) history.replaceState(null, '', '#' + sec.id);
@@ -1409,9 +1413,12 @@ function bucle() {
 
   const avance = clips.length ? (tiempoActual / duracion()) * 4 : 0;
   animarHolo(Math.max(0, Math.min(1, avance - 2)), performance.now() / 1000);
-  animarCinta(Math.max(0, Math.min(1, avance - 1.5)), real);
+  // la pausa de la banda detiene el recorrido de los paquetes, no la escena
+  const marcha = panel && panel.bandaActiva && panel.bandaActiva() ? real : 0;
+  animarCinta(Math.max(0, Math.min(1, avance - 1.5)), marcha);
   animarMuroVideo(Math.min(1, avance), real);
   if (panel) panel.tick(real);
+  if (capaDatos) capaDatos.tick();
 
   if (!modoJuego) controles.update();
   render.render(escena, camara);

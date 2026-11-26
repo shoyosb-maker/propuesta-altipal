@@ -1,9 +1,9 @@
 /* =========================================================
    CEDI 360 · Panel de operación
    Simulacro de la operación del CEDI sobre el modelo 3D:
-   iluminación, portones, cortinas, puerta del frío, AMR y
-   banda, llegada de furgoneta con cargue y descargue, alarma
-   y corte de energía.
+   iluminación, portones, cortinas, puerta del frío, pausa de
+   la banda de boxes, descargue del andén, alarma y corte de
+   energía.
 
    Los objetos que mueve salen de blender/simulacion.py, con el
    pivote resuelto: los portones cuelgan del dintel, la hoja del
@@ -44,8 +44,7 @@ const INICIAL = () => ({
   portones: [false, false, false],
   cortinas: false,
   frio: false,
-  sistemas: false,
-  furgoneta: false,
+  banda: true,
   carga: 0,
   alarma: false,
   corte: false,
@@ -73,7 +72,7 @@ function texturaHalo() {
 export function crearPanel(ctx) {
   const { escena, modelo, luces, muro } = ctx;
   const estado = INICIAL();
-  const paso = { porton: [0, 0, 0], frio: 0, cortina: 0, furgoneta: 0 };
+  const paso = { porton: [0, 0, 0], frio: 0, cortina: 0 };
 
   /* ----------------------------- referencias del modelo */
   const porNombre = (n) => modelo.getObjectByName(n) || null;
@@ -95,19 +94,12 @@ export function crearPanel(ctx) {
   const amr = porPrefijo('SIM_AMR_');
   const banda = porPrefijo('SIM_Banda_Caja_');
   const balizas = porPrefijo('SIM_Baliza_');
-  const furgoneta = porNombre('FUR_Unidad_0');
 
   /* posiciones de partida, para volver siempre al mismo sitio */
   const base = new Map();
-  [puertaFrio, furgoneta].concat(amr, banda, cajas, palets).forEach((o) => {
+  [puertaFrio].concat(amr, banda, cajas, palets).forEach((o) => {
     if (o) base.set(o, { x: o.position.x, y: o.position.y, z: o.position.z, ry: o.rotation.y });
   });
-  if (furgoneta) {
-    base.set('furgoneta', {
-      x: furgoneta.position.x, y: furgoneta.position.y, z: furgoneta.position.z,
-      ry: furgoneta.rotation.y
-    });
-  }
   const baseDe = (o) => base.get(o) || { x: 0, y: 0, z: 0, ry: 0 };
 
   /* ----------------------------- materiales de luz */
@@ -128,8 +120,10 @@ export function crearPanel(ctx) {
     fondo: escena.background ? escena.background.clone() : null
   };
 
-  /* las piezas de simulacro arrancan escondidas */
-  cajas.concat(palets, amr, banda, balizas).forEach((o) => { o.visible = false; });
+  /* la carga y las balizas arrancan escondidas; la banda y los AMR
+     trabajan desde el primer segundo */
+  cajas.concat(palets, balizas).forEach((o) => { o.visible = false; });
+  amr.concat(banda).forEach((o) => { o.visible = true; });
   balizas.forEach((o) => o.scale.setScalar(1.9));
 
   /* focos por zona: el encendido se ve en el piso y en las estanterías.
@@ -251,20 +245,18 @@ export function crearPanel(ctx) {
   }
 
   let reloj = 0;
-  function aplicarSistemas(dt) {
+  /* la banda solo recibe pausa y continuación: los AMR no dependen de ella */
+  function aplicarBanda(dt) {
     reloj += dt;
-    const activo = estado.sistemas && !estado.corte;
     amr.forEach((o, i) => {
-      o.visible = estado.sistemas;
-      if (!activo) return;
       const b = baseDe(o);
       const fase = reloj * 0.42 + i * Math.PI;
       o.position.z = b.z + Math.sin(fase) * 9.5;
       o.position.x = b.x + Math.cos(fase * 0.5) * 0.18;
     });
+    const enMarcha = estado.banda && !estado.corte;
+    if (!enMarcha) return;
     banda.forEach((o, i) => {
-      o.visible = estado.sistemas;
-      if (!activo) return;
       const b = baseDe(o);
       const recorrido = 30;
       const t = ((reloj * 1.6 + i * 4.3) % recorrido) / recorrido;
@@ -272,24 +264,7 @@ export function crearPanel(ctx) {
     });
   }
 
-  /* ----------------------------- furgoneta, carga y descargue */
-  const DESTINO = { x: -3.20, y: 0.0, z: 16.40, ry: -Math.PI / 2 };
-
-  function aplicarFurgoneta(dt) {
-    if (!furgoneta) return;
-    const b = baseDe('furgoneta');
-    const objetivo = estado.furgoneta ? 1 : 0;
-    paso.furgoneta += (objetivo - paso.furgoneta) * Math.min(1, dt * 0.55);
-    const t = paso.furgoneta;
-    furgoneta.position.x = b.x + (DESTINO.x - b.x) * t;
-    furgoneta.position.y = b.y + (DESTINO.y - b.y) * t;
-    furgoneta.position.z = b.z + (DESTINO.z - b.z) * t;
-    let giro = DESTINO.ry - b.ry;
-    while (giro > Math.PI) giro -= Math.PI * 2;
-    while (giro < -Math.PI) giro += Math.PI * 2;
-    furgoneta.rotation.y = b.ry + giro * t;
-  }
-
+  /* ----------------------------- carga y descargue del andén */
   function aplicarCarga(dt) {
     const total = cajas.length;
     cajas.forEach((o, i) => {
@@ -324,7 +299,7 @@ export function crearPanel(ctx) {
       { id: 'frio', texto: 'Puerta corredera del frío', tipo: 'simple', clave: 'frio' }
     ] },
     { titulo: 'Sistemas', items: [
-      { id: 'sistemas', texto: 'Banda troncal y AMR', tipo: 'simple', clave: 'sistemas' }
+      { id: 'banda', texto: 'Banda de boxes', tipo: 'simple', clave: 'banda' }
     ] },
     { titulo: 'Seguridad electrónica', items: [
       { id: 'cam-muelles', texto: 'Cámaras de muelle', tipo: 'cam', clave: 'muelles' },
@@ -333,7 +308,6 @@ export function crearPanel(ctx) {
       { id: 'cam-nvr', texto: 'Grabación (NVR)', tipo: 'nvr' }
     ] },
     { titulo: 'Simulacro', items: [
-      { id: 'furgo', texto: 'Llega la furgoneta', tipo: 'simple', clave: 'furgoneta' },
       { id: 'cargar', texto: 'Descargar paquetes', tipo: 'carga', delta: 4 },
       { id: 'vaciar', texto: 'Retirar la carga', tipo: 'carga', delta: -4 },
       { id: 'alarma', texto: 'Alarma de intrusión', tipo: 'simple', clave: 'alarma' },
@@ -449,14 +423,10 @@ export function crearPanel(ctx) {
         aviso(estado.alarma
           ? 'ALARMA · intrusión en muelle 02 · CCTV grabando'
           : 'Alarma restablecida · evento cerrado en acta', estado.alarma ? 'alerta' : 'ok');
-      } else if (clave === 'furgoneta') {
-        aviso(estado.furgoneta
-          ? 'Furgoneta en el andén · descargue autorizado'
-          : 'Furgoneta retirada · patio liberado', 'ok');
-      } else if (clave === 'sistemas') {
-        aviso(estado.sistemas
-          ? 'Banda troncal y AMR en operación'
-          : 'Banda troncal detenida', 'ok');
+      } else if (clave === 'banda') {
+        aviso(estado.banda
+          ? 'Banda de boxes en marcha'
+          : 'Banda de boxes en pausa · los paquetes quedan detenidos', 'ok');
       } else if (clave === 'frio') {
         aviso(estado.frio ? 'Cámara abierta · temperatura en vigilancia' : 'Cámara cerrada', 'ok');
       } else if (clave === 'noche') {
@@ -486,6 +456,12 @@ export function crearPanel(ctx) {
           && estado.camaras.perimetro;
         b.textContent = encendido ? 'Grabación (12/12)' : 'Grabación detenida';
       }
+      else if (id === 'banda') {
+        b.textContent = estado.banda
+          ? 'Banda de boxes · en marcha'
+          : 'Banda de boxes · en pausa';
+        encendido = estado.banda;
+      }
       else if (id === 'cargar' || id === 'vaciar') {
         b.textContent = id === 'cargar' ? 'Descargar paquetes' : 'Retirar la carga';
         encendido = false;
@@ -505,13 +481,13 @@ export function crearPanel(ctx) {
 
   return {
     abrir: (v) => abrir(v === undefined ? true : v),
+    bandaActiva: () => estado.banda && !estado.corte,
     tick(dt) {
       const relojAlarma = performance.now() / 1000;
       aplicarLuces(dt);
       aplicarAlarma(dt, relojAlarma);
       aplicarPuertas(dt);
-      aplicarSistemas(dt);
-      aplicarFurgoneta(dt);
+      aplicarBanda(dt);
       aplicarCarga(dt);
     },
     estado

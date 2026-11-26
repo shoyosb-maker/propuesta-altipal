@@ -1,8 +1,8 @@
-=========================================================================
+﻿=========================================================================
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 20:55
+Actualizado: 2026-11-26 06:05
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1196,6 +1196,17 @@ BITÁCORA
                   CCTV, corte de energia con UPS y planta, restablecer).
                   Los materiales M_Sim_* van en la PALETA del visor y las piezas
                   que el simulacro esconde se apagan al crear el panel.
+2026-11-26 06:05  Capa de datos en el recorrido (puntos 1 a 3 de «De los datos
+                  al valor empresarial»). Nuevo datos.js: diez instrumentos
+                  anclados a la zona donde nace su dato (patio, muelles, frio,
+                  energia, acceso, nave y anexo), pines DOM proyectados sobre
+                  el lienzo, atenuados por distancia, y ficha con
+                  dato -> entrega -> decision. El asistente gerencial lleva las
+                  cinco preguntas del documento con la cifra verificable a la
+                  vista. El plan completo queda en plan-datos-al-valor.txt.
+                  Se retira el simulacro de llegada de la furgoneta y la banda
+                  pasa a un solo interruptor de pausa y continuacion (los AMR
+                  quedan siempre en operacion, fuera del panel).
 
 SIGUIENTE PASO RECOMENDADO
 --------------------------

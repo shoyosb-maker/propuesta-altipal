@@ -24,8 +24,9 @@ implementar el agente; el resto del tiempo el demo responde con guiones.
 | `assets/css/ui-menus.css` | capa de menús 2026: barra, navegación, riel y panel |
 | `assets/js/ui-menus.js` | resplandor de vidrio que sigue al puntero |
 | `camion-cedi360/blender/` | fuentes del modelo: escena, almacén, muelle, áreas de programa, láminas |
-| `camion-cedi360/visor/src/` | fuentes del visor (`main.js`, `secciones.js`) |
+| `camion-cedi360/visor/src/` | fuentes del visor (`main.js`, `secciones.js`, `panel.js`, `datos.js`) |
 | `camion-cedi360/estado.txt` | bitácora técnica y decisiones del proyecto |
+| `camion-cedi360/plan-datos-al-valor.txt` | plan de los puntos 1 a 3 de «De los datos al valor empresarial» |
 | `camion-cedi360/render/` | láminas renderizadas de la planta |
 | `Propuesta CEDI 360 - ALTIPAL 2026.pdf` | propuesta en PDF |
 
@@ -95,9 +96,9 @@ lienzo— que mueve el modelo en vivo para mostrar cómo se opera el CEDI:
 | --- | --- |
 | Iluminación | Enciende y apaga nave y andén, jardín y pasillo, anexo y patio; el ambiente nocturno baja la luz de escena |
 | Puertas y accesos | Abre y cierra los tres portones seccionales, las cortinas de tiras y la puerta corredera del frío |
-| Sistemas | Pone en marcha la banda troncal y los dos AMR del corredor central |
+| Sistemas | Un solo interruptor sobre la banda que transporta las cajas: pausa y continuación |
 | Seguridad electrónica | Prende y apaga las cámaras de muelle, interiores y perímetro por grupos, y la grabación (NVR); al apagarlas, los monitores del cuarto de control pasan a «SIN SEÑAL» |
-| Simulacro | Llega la furgoneta al muelle 01, descarga y retira paquetes, alarma de intrusión, corte de energía y restablecer el turno |
+| Simulacro | Descarga y retira paquetes en el andén, alarma de intrusión, corte de energía y restablecer el turno |
 
 Las piezas que el panel mueve salen de `camion-cedi360/blender/simulacion.py`
 (colección `T93_SIM`), con el pivote resuelto: los portones cuelgan del dintel
@@ -105,6 +106,20 @@ Las piezas que el panel mueve salen de `camion-cedi360/blender/simulacion.py`
 los AMR y las cajas de la banda viajan ocultos hasta que el simulacro los
 suelta. La lógica vive en `camion-cedi360/visor/src/panel.js` y se engancha al
 bucle del visor desde `main.js`.
+
+## Capa de datos (puntos 1 a 3 de «De los datos al valor empresarial»)
+
+El botón «Capa de datos» del recorrido enciende una lectura sobre la planta: la
+operación no se toca y encima de ella aparece, anclado a cada zona, el
+instrumento que lee lo que esa zona ya registra. No son «modalidades de
+negocio»: son instrumentos de una misma capa, y cada ficha muestra el tránsito
+dato → información → decisión. La ficha del asistente gerencial lleva las
+preguntas del documento y las responde sobre una cifra verificable, con el
+modelo solo explicando.
+
+- `camion-cedi360/visor/src/datos.js`: anclajes, fichas y consultas.
+- `camion-cedi360/plan-datos-al-valor.txt`: el plan completo de los puntos 1 a
+  3, lo que queda fuera de alcance y las ideas pendientes del punto 3.
 
 El encendido de luces no se queda en el material de las luminarias: cada zona
 tiene focos reales (`PointLight`), un cono aditivo que dibuja el haz y un halo

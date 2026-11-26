@@ -1,0 +1,122 @@
+=========================================================================
+ CEDI 360 · DE LOS DATOS AL VALOR EMPRESARIAL
+ Plan de lo que se implementa en el modelo 3D
+=========================================================================
+Fuente: «DE LOS DATOS AL VALOR EMPRESARIAL.docx»
+Alcance aprobado: puntos 1, 2 y 3 del documento.
+Fuera de alcance: puntos 4, 5, 6 y 7 (participación económica 20-30 %,
+guion de reunión, estrategia de entrada e infografía ejecutiva).
+
+REGLA DE LENGUAJE
+-----------------
+Los artefactos del punto 2 NO se presentan como «diez modalidades de
+negocio». Se presentan como instrumentos de lectura de una sola capa de
+datos que se apoya en la operación que ya existe. El modelo 3D nunca dice
+«módulo comercializable» ni numera las oportunidades.
+
+-------------------------------------------------------------------------
+ PUNTO 1 · Dónde está la oportunidad
+-------------------------------------------------------------------------
+Idea del documento: los datos existen, pero tener datos no es aprovecharlos.
+La ingeniería garantiza que existan, sean confiables y estén disponibles;
+la capa digital permite consultarlos, interpretarlos, relacionarlos y
+convertirlos en decisiones.
+
+Cómo se implementa en el 3D
+  - Un interruptor nuevo en las herramientas del recorrido: «Capa de datos».
+  - Al encenderlo aparece, sobre la planta, una capa de lectura: cada
+    instrumento se ancla al sitio físico donde nace su dato (muelle, patio,
+    cuarto frío, pabellón eléctrico, nave, anexo administrativo).
+  - El panel de la capa abre con el encuadre del punto 1: no se reemplaza
+    ningún sistema de control ni el criterio de los especialistas; se agrega
+    una capa que lee lo que la operación ya registra.
+  - Cada instrumento muestra tres campos: qué dato toma, qué entrega y qué
+    decisión habilita. Ese es el tránsito dato -> información -> decisión.
+
+-------------------------------------------------------------------------
+ PUNTO 2 · Los artefactos, dentro del modelo
+-------------------------------------------------------------------------
+Cada fila del documento se vuelve un instrumento anclado a su zona. El
+valor agregado es el del documento; el dato y la decisión son el puente
+que lo hace visible en el recorrido.
+
+  #   Instrumento                        Zona del modelo        Anclaje (x, y, z)
+  1   Tracking inteligente de vehículos Patio de maniobras     (-2.0, 4.4, 8.0)
+  2   Monitor de entregas hard discount  Muelle 02 / andén      (-9.2, 5.6, 11.0)
+  3   Analizador de Thermo King          Muelle 03 / andén      (-9.2, 4.2, 17.5)
+  4   Monitor de cadena de frío          Cámara de frío         (-79.0, 4.2, 22.0)
+  5   Data logging inteligente           Cámara de frío         (-76.0, 3.4, 27.5)
+  6   Asistente de mantenimiento         Pabellón eléctrico     (-91.0, 3.4, 12.0)
+  7   Analizador de rutas                Acceso oeste / jardín  (-62.5, 4.2, 14.0)
+  8   Gestor de centros de distribución  Nave de acopio         (-37.2, 7.6, 1.0)
+  9   Generador automático de informes   Anexo administrativo   (-30.0, 3.6, -26.0)
+  10  Asistente gerencial con IA         Sala de juntas         (-27.0, 2.8, -28.5)
+
+Lectura de cada instrumento (dato / entrega / decisión)
+  1  GPS, hora de llegada y tiempo en patio / retrasos, desviaciones y
+     novedades del viaje / priorizar muelle y avisar a la tienda.
+  2  Ventana horaria comprometida y sello de llegada / cumplimiento por
+     tienda / reordenar el despacho del día siguiente.
+  3  Ciclos, tiempos de parada y alarmas del equipo / comportamiento
+     anómalo del equipo de refrigeración / inspección antes de la falla.
+  4  Temperatura, humedad, apertura de puerta y fuga / desviación de la
+     cadena de frío / retener o liberar el lote.
+  5  Históricos, promedio, máximas, mínimas y tiempo fuera de rango /
+     trazabilidad para auditoría / sostener o ajustar el punto de ajuste.
+  6  Horas de servicio, vibración y eventos / patrones que piden
+     mantenimiento / programar la parada técnica.
+  7  Recorridos, tiempos y consumos / oportunidades de optimización /
+     rediseñar la ruta antes de sumar un vehículo.
+  8  Espera, cargue, descargue y disponibilidad / ocupación real del CEDI /
+     reasignar muelle y turno.
+  9  Registros consolidados / informes automáticos / liberar trabajo
+     administrativo.
+  10 Preguntas en lenguaje natural sobre los indicadores / respuesta
+     explicada / decisión gerencial con el dato a la vista.
+
+-------------------------------------------------------------------------
+ PUNTO 3 · El diferencial de los LLM y las API
+-------------------------------------------------------------------------
+El documento propone que el gerente pregunte en lenguaje natural y que los
+cálculos los haga un mecanismo verificable, con el modelo solo explicando.
+
+Cómo se implementa (versión de demostración, sin backend)
+  - La ficha del «Asistente gerencial con IA» incluye cinco preguntas del
+    documento como botones.
+  - Al elegir una, se muestra la respuesta en dos partes:
+      1) la cifra verificable (tabla corta de valores de ejemplo);
+      2) la explicación en una frase.
+  - Un pie aclara que la demostración usa datos de ejemplo y que el
+    cálculo lo hace el sistema, no el modelo. Cuando exista API real, la
+    tabla la llena el servicio y el modelo solo redacta.
+
+Ideas para llevarlo más lejos (no implementadas todavía)
+  a) Conectar la ficha a un endpoint real que devuelva el JSON de la cifra;
+     el LLM redacta sobre ese JSON, nunca calcula.
+  b) Historial de consultas con fecha, usuario y fuente, exportable a acta.
+  c) Las mismas preguntas en la pantalla de la sala de juntas del modelo.
+  d) Alertas: cuando una cifra cruza un umbral, el instrumento cambia de
+     color en el 3D y la pregunta queda prearmada.
+
+-------------------------------------------------------------------------
+ CAMBIOS DE SIMULACIÓN PEDIDOS EN EL MISMO TURNO
+-------------------------------------------------------------------------
+  - Se retira el simulacro de llegada de furgoneta: desaparece el botón
+    «Llega la furgoneta» y su animación. La unidad queda quieta donde está.
+  - La banda troncal deja de compartir control con los AMR: pasa a ser un
+    solo interruptor de pausa y continuación de la banda que transporta las
+    cajas. Los AMR quedan siempre en operación, fuera del panel.
+
+-------------------------------------------------------------------------
+ ARCHIVOS QUE TOCA ESTE PLAN
+-------------------------------------------------------------------------
+  camion-cedi360/visor/src/datos.js   capa de datos (nuevo)
+  camion-cedi360/visor/src/panel.js   furgoneta fuera, banda pausa/continúa
+  camion-cedi360/visor/src/main.js    montaje de la capa y del botón
+  assets/js/visor3d.js                bundle publicado (esbuild)
+  assets/css/ui-menus.css             estilos de la capa de datos
+  recorrido3d.html                    botón «Capa de datos» en las herramientas
+
+RECONSTRUIR EL BUNDLE
+  cd camion-cedi360/visor
+  npx esbuild src/main.js --bundle --format=iife --target=es2019 --minify --outfile=../../assets/js/visor3d.js
