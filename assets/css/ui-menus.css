@@ -175,15 +175,27 @@ body.recorrido-page :focus-visible{outline-color:var(--yellow)}
   gap:7px;
   padding:11px 9px;
   border-radius:var(--ui-radius);
-  background-color:rgba(250,248,242,.70);
-  background-image:
-    radial-gradient(180px 180px at var(--ui-mx,50%) var(--ui-my,0%),
-      rgba(255,255,255,.85),rgba(255,255,255,0) 70%),
-    linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
-  border:1px solid var(--ui-hair);
-  -webkit-backdrop-filter:blur(22px) saturate(1.6);
-  backdrop-filter:blur(22px) saturate(1.6);
-  box-shadow:var(--ui-shadow-2),inset 0 1px 0 rgba(255,255,255,.9);
+  /* la barra se mimetiza con el fondo: sin borde, sin sombra y sin caja.
+     Solo aparece cuando el puntero entra en ella o el foco llega con el teclado */
+  background-color:transparent;
+  background-image:none;
+  border:0;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:none;
+  opacity:0;
+  transition:opacity .3s var(--ui-ease),background-color .3s var(--ui-ease);
+}
+.deck-dots:hover,
+.deck-dots:focus-within{
+  opacity:1;
+  background-color:rgba(250,248,242,.45);
+  -webkit-backdrop-filter:blur(16px) saturate(1.4);
+  backdrop-filter:blur(16px) saturate(1.4);
+}
+/* en pantallas táctiles no hay hover: la barra queda siempre visible */
+@media (hover:none){
+  .deck-dots{opacity:1;background-color:rgba(250,248,242,.45)}
 }
 .deck-dots a{
   display:grid;place-items:center;
@@ -982,7 +994,8 @@ body.jugando .dato-capa{display:none}
   .topbar{background-color:rgba(250,248,242,.90)}
   body.recorrido-page .topbar{background-color:rgba(9,15,20,.88)}
   .doc-nav{background-color:rgba(250,248,242,.94)}
-  .deck-dots{background-color:rgba(250,248,242,.90)}
+  /* la barra de puntos se queda translúcida también en tablet */
+  .deck-dots{background-color:rgba(250,248,242,.45)}
   .rec-rail{background-color:rgba(9,15,20,.88)}
   .rec-hud{background-color:rgba(9,15,20,.94)}
   .rec-menu-btn{background-color:rgba(9,15,20,.88)}

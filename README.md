@@ -157,8 +157,12 @@ panel de operación. No toca el marcado ni la estructura.
   cápsula separada del borde que se cierra al hacer scroll (`.is-scrolled`).
 - **Control segmentado**: las acciones de la barra viven dentro de una pista
   común; al pasar el ratón cada una recibe su propia cápsula blanca.
-- **Puntos de capítulo**: el capítulo actual se estira en una píldora oscura con
-  su número; en móvil vuelven a ser puntos finos con canaleta propia.
+- **Puntos de capítulo**: la columna no tiene caja propia —sin borde, sin sombra
+  y sin fondo— y se mantiene invisible hasta que el puntero entra en ella o el
+  foco llega con el teclado; entonces aparece con un velo translúcido. El
+  capítulo actual se estira en una píldora oscura con su número, y en móvil
+  vuelven a ser puntos finos con canaleta propia (siempre visibles, porque ahí
+  no hay hover).
 - **Panel de operación**: cada acción es un interruptor tipo iOS (pista y pomo
   como pseudo-elementos sobre `aria-pressed`), agrupado en filas con su rótulo.
 - **Rótulos adaptativos**: «Pantalla completa» lleva dos `span` (`lbl-lg` /
