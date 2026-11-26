@@ -1,0 +1,767 @@
+﻿/* =========================================================
+   CEDI 360 · SISTEMA DE MENÚS (capa 2026)
+   Vidrio templado sobre el tema industrial: superficies
+   translúcidas, filete de un pixel, sombra en tres capas y
+   movimiento con resorte. Se carga después de tema-industrial
+   y de recorrido: solo cambia la piel, no la estructura ni el
+   marcado. Dos acabados del mismo sistema:
+
+     · papel  → deck, documentos y propuesta (fondo claro)
+     · noche  → recorrido y recorrido 3D (lienzo oscuro)
+
+   El resplandor que sigue al cursor usa --ui-mx / --ui-my,
+   que escribe assets/js/ui-menus.js.
+   ========================================================= */
+
+:root{
+  --ui-radius:18px;
+  --ui-radius-sm:12px;
+  --ui-radius-pill:999px;
+
+  --ui-hair:rgba(14,22,27,.10);
+  --ui-hair-2:rgba(14,22,27,.16);
+  --ui-paper-1:rgba(255,255,255,.76);
+  --ui-paper-2:rgba(250,248,242,.62);
+  --ui-paper-solid:#fff;
+
+  --ui-night-hair:rgba(255,255,255,.13);
+  --ui-night-1:rgba(23,32,41,.86);
+  --ui-night-2:rgba(9,15,20,.90);
+  --ui-night-text:#E6EDF3;
+  --ui-night-dim:rgba(230,237,243,.60);
+
+  --ui-shadow-1:0 1px 1px rgba(14,22,27,.05),0 2px 6px -2px rgba(14,22,27,.14);
+  --ui-shadow-2:0 1px 2px rgba(14,22,27,.06),0 14px 32px -16px rgba(14,22,27,.34),0 40px 70px -48px rgba(14,22,27,.40);
+  --ui-shadow-night:0 1px 1px rgba(0,0,0,.30),0 18px 40px -16px rgba(0,0,0,.62),0 48px 80px -50px #000;
+
+  --ui-ease:cubic-bezier(.33,1,.4,1);
+  --ui-spring:cubic-bezier(.34,1.36,.44,1);
+}
+
+/* =========================================================
+   1. BARRA SUPERIOR · isla flotante
+   ========================================================= */
+.topbar{
+  top:10px;
+  left:clamp(8px,1.6vw,18px);
+  right:clamp(8px,1.6vw,18px);
+  height:var(--bar-h);
+  padding:0 clamp(10px,1.5vw,18px);
+  border:1px solid var(--ui-hair);
+  border-radius:var(--ui-radius);
+  background-color:rgba(250,248,242,.68);
+  background-image:
+    radial-gradient(300px 150px at var(--ui-mx,50%) var(--ui-my,-40%),
+      rgba(255,255,255,.85),rgba(255,255,255,0) 72%),
+    linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
+  -webkit-backdrop-filter:blur(24px) saturate(1.7);
+  backdrop-filter:blur(24px) saturate(1.7);
+  box-shadow:var(--ui-shadow-2),inset 0 1px 0 rgba(255,255,255,.9);
+  transition:box-shadow .5s var(--ui-ease),background-color .5s var(--ui-ease),
+    border-color .5s var(--ui-ease),transform .5s var(--ui-ease);
+}
+.topbar.is-scrolled{
+  background-color:rgba(255,255,255,.82);
+  border-color:var(--ui-hair-2);
+  box-shadow:0 1px 2px rgba(14,22,27,.08),0 22px 46px -22px rgba(14,22,27,.44),
+    inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+/* el símbolo, en su pozo circular */
+.tb-brand{gap:11px}
+.tb-brand img{
+  width:30px;height:30px;padding:4px;
+  border-radius:50%;
+  background:var(--ui-paper-solid);
+  border:1px solid var(--ui-hair);
+  box-shadow:0 1px 2px rgba(14,22,27,.10);
+  transition:transform .4s var(--ui-spring),box-shadow .3s;
+}
+.tb-brand:hover img{transform:rotate(-4deg) scale(1.04);box-shadow:var(--ui-shadow-1)}
+
+/* migas: separadores finos, sin ruido */
+.tb-crumb{padding-left:2px;letter-spacing:.12em}
+.tb-crumb .sep{opacity:.5}
+
+/* ---------- acciones: control segmentado ---------- */
+.tb-brand,
+.doc-nav a,
+.rec-menu-btn,
+.deck-dots a,
+.rec-step,
+.deck-arrow,
+.visor-tools button,
+.sim-btn{text-decoration:none}
+.tb-brand,
+.doc-nav a{border-bottom:0}
+
+.tb-right{
+  gap:2px;
+  padding:3px;
+  border-radius:var(--ui-radius-pill);
+  background:rgba(14,22,27,.05);
+  border:1px solid rgba(14,22,27,.06);
+  box-shadow:inset 0 1px 2px rgba(14,22,27,.06);
+}
+.tb-right .btn{
+  padding:8px 15px;
+  border:0;
+  border-radius:var(--ui-radius-pill);
+  background:transparent;
+  color:var(--ink-2);
+  font-weight:500;
+  letter-spacing:.12em;
+  transition:background .28s var(--ui-ease),color .2s,box-shadow .28s var(--ui-ease),
+    transform .2s var(--ui-spring);
+}
+.tb-right .btn:hover,
+.tb-right .btn:focus-visible{
+  background:var(--ui-paper-solid);
+  color:var(--ink);
+  box-shadow:0 1px 2px rgba(14,22,27,.12),0 8px 18px -12px rgba(14,22,27,.55);
+  transform:none;
+}
+.tb-right .btn:active{transform:scale(.965)}
+
+/* =========================================================
+   2. BARRA EN LA NOCHE · recorrido y recorrido 3D
+   ========================================================= */
+body.recorrido-page .topbar{
+  background-color:rgba(9,15,20,.62);
+  background-image:
+    radial-gradient(300px 150px at var(--ui-mx,50%) var(--ui-my,-40%),
+      rgba(255,255,255,.12),rgba(255,255,255,0) 72%),
+    linear-gradient(180deg,var(--ui-night-1),var(--ui-night-2));
+  border-color:var(--ui-night-hair);
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 rgba(255,255,255,.10);
+}
+body.recorrido-page .topbar.is-scrolled{
+  background-color:rgba(9,15,20,.82);
+  border-color:rgba(255,255,255,.18);
+}
+body.recorrido-page .tb-brand img{
+  background:rgba(255,255,255,.94);
+  border-color:rgba(255,255,255,.35);
+}
+body.recorrido-page .tb-name{color:#fff}
+body.recorrido-page .tb-name span{color:rgba(230,237,243,.52)}
+body.recorrido-page .tb-crumb{color:rgba(230,237,243,.62)}
+body.recorrido-page .tb-crumb b{color:var(--yellow)}
+body.recorrido-page .tb-crumb .sep{color:rgba(230,237,243,.28)}
+body.recorrido-page .tb-right{
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.4);
+}
+body.recorrido-page .tb-right .btn{color:rgba(230,237,243,.86)}
+body.recorrido-page .tb-right .btn:hover,
+body.recorrido-page .tb-right .btn:focus-visible{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 10px 22px -14px #000;
+}
+body.recorrido-page :focus-visible{outline-color:var(--yellow)}
+
+/* =========================================================
+   3. NAVEGACIÓN DE CAPÍTULOS · puntos y flechas
+   ========================================================= */
+.deck-dots{
+  left:12px;
+  gap:7px;
+  padding:11px 9px;
+  border-radius:var(--ui-radius);
+  background-color:rgba(250,248,242,.70);
+  background-image:
+    radial-gradient(180px 180px at var(--ui-mx,50%) var(--ui-my,0%),
+      rgba(255,255,255,.85),rgba(255,255,255,0) 70%),
+    linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
+  border:1px solid var(--ui-hair);
+  -webkit-backdrop-filter:blur(22px) saturate(1.6);
+  backdrop-filter:blur(22px) saturate(1.6);
+  box-shadow:var(--ui-shadow-2),inset 0 1px 0 rgba(255,255,255,.9);
+}
+.deck-dots a{
+  display:grid;place-items:center;
+  width:9px;height:9px;
+  border-radius:var(--ui-radius-pill);
+  background:rgba(14,22,27,.22);
+  box-shadow:none;
+  font-family:var(--mono);font-size:0;letter-spacing:.04em;color:transparent;
+  transition:width .45s var(--ui-spring),height .45s var(--ui-spring),
+    background .3s var(--ui-ease),color .25s,box-shadow .3s;
+}
+.deck-dots a:hover{background:rgba(14,22,27,.55)}
+/* el capítulo actual se estira y muestra su número */
+.deck-dots a.on{
+  width:27px;height:17px;
+  background:var(--ink);
+  font-size:.46rem;
+  color:var(--paper-2);
+  box-shadow:0 0 0 3px rgba(245,196,0,.22),0 6px 14px -8px rgba(14,22,27,.8);
+}
+.deck-dots a::after{
+  left:calc(100% + 12px);
+  border-radius:8px;
+  padding:5px 9px;
+  box-shadow:0 10px 24px -14px rgba(14,22,27,.9);
+}
+
+.deck-arrows{gap:8px}
+.deck-arrow{
+  width:40px;height:40px;
+  border-radius:50%;
+  background-color:rgba(250,248,242,.78);
+  background-image:linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
+  border:1px solid var(--ui-hair);
+  -webkit-backdrop-filter:blur(18px) saturate(1.6);
+  backdrop-filter:blur(18px) saturate(1.6);
+  box-shadow:var(--ui-shadow-1),inset 0 1px 0 rgba(255,255,255,.9);
+  transition:transform .38s var(--ui-spring),box-shadow .3s,background-color .3s,color .2s;
+}
+.deck-arrow:hover{
+  transform:translateY(-1px) scale(1.06);
+  background-color:var(--ui-paper-solid);
+  border-color:var(--ui-hair-2);
+  color:var(--ink);
+  box-shadow:var(--ui-shadow-2);
+}
+.deck-arrow:active{transform:scale(.94)}
+.deck-arrow[disabled]{opacity:.28;transform:none;box-shadow:var(--ui-shadow-1)}
+.deck-count{
+  padding:2px 5px;
+  border-radius:var(--ui-radius-pill);
+  background:rgba(14,22,27,.05);
+  border:1px solid rgba(14,22,27,.06);
+  font-size:.42rem;
+  letter-spacing:.02em;
+  color:var(--ink-3);
+}
+
+/* la isla de puntos necesita su canaleta: el contenido arranca después */
+@media (min-width:761px){
+  .chapter{padding-left:max(58px,5vw)}
+}
+
+/* =========================================================
+   4. BARRA DE DOCUMENTO · pie flotante
+   ========================================================= */
+body.doc-page{padding-bottom:78px}
+.doc-nav{
+  left:clamp(8px,1.6vw,18px);
+  right:clamp(8px,1.6vw,18px);
+  bottom:10px;
+  height:52px;
+  border-radius:var(--ui-radius);
+  border:1px solid var(--ui-hair);
+  background-color:rgba(250,248,242,.72);
+  background-image:
+    radial-gradient(260px 130px at var(--ui-mx,50%) var(--ui-my,60%),
+      rgba(255,255,255,.9),rgba(255,255,255,0) 72%),
+    linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
+  -webkit-backdrop-filter:blur(24px) saturate(1.7);
+  backdrop-filter:blur(24px) saturate(1.7);
+  box-shadow:0 -1px 1px rgba(14,22,27,.04),0 -18px 40px -20px rgba(14,22,27,.36),
+    inset 0 1px 0 rgba(255,255,255,.9);
+}
+.doc-nav a{
+  padding:7px 12px;
+  border-radius:var(--ui-radius-pill);
+  transition:background .25s var(--ui-ease),color .2s;
+}
+.doc-nav a:hover{background:rgba(14,22,27,.06);color:var(--navy)}
+
+/* =========================================================
+   5. RIEL DEL RECORRIDO · cápsula de vidrio nocturno
+   ========================================================= */
+.rec-rail{
+  gap:4px;
+  padding:6px;
+  border-radius:var(--ui-radius-pill);
+  background-color:rgba(9,15,20,.66);
+  background-image:
+    radial-gradient(320px 120px at var(--ui-mx,50%) var(--ui-my,0%),
+      rgba(255,255,255,.10),rgba(255,255,255,0) 72%),
+    linear-gradient(180deg,var(--ui-night-1),var(--ui-night-2));
+  border:1px solid var(--ui-night-hair);
+  -webkit-backdrop-filter:blur(26px) saturate(1.5);
+  backdrop-filter:blur(26px) saturate(1.5);
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 rgba(255,255,255,.10);
+}
+.rec-step{
+  border-radius:var(--ui-radius-pill);
+  padding:8px 12px;
+  color:rgba(230,237,243,.58);
+  transition:background .28s var(--ui-ease),color .2s,transform .3s var(--ui-spring);
+}
+.rec-step:hover{background:rgba(255,255,255,.08);color:#fff}
+.rec-step:active{transform:scale(.97)}
+.rec-step.on{
+  background:var(--yellow);
+  color:#0B1116;
+  box-shadow:0 6px 18px -10px rgba(245,196,0,.9),inset 0 1px 0 rgba(255,255,255,.45);
+}
+.rec-arrows{
+  margin-left:2px;
+  padding-left:8px;
+  border-left:1px solid rgba(255,255,255,.12);
+}
+.rec-arrow{
+  width:32px;height:32px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.04);
+  color:var(--ui-night-text);
+  transition:background .25s var(--ui-ease),border-color .25s,color .2s,transform .3s var(--ui-spring);
+}
+.rec-arrow:hover{
+  background:rgba(255,255,255,.14);
+  border-color:rgba(255,255,255,.28);
+  color:#fff;
+  transform:scale(1.06);
+}
+.rec-arrow:active{transform:scale(.93)}
+.rec-arrow[disabled]{opacity:.24;transform:none}
+
+/* =========================================================
+   6. MENÚ DEL RECORRIDO · botón y hoja
+   ========================================================= */
+.rec-menu-btn{
+  gap:11px;
+  padding:10px 14px;
+  border-radius:var(--ui-radius-pill);
+  background-color:rgba(9,15,20,.66);
+  background-image:
+    radial-gradient(220px 100px at var(--ui-mx,50%) var(--ui-my,0%),
+      rgba(255,255,255,.10),rgba(255,255,255,0) 70%),
+    linear-gradient(180deg,var(--ui-night-1),var(--ui-night-2));
+  border:1px solid var(--ui-night-hair);
+  color:var(--ui-night-text);
+  -webkit-backdrop-filter:blur(26px) saturate(1.5);
+  backdrop-filter:blur(26px) saturate(1.5);
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 rgba(255,255,255,.10);
+  transition:border-color .25s,background-color .25s,color .2s,box-shadow .3s;
+}
+.rec-menu-btn:hover,
+.rec-menu-btn:focus-visible{
+  color:#fff;
+  border-color:rgba(255,255,255,.28);
+  background-color:rgba(9,15,20,.78);
+}
+.rec-menu-btn .rmb-num{
+  display:grid;place-items:center;
+  min-width:26px;height:26px;
+  padding:0 6px;
+  border-radius:var(--ui-radius-pill);
+  background:rgba(245,196,0,.16);
+  border:1px solid rgba(245,196,0,.34);
+  color:var(--yellow);
+  font-size:.78rem;
+  transition:background .3s,color .25s,border-color .25s;
+}
+.rec-menu-btn.abierto .rmb-num{
+  background:var(--yellow);
+  border-color:var(--yellow);
+  color:#0B1116;
+}
+.rec-menu-btn .rmb-ico{
+  width:13px;height:13px;
+  padding:0;
+  opacity:.7;
+  transition:transform .35s var(--ui-spring),opacity .2s;
+}
+.rec-menu-btn.abierto{border-color:rgba(245,196,0,.5);color:#fff}
+.rec-menu-btn.abierto .rmb-ico{transform:rotate(180deg);opacity:1}
+
+.rec-hud{
+  border-radius:var(--ui-radius);
+  border:1px solid var(--ui-night-hair);
+  border-left:1px solid var(--ui-night-hair);
+  background-color:rgba(9,15,20,.72);
+  background-image:
+    linear-gradient(180deg,rgba(23,32,41,.90),rgba(9,15,20,.92));
+  -webkit-backdrop-filter:blur(30px) saturate(1.5);
+  backdrop-filter:blur(30px) saturate(1.5);
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 rgba(255,255,255,.10);
+  padding:20px 20px 18px;
+}
+/* filete de acento: la marca de la casa, en un pixel */
+.rec-hud::after{
+  content:"";
+  position:absolute;top:0;left:22px;right:22px;height:1px;
+  background:linear-gradient(90deg,var(--yellow),rgba(245,196,0,0) 55%);
+  opacity:.85;pointer-events:none;
+}
+.rec-hud .rn{
+  display:inline-flex;align-items:center;gap:7px;
+  letter-spacing:.20em;
+}
+.rec-hud .rn::before{
+  content:"";width:5px;height:5px;border-radius:50%;
+  background:var(--yellow);box-shadow:0 0 0 3px rgba(245,196,0,.16);
+}
+.rec-hud h1{letter-spacing:-.025em}
+.rec-hud .rm{border-top-color:rgba(255,255,255,.10)}
+.rec-hud-close{
+  width:32px;height:32px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.04);
+  color:var(--ui-night-text);
+  transition:background .25s,border-color .25s,color .2s,transform .3s var(--ui-spring);
+}
+.rec-hud-close:hover{background:rgba(255,255,255,.14);color:#fff;transform:scale(1.06)}
+
+/* índice de paradas: fichas con elevación al pasar */
+.rec-index{border-bottom-color:rgba(255,255,255,.10)}
+.rec-idx{
+  border-radius:10px;
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  transition:transform .3s var(--ui-spring),border-color .25s,background .25s,box-shadow .3s;
+}
+.rec-idx:hover{
+  transform:translateY(-1px);
+  border-color:rgba(245,196,0,.6);
+  background:rgba(245,196,0,.10);
+  box-shadow:0 8px 18px -12px #000;
+}
+.rec-idx.on{
+  background:rgba(245,196,0,.20);
+  border-color:var(--yellow);
+  box-shadow:0 0 0 1px rgba(245,196,0,.35),0 10px 22px -14px rgba(245,196,0,.7);
+}
+
+/* botón de continuar: pastilla, no bloque */
+.rec-continuar{
+  border:0;
+  border-radius:var(--ui-radius-sm);
+  background:linear-gradient(180deg,var(--yellow-2, #FFDD6B),var(--yellow));
+  color:#0B1116;
+  font-weight:600;
+  letter-spacing:.12em;
+  box-shadow:0 10px 24px -14px rgba(245,196,0,.9),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:filter .2s,transform .3s var(--ui-spring),box-shadow .3s;
+}
+.rec-continuar:hover{
+  filter:brightness(1.04);
+  transform:translateY(-1px);
+  box-shadow:0 16px 32px -16px rgba(245,196,0,.95),inset 0 1px 0 rgba(255,255,255,.55);
+}
+.rec-continuar:active{transform:scale(.985)}
+
+/* entrada de la hoja */
+@keyframes ui-hoja{
+  from{opacity:0;transform:translateY(12px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.rec-menu .rec-hud:not([hidden]){
+  transform-origin:bottom left;
+  animation:ui-hoja .34s var(--ui-ease) both;
+}
+@keyframes ui-ficha{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.rec-menu .rec-hud:not([hidden]) .rec-idx{
+  animation:ui-ficha .32s var(--ui-ease) both;
+}
+.rec-menu .rec-hud:not([hidden]) .rec-idx:nth-child(3n+2){animation-delay:.03s}
+.rec-menu .rec-hud:not([hidden]) .rec-idx:nth-child(3n){animation-delay:.06s}
+
+/* =========================================================
+   7. HERRAMIENTAS DEL VISOR
+   ========================================================= */
+.visor-tools{gap:7px}
+.visor-tools button{
+  border-radius:var(--ui-radius-pill);
+  border:1px solid var(--ui-night-hair);
+  background-color:rgba(9,15,20,.66);
+  background-image:linear-gradient(180deg,var(--ui-night-1),var(--ui-night-2));
+  color:var(--ui-night-text);
+  -webkit-backdrop-filter:blur(22px) saturate(1.5);
+  backdrop-filter:blur(22px) saturate(1.5);
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 rgba(255,255,255,.10);
+  letter-spacing:.10em;
+  transition:transform .3s var(--ui-spring),border-color .25s,color .2s,background-color .25s,box-shadow .3s;
+}
+.visor-tools button:hover{
+  color:#fff;
+  border-color:rgba(255,255,255,.26);
+  transform:translateX(-2px);
+}
+.visor-tools button:active{transform:scale(.96)}
+.visor-tools button.on,
+.visor-tools button.activo{
+  background-image:none;
+  background-color:var(--yellow);
+  border-color:var(--yellow);
+  color:#0B1116;
+  box-shadow:0 10px 24px -14px rgba(245,196,0,.95),inset 0 1px 0 rgba(255,255,255,.45);
+}
+
+/* =========================================================
+   8. PANEL DE OPERACIÓN · hoja nocturna con interruptores
+   ========================================================= */
+.sim-panel{
+  top:calc(var(--bar-h) + 20px);
+  right:14px;
+  width:306px;
+  border-radius:var(--ui-radius);
+  border:1px solid var(--ui-night-hair);
+  background-color:rgba(9,15,20,.74);
+  background-image:
+    radial-gradient(300px 160px at var(--ui-mx,50%) var(--ui-my,0%),
+      rgba(255,255,255,.09),rgba(255,255,255,0) 72%),
+    linear-gradient(180deg,rgba(23,32,41,.92),rgba(9,15,20,.94));
+  -webkit-backdrop-filter:blur(30px) saturate(1.5);
+  backdrop-filter:blur(30px) saturate(1.5);
+  box-shadow:var(--ui-shadow-night),inset 0 1px 0 rgba(255,255,255,.10);
+  color:var(--ui-night-text);
+}
+.sim-cab{
+  padding:14px 48px 12px 16px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+.sim-cab b{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);
+  font-size:.66rem;letter-spacing:.16em;
+}
+.sim-cab b::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:var(--yellow);
+  box-shadow:0 0 0 3px rgba(245,196,0,.18);
+  animation:ui-latido 2.6s ease-in-out infinite;
+}
+@keyframes ui-latido{
+  0%,100%{box-shadow:0 0 0 3px rgba(245,196,0,.18)}
+  50%{box-shadow:0 0 0 6px rgba(245,196,0,.05)}
+}
+.sim-cab span{font-size:.58rem;letter-spacing:.04em;margin-top:3px}
+.sim-x{
+  top:9px;right:10px;
+  width:30px;height:30px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.04);
+  font-size:1rem;
+  display:grid;place-items:center;
+  transition:background .25s,color .2s,border-color .25s,transform .3s var(--ui-spring);
+}
+.sim-x:hover{background:rgba(255,255,255,.14);color:#fff;transform:scale(1.06)}
+.sim-cuerpo{
+  padding:4px 12px 12px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.22) transparent;
+}
+.sim-cuerpo::-webkit-scrollbar{width:8px}
+.sim-cuerpo::-webkit-scrollbar-track{background:transparent}
+.sim-cuerpo::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.16);
+  border-radius:99px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+.sim-cuerpo::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.30);background-clip:padding-box}
+.sim-cuerpo h4{
+  display:flex;align-items:center;gap:8px;
+  margin:14px 2px 7px;
+  font-family:var(--mono);
+  font-size:.52rem;letter-spacing:.16em;
+  color:rgba(230,237,243,.45);
+}
+.sim-cuerpo h4::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,0));
+}
+.sim-cuerpo h4:first-child{margin-top:8px}
+
+/* fila con interruptor: la pista y el pomo son pseudo-elementos, así el
+   botón sigue siendo un solo control y el estado va en aria-pressed */
+.sim-lista{grid-template-columns:1fr;gap:3px}
+.sim-btn{
+  position:relative;
+  display:flex;align-items:center;
+  min-height:36px;
+  padding:8px 11px 8px 40px;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:transparent;
+  color:rgba(230,237,243,.84);
+  font-family:var(--font,inherit);
+  font-size:.66rem;
+  letter-spacing:.01em;
+  line-height:1.25;
+  text-align:left;
+  transition:background .22s var(--ui-ease),border-color .22s,color .2s;
+}
+.sim-btn::before{
+  content:"";position:absolute;left:12px;top:50%;
+  width:22px;height:13px;
+  transform:translateY(-50%);
+  border-radius:var(--ui-radius-pill);
+  background:rgba(255,255,255,.14);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
+  transition:background .3s var(--ui-ease),box-shadow .3s;
+}
+.sim-btn::after{
+  content:"";position:absolute;left:14px;top:50%;
+  width:7px;height:7px;
+  transform:translateY(-50%);
+  border-radius:50%;
+  background:rgba(255,255,255,.70);
+  box-shadow:0 1px 2px rgba(0,0,0,.5);
+  transition:transform .34s var(--ui-spring),background .25s;
+}
+.sim-btn:hover{
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.10);
+  color:#fff;
+}
+.sim-btn:active{background:rgba(255,255,255,.10)}
+.sim-btn:focus-visible{outline:2px solid var(--yellow);outline-offset:1px}
+.sim-btn[aria-pressed="true"]{
+  background:rgba(245,196,0,.10);
+  border-color:rgba(245,196,0,.22);
+  color:#fff;
+}
+.sim-btn[aria-pressed="true"]::before{
+  background:var(--yellow);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.10),0 0 12px rgba(245,196,0,.35);
+}
+.sim-btn[aria-pressed="true"]::after{
+  transform:translateY(-50%) translateX(11px);
+  background:#0B1116;
+}
+/* el texto ya no se pinta como pastilla amarilla: el estado vive en el pomo */
+.sim-btn.activo{
+  background:rgba(245,196,0,.10);
+  border-color:rgba(245,196,0,.22);
+  color:#fff;
+  font-weight:500;
+}
+.sim-aviso{
+  padding:10px 16px 12px;
+  border-top:1px solid rgba(255,255,255,.09);
+  font-size:.58rem;
+  letter-spacing:.02em;
+  color:rgba(230,237,243,.72);
+}
+.sim-aviso.ok{color:#A9CE68}
+.sim-aviso.alerta{color:var(--yellow)}
+
+/* =========================================================
+   9. FOCO, MOVIMIENTO REDUCIDO E IMPRESIÓN
+   ========================================================= */
+.topbar :focus-visible,
+.deck-arrow:focus-visible,
+.rec-step:focus-visible,
+.rec-arrow:focus-visible,
+.rec-menu-btn:focus-visible,
+.visor-tools button:focus-visible,
+.doc-nav a:focus-visible{
+  outline:2px solid var(--yellow);
+  outline-offset:2px;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .topbar,.deck-dots a,.deck-arrow,.rec-step,.rec-arrow,.rec-menu-btn,
+  .rec-idx,.visor-tools button,.sim-btn,.sim-btn::before,.sim-btn::after,
+  .rec-continuar,.tb-brand img{
+    transition:none!important;
+    animation:none!important;
+  }
+  .rec-menu .rec-hud:not([hidden]),
+  .rec-menu .rec-hud:not([hidden]) .rec-idx{animation:none!important}
+}
+
+@media print{
+  .topbar,.deck-nav,.doc-nav,.rec-rail,.rec-menu,.visor-tools,.sim-panel{display:none!important}
+}
+
+/* =========================================================
+   10. MÓVIL Y TABLET
+   ========================================================= */
+@media (max-width:900px){
+  .topbar{top:8px;left:6px;right:6px;border-radius:14px}
+  /* en el recorrido el nombre no cabe con las acciones: se queda el símbolo */
+  body.recorrido-page .topbar .tb-name{
+    display:block;
+    font-size:.6rem;
+    letter-spacing:.16em;
+  }
+  body.recorrido-page .topbar .tb-name span{display:none}
+  body.doc-page{padding-bottom:72px}
+  .doc-nav{left:6px;right:6px;bottom:8px;height:50px;border-radius:14px}
+  .tb-brand img{width:26px;height:26px;padding:3px}
+  .tb-right .btn{padding:7px 11px}
+  .rec-rail{padding:5px;gap:2px}
+  .sim-panel{
+    left:8px;right:8px;width:auto;
+    border-radius:16px;
+  }
+  .sim-btn{min-height:44px;font-size:.72rem;padding:11px 12px 11px 42px}
+  .visor-tools button{border-radius:var(--ui-radius-pill)}
+}
+@media (max-width:374px){
+  body.recorrido-page .topbar .tb-name{display:none}
+}
+
+/* en pantallas táctiles el resplandor que sigue al cursor no aporta */
+@media (hover:none){
+  .topbar,.deck-dots,.doc-nav,.rec-rail,.rec-hud,.rec-menu-btn,.sim-panel{
+    background-image:none;
+  }
+  .deck-dots a.on{box-shadow:0 0 0 2px rgba(245,196,0,.28)}
+}
+
+/* los puntos de capítulo conservan su lectura vertical en móvil: sin isla,
+   sin etiqueta y con un canaleta corta para que no pisen el texto */
+@media (max-width:760px){
+  .deck-dots{
+    left:4px;
+    gap:0;
+    align-items:center;
+    padding:0;
+    background:none;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+  .deck-dots::before{display:none}
+  .deck-dots a{
+    display:grid;place-items:center;
+    width:14px;height:14px;
+    border-radius:50%;
+    background:transparent;
+    box-shadow:none;
+    font-size:0;color:transparent;
+  }
+  .deck-dots a::before{
+    content:"";
+    width:6px;height:6px;
+    border-radius:50%;
+    background:rgba(14,22,27,.24);
+    filter:drop-shadow(0 0 2px rgba(255,255,255,.95));
+    transition:background .2s,transform .3s var(--ui-spring);
+  }
+  .deck-dots a:hover{background:transparent}
+  .deck-dots a:hover::before{background:rgba(14,22,27,.55)}
+  .deck-dots a.on{width:14px;height:14px;background:transparent;box-shadow:none;font-size:0}
+  .deck-dots a.on::before{background:var(--ink);transform:scale(1.4)}
+  .deck-dots a::after{display:none}
+
+  .deck-arrow{
+    width:38px;height:38px;
+    background-image:linear-gradient(180deg,var(--ui-paper-1),var(--ui-paper-2));
+  }
+  .deck-count{padding:3px 0;background:none;border:0;font-size:.48rem}
+}
+@media (max-width:760px){
+  .chapter{padding-left:30px}
+}
+@media (max-width:360px){
+  .chapter{padding-left:24px}
+}

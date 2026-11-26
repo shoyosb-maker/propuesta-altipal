@@ -21,6 +21,8 @@ implementar el agente; el resto del tiempo el demo responde con guiones.
 | `recorrido3d.html` | recorrido 3D de 25 paradas por la planta |
 | `recorrido.html` | visor de láminas del despiece del tractocamión |
 | `assets/js/visor3d.js` | visor three.js con el modelo dentro (bundle IIFE) |
+| `assets/css/ui-menus.css` | capa de menús 2026: barra, navegación, riel y panel |
+| `assets/js/ui-menus.js` | resplandor de vidrio que sigue al puntero |
 | `camion-cedi360/blender/` | fuentes del modelo: escena, almacén, muelle, áreas de programa, láminas |
 | `camion-cedi360/visor/src/` | fuentes del visor (`main.js`, `secciones.js`) |
 | `camion-cedi360/estado.txt` | bitácora técnica y decisiones del proyecto |
@@ -110,6 +112,33 @@ en el artefacto, para que el cambio se lea sobre el piso, las estanterías y la
 carga incluso con el ambiente diurno. El muro de video del cuarto de control,
 en cambio, cambia de señal al instante: cada cámara está atada a su monitor y
 al apagarla el visor pinta el cartel de «SIN SEÑAL».
+
+## Sistema de menús (capa 2026)
+
+`assets/css/ui-menus.css` es la última hoja de las cinco páginas y solo cambia
+la piel de los menús: barra superior, navegación de capítulos, barra de los
+documentos de detalle, riel del recorrido, menú desplegable del recorrido 3D y
+panel de operación. No toca el marcado ni la estructura.
+
+- **Dos acabados del mismo sistema**: «papel» (deck, documentos y propuesta) y
+  «noche» (`body.recorrido-page`: recorrido y recorrido 3D).
+- **Superficies de vidrio**: `backdrop-filter` con saturación, filete de un
+  píxel, sombra en tres capas y brillo interior de un píxel en el borde alto.
+- **Islas flotantes**: la barra superior deja de ser una franja y pasa a ser una
+  cápsula separada del borde que se cierra al hacer scroll (`.is-scrolled`).
+- **Control segmentado**: las acciones de la barra viven dentro de una pista
+  común; al pasar el ratón cada una recibe su propia cápsula blanca.
+- **Puntos de capítulo**: el capítulo actual se estira en una píldora oscura con
+  su número; en móvil vuelven a ser puntos finos con canaleta propia.
+- **Panel de operación**: cada acción es un interruptor tipo iOS (pista y pomo
+  como pseudo-elementos sobre `aria-pressed`), agrupado en filas con su rótulo.
+
+`assets/js/ui-menus.js` escribe `--ui-mx` / `--ui-my` en la superficie que está
+bajo el cursor y el CSS los usa como centro de un degradado radial, para que el
+vidrio tenga un resplandor que acompaña al puntero. Si el script no corre, el CSS
+cae en una posición por defecto y todo se ve igual. También se conecta solo a
+los paneles que aparecen después de cargar el modelo (menú del recorrido y panel
+de operación) con un `MutationObserver`.
 
 ## Volver a construir
 

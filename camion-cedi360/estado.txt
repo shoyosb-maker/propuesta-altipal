@@ -2,7 +2,7 @@
  CEDI 360 · DESPIECE ISOMÉTRICO DEL CAMIÓN LOGÍSTICO
  Estado del proyecto
 =========================================================================
-Actualizado: 2026-11-25 19:40
+Actualizado: 2026-11-25 20:20
 Responsable técnico: sesión Copilot + Blender 5.3.0
 Carpeta: camion-cedi360
 
@@ -1243,6 +1243,24 @@ SIGUIENTE PASO RECOMENDADO
                   CANALES en panel.js: muelles 0-2, interiores 3-9, perimetro
                   10-11. El boton Grabacion (NVR) apaga o restablece los 12.
 
+2026-11-25 20:20  Menus al estilo de las interfaces actuales. Se agrega
+                  assets/css/ui-menus.css como ultima hoja de las cinco
+                  paginas (index, recorrido, recorrido3d, 07-fases y
+                  10-comercial) y assets/js/ui-menus.js. Solo cambia la piel:
+                  barra superior como isla flotante de vidrio, acciones en
+                  control segmentado, puntos de capitulo que se estiran en
+                  pildora con su numero, flechas circulares, barra flotante en
+                  los documentos de detalle, riel y menu del recorrido en
+                  vidrio nocturno, y el panel de operacion con interruptores
+                  tipo iOS (pista y pomo como pseudo-elementos sobre
+                  aria-pressed; la maquina de estados del panel no cambia).
+                  Dos acabados del mismo sistema: papel (deck y documentos) y
+                  noche (body.recorrido-page). El JS escribe --ui-mx/--ui-my
+                  para el resplandor que sigue al cursor y se reconecta solo a
+                  los paneles que se crean despues del glb con MutationObserver.
+                  En movil los puntos vuelven a ser puntos finos y el capitulo
+                  deja 30 px de canaleta para que no pisen el texto.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y
@@ -1321,4 +1339,13 @@ RIESGOS Y NOTAS
 - Los halos y los conos de luz son aditivos y no escriben profundidad: si se
   sube la opacidad (tope 0,16 y halo 2,1x) se ven como niebla sobre las
   estanterias. Ajustar en FOCOS de panel.js, no en el CSS.
+- ui-menus.css va DESPUES de recorrido.css y tema-industrial.css en las cinco
+  paginas. Si se agrega una hoja nueva, que sea antes: el sistema de menus se
+  apoya en el orden para ganarle a reglas con la misma especificidad.
+- El resplandor de vidrio depende de --ui-mx/--ui-my. Si se duplica un menu con
+  otro nombre de clase hay que sumarlo a SEL en ui-menus.js o se queda con el
+  degradado por defecto.
+- El separador de la barra superior asume que el contenido empieza a 58 px del
+  borde (`.chapter` en index.html). Si se vuelve a tocar ese padding, los
+  puntos de capitulo vuelven a pisar el texto.
 =========================================================================
