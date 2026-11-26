@@ -201,10 +201,13 @@ body.recorrido-page :focus-visible{outline-color:var(--yellow)}
   -webkit-backdrop-filter:blur(16px) saturate(1.4);
   backdrop-filter:blur(16px) saturate(1.4);
 }
-/* sin hover (táctil) o pantalla angosta la barra queda siempre visible:
-   en un teléfono no hay puntero que la descubra */
+/* sin hover (tactil) la barra queda siempre visible —en un telefono no hay
+   puntero que la descubra— pero sin caja: el recuadro translucido solo tiene
+   sentido cuando el puntero la esta por usar */
 @media (hover:none),(max-width:900px){
-  .deck-dots{opacity:1;background-color:var(--bar-soft)}
+  .deck-dots{opacity:1;background-color:transparent}
+  .deck-dots:hover,
+  .deck-dots:focus-within{background-color:transparent}
 }
 .deck-dots a{
   display:grid;place-items:center;
@@ -1003,8 +1006,8 @@ body.jugando .dato-capa{display:none}
   .topbar{background-color:var(--bar)}
   body.recorrido-page .topbar{background-color:rgba(9,15,20,.88)}
   .doc-nav{background-color:var(--bar)}
-  /* la barra de puntos se queda translúcida también en tablet */
-  .deck-dots{background-color:var(--bar-soft)}
+  /* la barra de puntos se queda sin caja: solo los puntos sobre el papel */
+  .deck-dots{background-color:transparent}
   .rec-rail{background-color:rgba(9,15,20,.88)}
   .rec-hud{background-color:rgba(9,15,20,.94)}
   .rec-menu-btn{background-color:rgba(9,15,20,.88)}
@@ -1043,7 +1046,7 @@ body.jugando .dato-capa{display:none}
 }
 
 /* los puntos de capítulo conservan su lectura vertical en móvil: sin isla,
-   sin etiqueta y con un canaleta corta para que no pisen el texto */
+   sin tapa ni etiqueta, y con un canaleta corta para que no pisen el texto */
 @media (max-width:760px){
   .deck-dots{
     left:4px;
@@ -1056,6 +1059,14 @@ body.jugando .dato-capa{display:none}
     box-shadow:none;
     -webkit-backdrop-filter:none;
     backdrop-filter:none;
+  }
+  /* ni al tocar ni al enfocar: la columna nunca dibuja caja */
+  .deck-dots:hover,
+  .deck-dots:focus-within{
+    background:none;
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+    box-shadow:none;
   }
   .deck-dots::before{display:none}
   .deck-dots a{
@@ -1093,17 +1104,18 @@ body.jugando .dato-capa{display:none}
     width:max-content;
   }
   .deck-count{
-    padding:4px 9px;
-    border:1px solid var(--ui-hair);
-    border-radius:999px;
-    background-color:var(--bar);
-    -webkit-backdrop-filter:blur(14px) saturate(1.5);
-    backdrop-filter:blur(14px) saturate(1.5);
-    box-shadow:0 8px 18px -14px rgba(14,22,27,.7);
-    font-size:.52rem;
-    letter-spacing:.08em;
+    padding:0;
+    border:0;
+    border-radius:0;
+    background:none;
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+    box-shadow:none;
+    font-size:.5rem;
+    letter-spacing:.12em;
     white-space:nowrap;
     color:var(--ink-3);
+    text-shadow:0 1px 3px var(--bar),0 0 2px var(--bar);
   }
 }
 @media (max-width:760px){

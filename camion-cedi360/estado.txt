@@ -1338,6 +1338,17 @@ SIGUIENTE PASO RECOMENDADO
                   poniente-oriente, con la cabecera al occidente. La franja se
                   midio sobre los nodos del glb (export/cedi360.glb), no a ojo.
 
+2026-11-26 07:45  La columna de puntos deja de dibujar caja. El velo
+                  translucido que la regla de :hover/:focus-within pintaba
+                  aparecia en el telefono al tocar un punto y se quedaba fijo
+                  (el foco sigue en el enlace), y en tablet la regla de 900 px
+                  lo dejaba puesto de entrada. Ahora en (hover:none) y por
+                  debajo de 900 px la columna se queda visible con fondo
+                  transparente, y el bloque de 760 px lo repite para hover y
+                  focus-within. El contador tambien suelta la capsula: pasa a
+                  mono de 0,5 rem con un halo de color --bar, como el texto
+                  pequeno de la version de escritorio.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y

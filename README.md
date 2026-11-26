@@ -164,9 +164,13 @@ panel de operación. No toca el marcado ni la estructura.
   y tablet (≤900 px) queda siempre visible, porque ahí no hay hover que la
   descubra. El capítulo actual se estira en una píldora con su número.
 - **Navegación mínima en el teléfono** (≤760 px): quedan solo los puntos y el
-  indicador de página. Las flechas se retiran —tapaban el texto— y el contador
-  `01 / 14` pasa a ser una pastilla de vidrio al pie de la columna, como
-  `.deck-count`.
+  texto pequeño del contador (`01 / 14`), como en el escritorio. Las flechas se
+  retiran —tapaban el texto— y el contador pierde cápsula, borde y fondo: es
+  mono pequeño al pie de la columna, con un halo del color de la barra para
+  ganar sobre fotos.
+- **Sin caja en táctil**: en pantallas sin puntero (o ≤900 px) la columna de
+  puntos se queda visible pero nunca dibuja el velo translúcido, ni al tocar ni
+  al enfocar un punto.
 - **Modo día / modo noche**: el interruptor de la barra superior escribe
   `data-tema` en `<html>` y lo recuerda en `localStorage` (`cedi:tema`). El tema
   nocturno solo remapea los tokens de color —papel, tinta, líneas y las
