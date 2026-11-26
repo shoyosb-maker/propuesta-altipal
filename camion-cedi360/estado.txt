@@ -1379,6 +1379,25 @@ SIGUIENTE PASO RECOMENDADO
                   telon, se reemite marcado con __telon y el deck navega debajo.
                   Con movimiento reducido no aparece.
 
+2026-11-26 08:25  Un solo ambiente: noche, con la caja ALTIPAL de fondo. Se
+                  retira el interruptor dia/noche (el bloque de tokens claro
+                  queda en ui-menus.css por si se vuelve a querer) y el sitio
+                  entra siempre con data-tema="noche": el atributo se fija en
+                  el <head> de index, 07-fases y 10-comercial, se refuerza en
+                  ui-menus.js y el meta theme-color pasa a #0B1116.
+                  Detras de cada seccion va la foto de la caja en dos capas
+                  fijas: body::before con la imagen en cover, blur(38 px),
+                  saturate 1.35 y brillo 1.04 (inset -14% para que el
+                  desenfoque no deje borde) y body::after con el velo
+                  (radial de .06 a .68 mas degradado vertical .50/.70). El
+                  contenido queda encima porque body>* lleva z-index 1.
+                  Dos ajustes que salieron en la revision: body necesita
+                  background transparente con mas especificidad que la regla
+                  de noche (html body.deck-page) o la foto no se ve, y los
+                  puntos del telefono tomaban la caja de 22 x 18 px de la
+                  regla nocturna y se veian como bolitas; ahora se anulan y
+                  el halo blanco de dia pasa a negro.
+
 RIESGOS Y NOTAS
 ---------------
 - Blender 5.3 cambió nombres de API respecto a 4.x: el puente captura errores y

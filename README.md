@@ -171,11 +171,16 @@ panel de operación. No toca el marcado ni la estructura.
 - **Sin caja en táctil**: en pantallas sin puntero (o ≤900 px) la columna de
   puntos se queda visible pero nunca dibuja el velo translúcido, ni al tocar ni
   al enfocar un punto.
-- **Modo día / modo noche**: el interruptor de la barra superior escribe
-  `data-tema` en `<html>` y lo recuerda en `localStorage` (`cedi:tema`). El tema
-  nocturno solo remapea los tokens de color —papel, tinta, líneas y las
-  superficies `--surface`/`--bar`— más un puñado de piezas que el tema
-  industrial fija en claro; al imprimir vuelve al papel blanco.
+- **Un solo ambiente, de noche**: el sitio va siempre con la paleta oscura
+  (`data-tema="noche"` fijado en el `<head>` de las tres páginas de papel y
+  reforzado en `ui-menus.js` por si el HTML llega cacheado). El interruptor
+  día/noche se retiró; los tokens del tema claro siguen en `ui-menus.css` por si
+  se quiere volver a encender.
+- **Fondo de las secciones**: la foto de la caja ALTIPAL vive en dos capas
+  fijas —`body::before` con `blur(38px)` y `body::after` con el velo— así que
+  acompaña el scroll sin repetirse en cada capítulo, y el contenido queda
+  encima porque `body>*` ya lleva `z-index:1`. Al imprimir las dos capas se
+  apagan y el papel vuelve a blanco.
 - **Ficha del programa (portada)**: tarjeta negra con marco prismático —oro,
   violeta y cian— montado con dos capas de `background` (`padding-box` /
   `border-box`), brillo de vitrina en `::after`, título en degradado con corona,

@@ -1539,3 +1539,69 @@ html[data-tema="noche"] .tb-right .btn-tema{color:var(--yellow)}
   .btn-tema{display:none!important}
 }
 
+/* =========================================================
+   12. FONDO DE LAS SECCIONES · la caja ALTIPAL difuminada
+   La foto vive en dos capas fijas: el render desenfocado y un
+   velo que garantiza el contraste. El contenido va por encima
+   (body>* ya lleva z-index 1 y estas capas quedan en 0).
+   ========================================================= */
+
+html{background:#0B1116}
+html body.deck-page,
+html body.doc-page{background:transparent}
+
+body.deck-page::before,
+body.doc-page::before{
+  content:"";
+  display:block;
+  position:fixed;
+  inset:-14%;
+  z-index:0;
+  pointer-events:none;
+  background:url(../img/brand/altipal-telon.webp) center 38%/cover no-repeat;
+  filter:blur(38px) saturate(1.35) brightness(1.04);
+  transform:scale(1.06);
+}
+body.deck-page::after,
+body.doc-page::after{
+  content:"";
+  display:block;
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(120% 80% at 50% 0%,rgba(11,17,22,.06),rgba(11,17,22,.68) 78%),
+    linear-gradient(180deg,rgba(11,17,22,.50),rgba(11,17,22,.70));
+}
+
+/* las tarjetas y las islas de vidrio son opacas: la foto no las lava */
+body.deck-page .card,
+body.doc-page .card{background-color:var(--surface)}
+
+/* en el teléfono los puntos del capítulo son solo puntos: la regla de
+   noche les pintaba la caja completa (22 x 18 px) como una bolita */
+@media (max-width:760px){
+  html[data-tema="noche"] .deck-dots a,
+  html[data-tema="noche"] .deck-dots a:hover,
+  html[data-tema="noche"] .deck-dots a.on{
+    background:transparent;
+    box-shadow:none;
+    font-size:0;
+    color:transparent;
+  }
+  /* el halo blanco de día se veía como una bolita en el fondo oscuro */
+  html[data-tema="noche"] .deck-dots a::before{
+    filter:drop-shadow(0 0 2px rgba(0,0,0,.85));
+  }
+}
+
+@media print{
+  body.deck-page::before,
+  body.deck-page::after,
+  body.doc-page::before,
+  body.doc-page::after{display:none}
+  html{background:#fff}
+  html body.deck-page,html body.doc-page{background:#fff}
+}
+
